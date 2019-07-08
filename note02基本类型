@@ -1,0 +1,666 @@
+
+
+1.常量
+
+不能改变的值
+
+在程序在运行的过程中，值不能发生改变的标识符
+
+常量的命名规则：常量命名法【单词全部大写，不同单词之间使用下划线分隔】
+
+2.变量
+
+2.1概念
+
+在程序运行的过程中，值可以随时发生任意改变【只改变值，改变值的同时改变类型】的标识符
+
+定义语法：
+
+	变量名 = 值
+
+说明:
+
+	a.变量名实际就是一个标识符，也被称为引用
+
+	b.第一次给变量的值被称为初始值,是可以随时改变的，同时值的出现确定了当前变量的数据类型
+
+2.2使用
+
+    #1.变量的定义
+    #需求：定义一个变量，表示人的年龄，初始值为18
+    
+    #整型
+    age = 18
+    print(age)
+    #浮点型
+    height = 172.5
+    print(height)
+    #字符串
+    name = "zhangsan"
+    print(name)
+    #布尔型
+    isStu = True
+    print(isStu)
+    
+    #2.获取一个变量的数据类型:type()
+    print(type(age))
+    print(type(height))
+    print(type(name))
+    print(type(isStu))
+    """
+    <class 'int'>
+    <class 'float'>
+    <class 'str'>
+    <class 'bool'>
+    """
+    
+    #3.变量的命名:驼峰和官方
+    stuScore = 100
+    stu_score = 100
+    
+    
+    #4.常量
+    #常量命名法：全大写
+    #注意：在Python中所有的变量都是可变的，常量也是可变的【原因：常量只是在命名上和变量做了区别，但是本质仍然是一个变量】
+    PI = 3.14
+    print(PI)
+    
+    #5.给变量重新赋值
+    name = "jack"
+    print(name)
+    
+    PI = 10
+    print(PI)
+    
+    #6.变量的好处
+    print(3 + 5)
+    print(3 + 5)
+    print(3 + 5)
+    
+    x = 3
+    y = 5
+    print(x + y)
+    print(x + y)
+    print(x + y)
+    
+    #结论：变量实际上是一个容器，该容器每次只能存储一个数据，使用该变量参与运算相当于该变量指向的值参与运算
+
+2.3内存中的变量
+
+分类：
+
+	寄存器：主要由系统分配，在程序中控制不了
+
+	栈：存储的变量的引用
+
+	堆：存储的实体【对象】
+
+	方法区：
+
+		静态域：存储静态数据
+
+		常量池：存储的是常用的常量
+
+定义一个变量，实际上在内存中开辟了一块空间，将一个确定的数据存储都该空间中
+
+    #7.用一个变量给另外一个变量赋值
+    name1 = "zhangsan"
+    name2 = name1
+    print(name1)
+    print(name2)
+    
+    print(id(name1))
+    print(id(name2))
+    
+    name1 = "lisi"
+    print(name1)
+    print(name2)
+    
+    #8.获取变量在内存中的地址:id()
+    print(id(name1))
+    print(id(name2))
+    
+    #结论：地址可以在内存中唯一的确定一个变量，如果两个变量的地址相同，则他们一定指向相同的实体
+    #变量中实际上存储的是数据的地址
+
+总结：
+
+	a.age = 10
+
+		age实际上被存储在栈空间中，10最初被存储在常量池中，经过拷贝，最终在堆空间中出现了一份，age指向了10
+
+	b.如果一个实体没有任何的引用指向它，则会被系统的垃圾回收机制回收，所占用的空间会被释放【release】，从而该变量会被销毁【手动管理内存和自动管理内存】
+
+2.4删除变量
+
+语法：del  变量名
+
+注意：一个变量一旦被删除之后，相当于该变量未被定义
+
+    #9.删除变量
+    num = 10
+    print(num)
+    del num
+    print(num)   #NameError: name 'num' is not defined
+    
+    #补充：变量的生命周期：从 一个变量被定义到被销毁的过程
+    """
+        a.当程序执行完毕的时候，变量才会被销毁
+        b.通过del强制销毁变量
+    """
+    
+    print("over")
+
+2.5总结
+
+特点：
+
+	a.变量的值是可以随时改变的
+
+	b.变量的出现需要在内存中开辟空间
+
+	c.变量的意义：为了存储和计算生活中的可变数据
+
+2.6变量的相互转换
+
+int(xx):将xx转换为int
+
+float(xx)：将xx转换为float
+
+str(xx)：将xx转换为str
+
+chr(xx)：charactor,字符，将整数转换为在ASCII码中对应的字符
+
+ord(xx)：ordinary，原始的，将一个字符转换为ASCII码中对应的数字
+
+    #1.int(),将float或者str转换为int
+    str1 = "abc"
+    print(type(str1))   #<class "str">
+    
+    str2 = "123"
+    print(type(str2))
+    
+    r0 = int(str2)
+    print(type(r0))
+    
+    f0 = 34.56
+    print(int(f0))
+    print(type(int(f0)))
+    
+    #注意：将字符串转换为整型，则字符串的字符由数字和加减号组成【0~9】，但是，加减号只能出现在字符串的首位，出现在首位被识别为了正负号
+    #print(int(str1))   #ValueError: invalid literal for int() with base 10: 'abc'
+    print(int("-123"))
+    print(int("+123"))
+    
+    #print(int("1-23"))  #ValueError: invalid literal for int() with base 10: '1-23'
+    #print(int("12+3"))
+    
+    #2.float()
+    #注意：将字符串转换为整型，则字符串的字符由数字、加减号以及小数点组成【0~9】，但是，加减号只能出现在字符串的首位，出现在首位被识别为了正负号
+    #小数点出现在字符串的首位，则默认小数的整数部分为0
+    print(float(10))
+    print(float("10.23"))
+    #print(float("abc"))  #ValueError: could not convert string to float: 'abc'
+    
+    print(float("-123.34"))
+    print(float("+123.34"))
+    
+    print(float(".234"))  #0.234
+    
+    #3.str()，将任意类型的数据全部转换为字符串  <class "str">
+    print(str(12+3))
+    print(str(23.4))
+    
+    
+    #4.chr()   ord()
+    print(chr(97))
+    print(ord("b"))
+    
+    #需求：定义一个变量，变量的值为e,打印该变量，打印的结果为E
+    result = "e"
+    num = ord(result)
+    print(num)
+    num = num - 32
+    print(num)  #69
+    result = chr(num)
+    print(result)  #E
+    
+    #result = chr(ord(result) - 32)
+
+三、输入输出
+
+1.输出print
+
+    import  sys
+    
+    #一、基本用法
+    #1.打印一个数据
+    print("hello")
+    print(12)
+    print(True)
+    
+    #2.打印多个数据，数据之间使用逗号隔开,结果默认使用空格隔开
+    print("hello",12,True)
+    
+    #3.数据之间可以进行拼接
+    #3.1数字+数字，进行的是数学运算
+    print(10 + 20)  #30
+    #3.2字符串+字符串，表示的是字符串的拼接，生成了一个新的字符串
+    print("hello" + "python")
+    
+    #注意：在Python中，不同的类型之间不能进行相加,但是，布尔型和数字之间可以进行相加，True代表1，False代表0
+    #print("abc" + 10)   #TypeError: must be str, not int
+    #print(10 + "abc")  #TypeError: unsupported operand type(s) for +: 'int' and 'str'
+    
+    #print(True + "abc")
+    print(True + 1)
+    print(False + 1)
+    
+    #4.使用占位符进行字符串的格式化
+    """
+    %d:代表整型
+    %f；代表浮点型
+    %s；代表一切类型的数据
+    
+    %.nd：n表示当前数据所占的位数
+    %.nf：n表示小数点后保留的位数,n的取值范围为大于等于0
+    """
+    name = "zhangsan"
+    age = 18
+    score = 100
+    print(name)
+    print(age)
+    print(score)
+    
+    print(name,age,score)
+    
+    #语法："不同类型的占位符" % (变量)
+    str1 = "姓名：%s,年龄：%d,成绩：%d" % (name,age,score)
+    str1 = "name=%s,age=%d,score=%d" % (name,age,score)
+    #str1 = "姓名：%s,年龄：%d,成绩：%d" % (age,name,score)  #TypeError: %d format: a number is required, not str
+    #str1 = "姓名：%s,年龄：%d,成绩：%d" % (name,age)  #TypeError: not enough arguments for format string
+    print(str1)
+    
+    """
+    总结：
+        a.类型一定要匹配【从左往右的一一对应】
+        b.数量要匹配【从左往右的一一对应】
+    """
+    
+    #n的用法
+    height = 172.64454
+    str1 = "name=%s,age=%d,score=%d,height=%.2f" % (name,age,score,height)
+    
+    #注意：如果n小于数据原本的位数，则不起作用；如果大于原本的位数，则数据的前面补0
+    str1 = "name=%s,age=%d,score=%.2d,height=%.2f" % (name,age,score,height)
+    print(str1)
+    
+    
+    #二、高级用法
+    #原型：print(objects,sep,end,file,flush)
+    """
+    objects:表示需要被输出到控制台上的数据，不限制个数
+    sep:如果有多个数据需要输出的话，数据之间的分隔符，分隔符默认为空格
+    end:表示一条print最后的结束符，结束符默认为换行符【\n】
+    file:被打开的文件实体
+    flush:刷新，主要结合file使用，加快数据写入的速度，为布尔值
+    """
+    
+    #1.objects
+    #三个数据
+    print("hello","hello","hello")
+    #一个数据
+    print("hello" * 3)
+    print("hello" + "hello" + "hello")
+    
+    #2.sep:可以重新赋值为任意的字符串，为相邻两个数据之间的分隔符，会出现多次
+    print("hello","hello","hello",sep="****")
+    
+    #3.end:不管打印多少个数据，end的值出现在最后，只出现一次
+    print("hello","hello","hello",end="****")
+    print("over")
+    
+    #注意：如果需要自定义分隔符sep，则打印的数据至少有两个
+    print("abc",sep="%%%%")
+    print("abc",end="$$$$")
+    
+    print("")
+    
+    #4.file: 表示输出数据的位置，默认为控制台，file=sys.stdout,需要导入sys模块
+    #
+    print("这是一个测试")
+    print("这是一个测试",file=sys.stdout)
+    
+    #重定向：将print默认输出到控制台做出修改，将输出的内容指定到其他地方
+    #open(path,flag,encoding)
+    """
+    path:表示需要打开的文件的路径，如果是写入，则文件可以不存在，会自动生成
+        注意：为了防止路径中有特殊字符，则需要在路径的前面添加r"xxxx"
+    flag:文件被打开的方式
+        r:只读,read
+        rb:binary,以二进制的方式打开文件，只能读取
+        w:可以写入,write,但是，如果源文件中已经存在内容，则会被覆盖
+        wb：binary,以二进制的方式打开文件，能写入
+        a:append，追加，如果源文件中有内容，则新的内容会追加在原内容的后面
+    """
+    #注意：书写内容的编码格式需要和文件本身的编码格式完全相同，否则乱码
+    
+    #相对路径：相对的是当前的工程的路径
+    #f = open(r"file1.txt","w",encoding="gbk")
+    
+    #绝对路径
+    #\xx,表示将xx转换为特殊字符或者将特殊字符转换为普通字符
+    f = open(r"C:\Users\Administrator\Desktop\XA-Python1903\Day2\代码\text.txt","w",encoding="gbk")
+    print("这是一个测试~~~~~",file=f,flush=True)
+    #手动关闭文件
+    f.close()
+
+2.输入input
+
+    #input([value]),value可以省略,value表示给用户的输入提示
+    
+    #工作原理：当代码执行到input的时候，程序会被阻塞,等待用户的输入，当用户输入完毕之后，通过回车键解除阻塞
+    #注意：不管在控制台输入什么类型的数据，通过input获取的数据都是字符串
+    """
+    result1 = input("请输入内容：")
+    print(type(result1))
+    print("获取到的值为：",result1)
+    
+    name = input("请输入你的名字：")
+    age = input("请输入你的年龄：")
+    print(name,age)
+    """
+    
+    print("over")
+    
+    #需求：假设一个人能活到100岁，让用户输入自己当前的年龄，计算还能活多少年
+    deathAge = 100
+    age = input("请输入你的年龄：")
+    
+    result = deathAge - int(age)
+    print("还能剩%d年" % (result))
+    print("还能剩" + str(result) + "年")
+
+四、运算符和表达式【第一部分】
+
+1.表达式
+
+3 + 5是一个表达式，表达式由运算符和操作数组成
+
+result = 3 + 5
+
+2.运算符
+
+2.1算术运算符
+
+    +   -   *   /  加减乘除
+    //:取整
+    **：求幂
+    %：求余【取模】
+
+    num1 = 5
+    num2 = 3
+    print(num1 + num2)  #8
+    print(num1 - num2)  #2
+    print(num1 * num2)  #15
+    print(num1 / num2)  #1.66667
+    
+    #num1除以num2得到的余数
+    print(num1 % num2)  #2
+    
+    #num1的num2次方
+    print(num1 ** num2)  #125
+    
+    #num1除以num2得到的结果，对结果取整，不涉及四舍五入
+    print(num1 // num2)
+    
+    #结论：**的优先级在算术运算符中最高的
+    #优先级：** > * /  //  % > + -
+    print(2 ** 5 * 3)  #32 * 3 = 96
+    print(2 * 5 ** 3)  #250
+    print((2 * 5) ** 3)
+    
+    #注意：以上所有的计算在计算机的底层都是通过补码的形式完成的
+
+2.2赋值运算符
+
+给一个变量进行赋值
+
+分类：
+
+	简单赋值运算符：=
+
+	复合赋值运算符：使用简单赋值运算符和算术运算符结合使用，例如：+=   -=  *=  /=    //=   %=  **= 
+
+		注意：在计算的同时给变量赋值
+
+    num1 = 10
+    #num1 = num1 + 1
+    
+    num1 += 36   #等价于num1 = num1 + 36
+    print(num1)
+
+2.3关系运算符【条件，比较运算符】
+
+    作用：用来比较大小的
+    
+    >    <   >=   <=   ==恒等于   !=不等于
+    
+    注意：计算的结果都是布尔值，关系表达式要么成立，要么不成立，一般作为条件使用【if语句，while语句】
+
+    #注意：得到的结果为True还是为false取决于表达式是否成立
+    result = 3 > 5
+    print(result)
+    print(3 < 5)
+    
+    print(3 >= 5)
+    print(3 <= 5)
+    
+    print(3 == 5)   #注意和=的区别
+    print(3 != 5)
+
+2.4位运算符【了解】
+
+    0为假，1为真
+    
+    &：按位与
+    	规律：一假为假，全真为真
+    |：按位或
+    	规律：一真为真，全假为假
+    ^:按位异或
+    	规律：相同为假，不同为真
+    
+    ~：取反，注意：和反码的区别
+    
+    <<:左移
+    >>：右移
+
+    print(6 & 3)
+    print(8 & 2)
+    print(-6 & 3)
+    
+    print(6 | 3)
+    print(8 | 2)
+    
+    print(6 ^ 3)
+    print(8 ^ 2)
+    
+    print(~6)
+    print(~8)
+    
+    print(6 << 2)
+    print(8 << 3)
+    print(-6 << 2)
+    
+    print(6 >> 2)
+    print(-6 >> 2)
+
+五、分支语句之if语句
+
+1.概念
+
+分支语句也被称为条件控制语句
+
+在python中，分支语句只有if语句，if分支分为单分支，双分支，多分支
+
+2.if语句的使用
+
+2.1if语句【单分支】
+
+语法：
+
+if  条件：
+
+	语句
+
+特点：要么执行，要么不执行
+
+条件：常量，变量，表达式都可以充当条件
+
+何为真假：
+
+	假：0   0.0    “”    None  False   []  ()   {}
+
+2.2if-else语句【双分支】
+
+语法：
+
+if  条件：
+
+	语句1
+
+else:
+
+	语句2
+
+特点：如果条件成立，则执行语句1.如果条件不成立，则执行语句2，实现二选一的操作
+
+2.3if-elif-else语句【多分支】
+
+语法：
+
+if  条件1：
+
+	语句1
+
+elif  条件2：
+
+	语句2
+
+elif  条件3：
+
+	语句3
+
+。。。。。
+
+else:
+
+	语句n
+
+特点：从上往下依次判断条件是否成立，如果有一个条件成立，则执行对应的语句，只想完毕之后整个if-elif-else语句直接结束，如果所有的条件都不成立，则最终直接执行else中的语句
+
+代码演示：
+
+    import  random
+    
+    #1.if 语句【单分支】
+    
+    #需求：变量的赋值
+    num1 = 10
+    num2 = 20
+    
+    if num1 != num2:
+        num1 = 100
+    
+    print(num1)
+    
+    #需求：从控制台输入一个数，判断该数是否是偶数
+    """
+    num3 = int(input("请输入一个数："))
+    if num3 % 2 == 0:
+        print("偶数")
+    print("奇数")
+    """
+    
+    #2.if-else语句【双分支】,适用于二选一的情况
+    num3 = int(input("请输入一个数："))
+    if num3 % 2 == 0:
+        print("偶数")
+    else:
+        print("奇数")
+    
+    print("over")
+    
+    #需求：模拟彩票【随机获取一个数，和用户在控制台输入的数进行比较，如果相等，则中奖】
+    """
+    获取随机数：
+        1.导入模块import random
+        2.获取随机数random.choice(range(start,end,step))
+            random.choice(range(100))     获取0~99之间的随机数
+            random.choice(range(1,100))     获取1~99之间的随机数
+            random.choice(range(1,100,2))     获取1~99之间的奇数随机数
+            random.choice(range(0,100,2))     获取1~99之间的偶数随机数
+    """
+    
+    num = random.choice(range(0,100))   #获取0~99之间的随机数
+    result = int(input("请输入一个0~99之间的数："))
+    
+    if num == result:
+        print("恭喜你，中奖了")
+    else:
+        print("很遗憾，谢谢参与")
+    
+    #3.if-elif-else语句【多分支】
+    #注意：不管有多少个分支，都只会执行其中的一个分支，实现的是多选一的操作
+    #需求：比较两个数的大小,输出较大的数
+    """
+    num1 = 42
+    num2 = 18
+    
+    if num1 > num2:
+        print(num1)
+    else:
+        print(num2)
+    """
+    
+    num1 = 4
+    num2 = 18
+    
+    if num1 > num2:
+        print(num1)
+    elif num1 < num2:
+        print(num2)
+    else:
+        print("相等")
+    
+    #区别if语句的三种分支
+    n = 3
+    if n > 3:
+        print("a")
+    elif n > 1:
+        print("b")
+    elif n > 2:
+        print("c")
+    else:
+        print("d")
+    
+    #需求：从控制台输入成绩，根据成绩划分等级
+    """
+    90~100 ：优秀
+    80~90：良好
+    70~80：再接再厉
+    70以下：哥们，该努力了
+    """
+    score = int(input("请输入成绩："))
+    if score > 100:
+        print("输入有误，不能超过100")
+    elif score >= 90:
+        print("优秀")
+    elif score >= 80:
+        print("良好")
+    elif score >= 70:
+        print("再接再厉")
+    elif score >= 0:
+        print("哥们，该努力了")
+    else:
+        print("输入有误")
