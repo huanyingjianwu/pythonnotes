@@ -1,0 +1,754 @@
+
+
+1.逻辑运算符
+
+特点：主要进行逻辑运算，运算的结果为布尔值，可以作为if语句和循环语句的条件
+
+分类：
+
+	and ：逻辑与
+
+	or：逻辑或
+
+	not：逻辑非
+
+    #1.逻辑与:and
+    """
+    表达式1  and  表达式2  = ?
+    
+    True and True = True
+    True and False = False
+    False and True = False
+    False and False = False
+    
+    规律：一假为假，全真为真
+    """
+    print(3 == 5 and 4 != 5)  #False
+    
+    #2.逻辑或：or
+    """
+    表达式1  or  表达式2  = ?
+    
+    True or True = True
+    True or False = True
+    False or True = True
+    False or False = False
+    
+    规律：一真为真，全假为假
+    """
+    print(3 == 5 or 4 != 5)
+    
+    """
+    短路原则：
+        表达式1  and  表达式2:如果表达式1的值为False，则直接忽略表达式2 的值，整个表达式的结果为False
+        表达式1  or  表达式2:如果表达式1的值为True，则直接忽略表达式2 的值，整个表达式的结果为True
+    """
+    
+    #3.逻辑非：not
+    """
+    not 真  = 假
+    not 假 = 真
+    """
+    print(not 3 == 5)
+    
+    #需求：实现用户验证，让用户输入用户名和密码，当用户名为admin，密码为abc的时候，则表示验证成功
+    username = input("请输入用户名：")
+    password = input("请输入密码：")
+    
+    #方式一：逻辑运算符
+    if username == "admin" and password == "abc":
+        print("登录成功")
+    else:
+        print("登录失败")
+    
+    #方式二：嵌套if语句
+    if username == "admin":
+        print("用户名正确")
+    
+        if password == "abc":
+            print("登录成功")
+        else:
+            print("密码错误")
+    else:
+        print("用户名输入错误")
+
+重点：短路原则【面试题】：
+
+	a.A and  B，如果A为False,不需要计算B的值，整个表达式的结果为False
+
+	b.A  or B,如果A为True,不需要计算B的值，整个表达式的结果为True
+
+	c.and和or混合使用
+
+		1》表达式从左往右进行计算，如果or的左边为True，则会短路or后面所有的表达式【不管后面的表达式是and还是or连接】，整个表达式的结果为True
+
+		2》	表达式从左往右进行计算，如果and的左边为False，则短路后面所有的and，直到or出现，接着计算
+
+		3》如果or的左边为False，或者and的左边为True，则不能使用短路原则
+
+举例
+
+	A and B and C or D and E:假设A为False		
+
+    """
+    def text():
+        print("67365635")
+        return "hello"
+    # t = text()
+    # print(t)
+    print(text())
+    """
+    
+    
+    #1.逻辑运算符全部是and，第一个值为False
+    def a():
+        print("A")
+        return False
+    def b():
+        print("B")
+        return True
+    def c():
+        print("C")
+        return True
+    def d():
+        print("D")
+        return True
+    def e():
+        print("E")
+        return False
+    
+    #False and True and False and False and True
+    #结论：逻辑运算符全部是and，第一个表达式的值为False，则整个表达式的值为False，剩余表达式会全部被短路【不会被执行】
+    if a() and b() and c() and d() and e():
+        print("ok~~~~111")
+    else:
+        print("no~~~ok")
+    
+    
+    print("*" * 30)
+    
+    #2.逻辑运算符全部是and，第一个值为True
+    def a():
+        print("A")
+        return True
+    def b():
+        print("B")
+        #return False
+        return True
+    def c():
+        print("C")
+        return True
+    def d():
+        print("D")
+        return False
+    def e():
+        print("E")
+        return False
+    
+    #情况一
+    #True and False and True and False and False
+    """
+    False and True and False and False    ------》打印A,B,短路了CDE
+    结果：False
+    """
+    #情况二
+    ##True and True and True and False and False
+    """
+    True  and True and False and False   ----->打印A,B
+    True  and False and False  ------>打印C
+    False and False  ----->打印D
+    结果：False
+    """
+    if a() and b() and c() and d() and e():
+        print("ok~~~~2222")
+    else:
+        print("no~~~ok")
+    
+    print("*" * 30)
+    
+    #3.逻辑运算符全部是or，第一个值为True
+    def a():
+        print("A")
+        return True
+    def b():
+        print("B")
+        return False
+    def c():
+        print("C")
+        return True
+    def d():
+        print("D")
+        return True
+    def e():
+        print("E")
+        return False
+    
+    #True or False or True or False or False
+    #结论：逻辑运算符全部是or，第一表达式的值为True，整个表达式的结果为True，剩余的表达式会全部被短路【不会被执行】
+    if a() or b() or c() or d() or e():
+        print("ok~~~~3333")
+    else:
+        print("no~~~ok")
+    
+    
+    print("*" * 30)
+    
+    #4.逻辑运算符全部是or，第一个值为False
+    def a():
+        print("A")
+        return False
+    def b():
+        print("B")
+        #return True
+        return False
+    def c():
+        print("C")
+        return True
+    def d():
+        print("D")
+        return True
+    def e():
+        print("E")
+        return False
+    
+    #情况一
+    #False or True or True or True or False
+    """
+    True  or True or True or False  ------->打印A,B,短路了CDE
+    结果：True
+    """
+    
+    #情况二
+    #False or False or True or True or False
+    """
+    False or True or True or False  ------>打印A,B
+    True or True or False  ------>打印C
+    结果：True
+    """
+    if a() or b() or c() or d() or e():
+        print("ok~~~~444")
+    else:
+        print("no~~~ok")
+    
+    print("*" * 30)
+    
+    #5.逻辑运算符为and和or
+    def a():
+        print("A")
+        return False
+    def b():
+        print("B")
+        return False
+    def c():
+        print("C")
+        return True
+    def d():
+        print("D")
+        return False
+    def e():
+        print("E")
+        return True
+    def f():
+        print("F")
+        #return True
+        return False
+    def g():
+        print("G")
+        return False
+    def h():
+        print("H")
+        return True
+    
+    #情况一
+    #False and False and True and False or True and True or False and True
+    """
+    False or True and True or False and True----->打印A
+    True and True or False and True------>打印E
+    True or False and True---->打印F
+    结果：True
+    """
+    
+    #情况二
+    #False and False and True and False or True and False or False and True
+    """
+    False or True and False or False and True----->打印A
+    True and False or False and True----->打印E
+    False or False and True ------>打印F
+    False and True----->打印G
+    结果：False
+    """
+    if a() and b() and c() and d() or e() and f() or g() and h():
+        print("ok~~~~555")
+    else:
+        print("no~~~ok")
+    
+    """
+    王 AEF   ok
+    李 AEF   ok
+    wang  AE    ok
+    liu    AEF   ok
+    """
+    
+    #需求：从控制台输入一个年份，判断是否是闰年
+    """
+    方式一：能被4整除但是不能被100整除
+    方式二：能被400整除
+    """
+    year = int(input("请输入年份："))
+    if (year % 4 == 0 and year % 100 != 0)  or  year % 400 == 0:
+        print("闰年")
+    else:
+        print("平年")
+
+2.成员运算符
+
+作用：判断一个数据【元素】在一个容器【数据结构：list,tuple.dict,set,range()等】中是否存在，如果存在，则返回True
+
+in:判断是否存在
+
+not in ：判断是否不存在
+
+    list1 = [34,54,54,"fah",True,10,4.21]
+    print(10 in list1)#True
+    print(100 not in list1)  #True
+
+3.身份运算符
+
+作用：比较两个实体的存储地址是否相同
+
+变量实际上其中存储的是数据的地址
+
+is:判断两个变量是否指向同一个实体，如果是同一个实体则返回True
+
+is not：判断两个变量是否指向不同的实体，如果是不同实体则返回True
+
+使用场景：结合if语句使用
+
+    a = 10
+    b = 10
+    print(id(a))
+    print(id(b))
+    print(id(a) == id(b))  #True
+    
+    
+    if a is b:
+        print("yes")
+    else:
+        print("no")
+    
+    if a == b:
+        print("yes")
+    else:
+        print("no")
+    
+    """
+    结论：
+        在Python中，比较两个变量，有两种方式
+            ==：比较的是两个变量的内容【值】
+            is:比较的是两个变量的地址
+    
+            两个变量的地址相同，则该两个变量的内容一定相同
+            两个变量的内容相同，则该两个变量的地址不一定相同
+    """
+    
+    a = 10
+    b = 20
+    
+    if a is b:
+        print("yes")
+    else:
+        print("no")
+    
+    if a == b:
+        print("yes")
+    else:
+        print("no")
+    
+    print("*" * 30)
+    
+    list1 = [1,2,3]
+    list2 = [1,2,3]
+    
+    if list1 is list2:
+        print("yes")
+    else:
+        print("no")
+    
+    if list1 == list2:
+        print("yes")
+    else:
+        print("no")
+
+4.三元【三目】运算符
+
+在Java或者Javascript语言中，三目运算符实现二选一的操作
+
+语法：
+
+result = 条件表达式？值1：值2
+
+说明：如果条件表达式成立，则result的结果为值1；如果不成立，则result的结果为值2，类似于if-else语句
+
+在Python中
+
+	方式一：短路原则
+
+		result = 条件 and  值1 or  值2
+
+	方式二：if语句	
+
+		result = 值1 if  条件  else   值2
+
+    a = 10
+    b = 20
+    
+    
+    #使用逻辑运算符实现
+    """
+    bool and a or b
+        如果bool为真，bool and a 为真，输出a,短路b
+        如果bool为假，则会短路a,输出b
+    
+    """
+    result1 = False and a or b
+    print(result1)
+    
+    result2 = 0
+    if False:
+        result2 = a
+    else:
+        result2 = b
+    print(result2)
+    
+    #使用if-else简化
+    result3 = a if False else b
+    print(result3)
+    
+    #需求：判断一个数是否是偶数
+    num = 18
+    r0 = "偶数"
+    r1 = "奇数"
+    
+    result1 = (num % 2 == 0) and "偶数" or "奇数"
+    print(result1)
+    
+    result2 = "偶数" if num % 2 == 0 else "奇数"
+    print(result2)
+
+
+
+1.循环的概念
+
+广义：一个现象周期性的出现
+
+狭义：在满足条件的前提下，反复执行某一段代码，在编程语言中将这种现象称为循环，被反复执行的代码被称为循环体
+
+注意问题：当反复执行某段代码的时候，需要在合适的时机将条件该为假，从而结束循环，否则会形成死循环
+
+2.while语句
+
+2.1基本使用
+
+语法：
+
+if 条件：
+
+	语句
+
+while 条件：
+
+	语句
+
+说明：
+
+	a.while和if语句的区别，在条件成立的前提下，if语句只会执行一次，while语句会执行多次
+
+	b.while语句中的代码块被称为循环体
+
+    #死循环：如果不确定具体需要循环多少次，使用死循环实现
+    """
+    while True:
+        print("fawjegh")
+    
+    while 1:
+        print("fagjh")
+    """
+    
+    #需求：打印10遍hello world
+    #a.初始化表达式
+    n = 0
+    #b.条件表达式
+    while n < 10:
+        #c.循环体
+        print("hello world")
+        #d.循环之后的操作表达式
+        #n = n + 1
+        n += 1
+    
+    print("over")
+    
+    #需求：打印0~9的数字
+    n1 = 0
+    while n1 < 10:
+        print(n1)
+        n1 += 1
+    
+    #需求：打印0~100之间所有的偶数
+    #方式一
+    n1 = 0
+    while n1 <= 100:
+        print(n1)
+        n1 += 2
+    
+    #方式二
+    n1 = 0
+    while n1 <= 100:
+        if n1 % 2 == 0:
+            print(n1)
+        n1 += 1
+    
+    """
+    练习：
+    1.求1~100之间所有整数的和
+    2.求1~100之间所有能被6整除的数的和
+    3.求1-2+3-4+5-6.。。。99的结果
+    4.统计1~1000之间7的倍数的个数
+    5.求10的阶乘
+    """
+    
+    #1.求1~100之间所有整数的和
+    n1 = 1
+    sum1 = 0    #0对和没有影响
+    while n1 <= 100:
+        sum1 += n1
+        n1 += 1
+    print(sum1)
+    
+    #2.求1~100之间所有能被6整除的数的和
+    #方式一
+    n1 = 0
+    sum1 = 0
+    while n1 <= 100:
+        sum1 += n1
+        n1 += 6
+    print(sum1)
+    
+    #方式二
+    n1 = 1
+    sum1 = 0
+    while n1 <= 100:
+        if n1 % 6 == 0:
+            sum1 += n1
+        n1 += 1
+    print(sum1)
+    
+    #3.求+1-2+3-4+5-6.。。。99的结果
+    #方式一
+    n1 = 1
+    sum1 = 0
+    while n1 < 100:
+        if n1 % 2 == 0:
+            sum1 -= n1
+        else:
+            sum1 += n1
+        n1 += 1
+    print(sum1)
+    
+    #方式二
+    n1 = 1
+    sum1 = 0    #全部的和
+    sum2 = 0   #偶数的和
+    while n1 < 100:
+        sum1 += n1
+        if n1 % 2 == 0:
+            sum2 += n1
+        n1 += 1
+    print(sum1,sum2)
+    result = sum1 - sum2
+    print(result)
+    
+    #4.统计1~1000之间7的倍数的个数
+    n1 = 1
+    count1 = 0
+    while n1 <= 1000:
+        if n1 % 7 == 0:
+            #统计个数
+            count1 += 1
+        n1 += 1
+    
+    #5.求10的阶乘
+    n1 = 1
+    sum1 = 1    #1对乘法没有影响
+    while n1 <= 10:
+        sum1 *= n1
+        n1 += 1
+    print(sum1)
+
+2.2else分支
+
+在if语句中，else的执行时机：当if或者elif的条件都不成立的时候，else才有执行的机会
+
+在while语句中，也可以使用else语句
+
+语法
+
+while 条件：
+
+	循环体
+
+else:
+
+	语句
+
+    n = 0
+    while n > 10:
+        print(n)
+        n += 1
+    # else:
+    #     print("else语句被执行了")
+    
+    print("else语句被执行了")
+    
+    print("over")
+    
+    #结论：不管while语句的条件是否成立，else分支都会被执行，区别于if-else语句
+
+2.3嵌套循环
+
+    #嵌套while循环的基本用法
+    n = 0
+    m = 0
+    while n < 5:
+        #m = 0
+        while m < 3:
+            print("%d=%d" % (n, m))
+            m += 1
+        n += 1
+    
+    #需求：打印九九乘法表
+    """
+                                                    行           列
+    1x1=1                                           1           1
+    1x2=2 2x2=4                                     2           2
+    1x3=3 2x3=6 3x3=9                               3           3
+    ......
+    1x9=9 2x9=18   .............8x9=72 9x9=81       9           9
+    
+    规律：
+        a.表达式：列x行 = 乘积
+        b.列数随着行数的变化而变化，列数的最大值是当前的行数
+        c.行数的取值范围：1~9
+    """
+    
+    #外层循环：控制行数
+    line = 1
+    while line <= 9:
+        #内层循环：控制每一行中的列
+        colum = 1
+        while colum <= line:
+            #end=" "阻止换行
+            print("%dx%d=%d" % (colum,line,line * colum),end=" ")
+            colum += 1
+        #换行
+        print("")
+        line += 1
+    
+    #需求：打印图形
+    """
+    *
+    **
+    ***
+    ****
+    *****
+    """
+    #方式一
+    i = 1
+    while i <= 5:
+        j = 1
+        while j <= i:
+            print("*",end="")
+            j += 1
+        print("")
+        i += 1
+    
+    #方式一
+    n = 1
+    while n <= 5:
+        print("*" * n)
+        n += 1
+
+
+
+1.pass语句
+
+对于代码块而言，pass是一个占位符号，为了让当前的代码正常运行
+
+pass是一个空语句，是为了保证程序结构的完整性
+
+    if True:
+        pass
+    print("over")
+    
+    while True:
+        pass
+    
+    print("over")
+
+2.break
+
+作用：在Python中，只能应用于循环语句中，表示结束整个循环
+
+    #1，break应用在单循环中
+    n = 0
+    while n < 10:
+        #break的使用和if语句无关，if语句充当的是限制条件
+        if n == 3:
+            #注意：break可以单独作为一条语句使用
+            break
+        print(n)
+        n += 1
+    
+    print("over")
+    
+    #2.break应用在嵌套循环中
+    n = 0
+    while n < 5:
+        m = 0
+        while m < 3:
+            if m == 1:
+                #注意：break只能跳出当前循环【就近原则】
+                break
+            print("%d=%d" % (n, m))
+            m += 1
+        n += 1
+    
+    #break的使用场景：当循环还未结束，但是已经获取到了需要的结果，则可以提前结束循环,还应用于死循环
+
+3.continue
+
+作用：在Python中，只能应用于循环语句中，表示结束当前正在执行的循环，继续下一次循环
+
+    #1，continue应用在单循环中
+    n = 0
+    while n < 10:
+        if n == 3:
+            n += 1
+            #break
+            continue
+        print(n)
+        n += 1
+    
+    print("over")
+    
+    #2.continue应用在嵌套循环中
+    n = 0
+    while n < 5:
+        m = 0
+        while m < 3:
+            if m == 1:
+                m += 1
+                #break
+                continue
+            print("%d=%d" % (n, m))
+            m += 1
+        n += 1
