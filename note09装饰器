@@ -1,0 +1,535 @@
+
+
+二、偏函数
+
+通过设定函数的默认参数，可以降低函数调用的难度，但是，偏函数也可以做到这一点
+
+对函数的参数做一些控制，该类函数被称为偏函数，偏函数一般不需要自定义，系统会生成
+
+系统模块：functools提供了很多操作函数的功能，其中包含偏函数
+
+    import  functools
+    
+    #偏函数
+    
+    #int(xx),默认其中的数据表示的是十进制，以十进制输出
+    print(int("123"))   #123
+    
+    #int有一个默认参数base，默认值为10，如果传入base的参数，值设置为2,8,16，就可以进行进制之间的转换
+    print(int("110",base=10))
+    print(int("110",base=2))
+    
+    #需求：假设要转换大量的二进制
+    print(int("110",base=2))
+    print(int("10110",base=2))
+    print(int("1010",base=2))
+    print(int("1000",base=2))
+    print(int("110",2))
+    
+    #缺点：每次都传入int(xx,base=2)非常麻烦
+    #解决办法：自定义一个函数，将int(xx,base=2)二次封装，
+    #方式一：利用函数的默认参数
+    def int2(x,base=2):
+        return int(x,base)
+    print(int2("1110"))
+    print(int2("1000"))
+    print(int2("110"))
+    
+    #方式二：functools.partial()专门创建偏函数,partial的返回值为一个函数
+    #导入模块
+    #参数1：已经存在的函数  参数2：默认参数
+    f = functools.partial(int,base=2)
+    print(f)
+    print(type(f))
+    
+    print(f("110"))
+    print(f("1010"))
+    
+    
+    #总结：当一个函数的参数较多，需要简化，使用functools.partial()可以创建一个新的函数，
+    # 把该函数的某个参数设置为固定的，调用这个新函数可以简化整个函数的调用
+
+三、闭包
+
+如果在一个函数的内部定义了另一个函数，外部的函数被称为外部函数outter，里面的函数被称为内部函数inner
+
+在一个外部函数中定义一个内部函数，将这个整体称为闭包【Closure，Block块】
+
+使用场景：装饰器
+
+复习：
+
+    #1.返回值
+    def func1():
+        print("fahjfgh")
+        return 38
+    #调用
+    print(func1())
+    
+    #2.函数本质
+    #函数调用，打印函数的返回值
+    #print(func1())
+    #变量，打印的是函数本身
+    print(func1)
+    print(abs)
+    
+    
+    #变量可以指向函数，该变量可以被当做函数名调用指向的函数
+    f1 = func1
+    f2 = abs
+    print(f1)
+    print(f2)
+    
+    print(f1())
+    print(f2(-19))
+
+闭包的使用
+
+    #1.
+    """
+    def func1():
+        num1 = 10
+        return  num1
+    def func2():
+        #注意1：在一个函数的内部访问另一个函数内部定义的变量，无法访问
+        #print(num1)  #报错：未被定义
+    
+        #注意2：如果非要访问，可以给一个函数设置返回值，在另一个函数调用原函数，
+        m = func1()
+        print("func1中的num1的值为:",m)
+    func2()
+    """
+    
+    print("*" * 30)
+    
+    #2.闭包的定义
+    #在一个外部函数中定义一个内部函数，并且该外部函数的返回值为内部函数的引用，将这个整体称为闭包【Closure，Block块】
+    def func1():
+        num1 = 10
+        def func2():
+            print(num1)
+    
+        return func2   #a.变量名也被称为引用  b。函数名其实就是一个变量名
+    
+    # print(num1)
+    # func2()
+    f = func1()
+    print(f)   #f = func2  变量可以指向函数
+    f()
+    
+    #2.闭包中设置参数
+    #外部函数
+    def func3(n):
+        #内部函数
+        def func4():
+            print(n)
+            #内部函数的返回值
+            return "farghj"
+    
+        #外部函数的返回值【必须有】：在闭包的外面可以调用内部函数
+        return func4
+    
+    f = func3(4)   #f = func4
+    print(f)
+    result = f()
+    print(result)
+    
+    print("*" * 30)
+    
+    #3.
+    def outter(a):
+        print("外部函数")
+        def inner(b):
+            print("内部函数")
+            print(a + b)
+            return a + b
+        return inner
+    
+    f = outter(10)
+    print(f(20))
+    
+    
+    """
+    
+    外部
+    内部
+    30
+    30
+    """
+    
+    """
+    使用闭包：
+        1.闭包的本质就是两个嵌套定义的函数，用法和函数的基本用法完全相同【可以设置参数和返回值，根据具体的需求决定】
+        2.闭包的语法
+        def outter(形参列表)：
+            语句1
+            def inner(形参列表)：
+                语句2
+    
+            return inner
+    
+        3.说明：
+            在外部函数中定义的变量，在内部函数中可以直接访问，
+            在外部函数中定义的变量被称为自由变量或者临时变量
+    """
+
+四、变量的作用域
+
+1.出现的原因
+
+变量的作用域指的是变量可以被访问的范围
+
+程序中的变量可以在任意的位置进行定义，但是，不可以在任意的位置访问，访问权限取决于该变量被定义的位置
+
+2.分类
+
+变量的作用域决定了在哪一部分程序中可以访问哪些变量
+
+L:Local,局部作用域
+
+E:Enclosing,函数作用域【闭包中】
+
+G:Global,全局作用域
+
+B:Built-in,內建【内置】作用域：通过使用系统的函数得到的数据，定义变量
+
+    #1.不同权限的变量的命名不重名,在内部函数可以可以直接访问任意的变量
+    #全局作用域:在当前文件的任意地方都可以访问
+    num1 = 10
+    def outter():
+        #函数作用域：只能在外部函数的里面访问
+        num2 = 20
+        def inner():
+            #局部作用域：只能在内部函数的里面访问
+            num3 = 30
+            print("inner内部：",num1,num2,num3)
+    
+        print("outter内部，inner的外部：",num1,num2)
+        return inner
+    
+    f = outter()
+    f()
+    
+    print("outer外部：",num1)
+    
+    #2.不同权限的变量的命名重名
+    #结论：在在内部函数中访问变量，访问依据的是就近原则
+    num = 11
+    def outter():
+        #num = 22
+        def inner():
+            #num = 33
+            print(num)
+        return inner
+    
+    f = outter()
+    f()
+    
+    #注意：对于不同作用域的变量，尽量避免命名的重名
+    
+    #3.Python中只有函数【function】，类【class】，模块【module】会区分变量的作用域，
+    # 其他的代码块比如if,while,for,try-except都不会引入新的作用域，在这些语句中定义的变量，都可以被当做全局作用域使用
+    if True:
+        a = 10
+    print(a)
+    
+    n = 0
+    while n <= 2:
+        b = 38
+        n += 1
+    print(b)
+
+3.全局变量和局部变量
+
+全局变量和局部变量的定义是相对的
+
+普通函数：
+
+	全局变量：定义在函数或者类的外面
+
+	局部变量：定义在函数的内部
+
+闭包中：
+
+	全局变量：定义在闭包的外面
+
+	局部变量：定义在内部函数的里面
+
+    #1.
+    #全局变量
+    num1 = 10
+    def show():
+        #局部变量:仅限于当前函数代码块【不包含if语句，while，for等】
+        num2 = 20
+        print(num1,num2)
+    
+    show()
+    #print(num2)  #NameError: name 'num2' is not defined
+    
+    
+    #2.全局变量和局部变量不重名
+    num1 = 10
+    def func():
+        num2 = num1 + 4
+        print(num1,num2)
+    
+    func()
+    print(num1)
+    
+    
+    #3.全局变量和局部变量重名
+    num = 10
+    def func():
+        #UnboundLocalError: local variable 'num' referenced before assignment赋值
+        #num = num + 4
+        print(num)
+    
+    func()
+    print(num)
+    
+
+4.global和nonlocal关键字
+
+global
+
+    #全局变量和局部变量重名
+    
+    #1.
+    num = 10
+    def func():
+        #UnboundLocalError: local variable 'num' referenced before assignment赋值
+        #说明：当全局变量和局部变量重名，涉及到运算，如果不事先声明，则系统无法确定使用的是哪个变量,
+        #解决办法：使用global进行声明，声明指定的变量是全局变量
+        global num
+        num = num + 4
+        print(num)
+    
+    func()
+    print(num)
+    
+    #2.
+    a = 18
+    def check():
+        global a
+        a += 1   #等价于a = a + 1
+        print(a)
+    check()
+    print(a)
+
+nonlocal
+
+    #前提：1，必须在闭包中   2，全局作用域，函数作用域，局部作用域的变量重名
+    
+    #nonlocal
+    
+    #全局作用域
+    x = 0
+    
+    def outter():
+        #函数作用域
+        x = 1
+    
+        def inner():
+            #局部作用域
+            nonlocal  x
+            x = 2
+            print("inner:",x)
+    
+        inner()
+        print("outter:",x)
+    
+    outter()
+    print("global:",x)
+    
+    """
+    inner:2
+    outter:1  ---- >2
+    global:0
+    """
+    
+    #【面试题】举例说明global和nonlocal的使用
+
+五、装饰器
+
+1.概念
+
+如果要增强一个函数的功能，但是又不希望修改函数的源代码，在代码运行期间给函数动态增加功能的方式，被称为装饰器【Decorator】
+
+装饰器：实际上就是一个闭包，将需要被装饰的函数作为参数传递给闭包，同时返回内部函数的引用
+
+【高阶函数：一个函数作为参数传递给另外一个函数，返回一个计算的结果，该函数被称为高阶函数】
+
+    def now():
+        #旧功能
+        print("abcdge2374y")
+    
+        #新功能
+        # print("hello")
+    
+    now()
+    f = now
+    f()
+
+2.使用
+
+    #装饰器：实际上就是一个闭包，将需要被装饰的函数作为参数传递给闭包，同时返回内部函数的引用
+    
+    #1.简单装饰器
+    def test():
+        print("test")
+    
+    #需求：在不修改原函数的基础上给函数增加新的功能
+    #书写装饰器的步骤
+    #a.书写闭包
+    #b.给外部函数设置参数，func表示一个函数
+    def outter(func):
+        def inner():
+            #c.调用原函数
+            func()
+    
+            #d.增加新的功能
+            print("hello")
+    
+        #返回inner的原因：将对指定函数的装饰结果返回，为了可以在函数外面进行调用
+        return inner
+    
+    #e，使用闭包
+    f1 = outter(test) #func = test  f1 = inner
+    f1()
+    
+    """
+    注意1：调用原函数和增加新功能没有先后顺序
+    注意2：outter被称为装饰器
+    """
+    
+    print("*" * 30)
+    
+    #2.有参数的装饰器
+    def getAge(age):
+        print(age)
+    # getAge(19)
+    # getAge(-17)
+    
+    def outter2(f):
+        def inner2(a):
+            # 增加新的功能
+            if a < 0:
+                a = -a
+    
+            #调用原函数
+            f(a)
+    
+        return inner2
+    
+    f2 = outter2(getAge)  #f2 = inner2
+    f2(36)
+    f2(-19)
+    
+    
+    #结论：如果需要被装饰的函数有参数，在闭包的内部函数中需要对该参数做一定的操作，需要给闭包的内部函数设置参数
+    
+    print("*" * 30)
+    
+    #3.使用@可以将指定的装饰器直接作用于需要被装饰的函数
+    #注意：装饰器必须出现在被装饰函数的前面
+    def outter3(f):
+        def inner3(a):
+            if a < 0:
+                a = -a
+            f(a)
+    
+        return inner3
+    
+    @outter3
+    def getAge3(age):
+        print(age)
+    
+    #调用被装饰的函数
+    getAge3(-18)
+    
+    """
+    工作原理：
+        1.getAge3指向原函数
+        2.@outter3将getAge3作为参数传递给f，返回inner3
+        3.getAge3(-18),getAge3已经改变了指向，指向了inner3,所以调用getAge3相当于调用的是inner3
+    """
+    
+    print("*" * 30)
+    
+    #4.带有不定长参数的装饰器【一个装饰器作用与多个不同的函数】
+    #*args,**kwargs
+    def wrapper(func):
+        def inner1(*args,**kwargs):
+            print("不定长参数")
+            func(*args,**kwargs)
+    
+        return inner1
+    
+    @wrapper
+    def test1():
+        print("1111")
+    
+    @wrapper
+    def test2(a,b):
+        print("2222")
+    
+    @wrapper
+    def test3(num1,num2,str1):
+        print("3333")
+    
+    test1()
+    test2(1,2)
+    
+    print("*" * 30)
+    
+    #5.将多个装饰器应用于同一个函数【给一个函数增加多个新的功能】
+    def wrapper1(fun1):
+        def inner1(*args,**kwargs):
+            print("装饰器~~~1")
+            fun1(*args,**kwargs)
+        return inner1
+    
+    def wrapper2(fun2):
+        def inner2(*args, **kwargs):
+            print("装饰器~~~2")
+            fun2(*args, **kwargs)
+        return inner2
+    
+    # @wrapper2   #inner1---->fun2       test---->inner2
+    # @wrapper1    #fun1---->test     test---->inner1
+    
+    @wrapper1       #inner2---->fun1   test----->inner1
+    @wrapper2    #fun2 --->test     test---->inner2
+    def test():
+        print("test被执行了")
+    test()
+    
+    print("*" *30)
+    
+    
+    #b
+    def wrapper1(fun1):
+        def inner1(*args,**kwargs):
+            fun1(*args,**kwargs)
+            print("装饰器~~~1")
+        return inner1
+    
+    def wrapper2(fun2):
+        def inner2(*args, **kwargs):
+            fun2(*args, **kwargs)
+            print("装饰器~~~2")
+        return inner2
+    def wrapper3(fun3):
+        def inner3(*args, **kwargs):
+            print("装饰器~~~3")
+            fun3(*args, **kwargs)
+        return inner3
+    
+    @wrapper1
+    @wrapper3
+    @wrapper2
+    def test():
+        print("test被执行了")
+    test()
+    
+    #结论：从下往上进行传参【随时修改test的指向】，从上往下执行代码【函数之间的相互调用】
