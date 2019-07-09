@@ -1,0 +1,565 @@
+
+
+3.购物车
+
+    """
+    购物车
+    
+    1.模拟可以增加，删除等的系统
+    2.模拟商店【容器】，其中包含不同种类的商品【商品名称，数量，价格，详细描述】
+    3.模拟购物车【容器】，其中可以任意的添加或者删除商品【商品来自于商店】
+    4.引导用户执行自己的行为
+    """
+    
+    #1.模拟商店和购物车，其中模拟商品
+    storeList = [("book",75),("kindle",500),("food",10),("iphone",8888),("bicycle",1000)]
+    shopcarList = []
+    
+    #2.欢迎界面
+    print("*************欢迎进入Python1903自选超市*************")
+    
+    #3.引导用户输入金额
+    saving = input("请输入金额：")
+    
+    #4.判断输入是否合法
+    if saving.isdigit():
+        saving = int(saving)
+    
+        #5.引导用户执行操作【提供给用户可用的功能选项】
+        while True:
+            print("本系统提供了如下功能：\n1.添加商品  2.删除商品   3.结算购物车   4.退出系统")
+    
+            choice = input("请输入你要进行的操作：")
+    
+            #6.验证用户的选择项是否合法
+            if choice.isdigit():
+                choice = int(choice)
+                if choice in range(1,5):
+                    #7.根据用户的选择执行不同的操作
+                    if choice == 1:
+                        #添加商品
+                        #商品展示
+                        print("本商店有如下商品：")
+                        for i,product in enumerate(storeList):
+                            print("%d:%s" % (i,product))
+    
+                        #引导用户选择商品
+                        index = input("请输入需要购买的商品的编号：")
+                        if index.isdigit():
+                            index = int(index)
+                            if index in range(5):
+                                #将用户选择的商品从商店的列表中取出
+                                product = storeList[index]
+                                #product[0]:商品名称  product[1]：商品价格
+    
+                                #判断价格和金额之间的关系
+                                if product[1] <= saving:
+                                    #减少金额
+                                    saving -= product[1]
+    
+                                    #将商品添加 到购物车
+                                    shopcarList.append(product)
+    
+                                    print("商品添加成功")
+                                else:
+                                    print("金额不足")
+    
+                            else:
+                                print("该商品暂未上架")
+    
+                    elif choice == 2:
+                        if not shopcarList:
+                            print("购物车为空，请先添加商品")
+                        else:
+                            # 删除商品
+                            # 引导用户输入需要删除的商品的名称
+                            productName = input("请输入需要删除的商品的名称：")
+    
+                            # 遍历购物车的list
+                            for product in shopcarList:
+                                if productName == product[0]:
+                                    shopcarList.remove(product)
+                            print("删除成功")
+                            print("删除之后购物车中的商品如下:", shopcarList)
+                    elif choice == 3:
+                        #结算购物车
+                        total = 0
+                        for product in shopcarList:
+                            total += product[1]
+    
+                        print("总共花费了%d元，还剩%d" % (total,saving))
+    
+                        #清空购物车
+                        shopcarList.clear()
+                    else:
+                        #退出
+                        print("欢迎再次光临")
+                        break
+                else:
+                    print("没有此项功能")
+            else:
+                print("选择的功能不合法")
+    else:
+        print("金额输入有误")
+
+二、函数的基本使用
+
+1.函数的调用
+
+    def func1():
+        print("func~~~111")
+        func2()
+    
+        print("end~~~111")
+    
+    def func2():
+        print("func~~~2222")
+        func3()
+    
+    def func3():
+        print("func~~~33")
+    
+    print("start")
+    func1()
+    # func2()
+    # func3()
+    print("end")
+    
+    
+    #函数入栈和出栈；函数在进行相互调用的时候，他们的执行执行顺序
+    #栈：先进后出，后进先出
+    
+    #代码执行的过程中，一旦遇到函数的调用，则先执行该函数内部的代码，当执行完毕之后，再回到原函数中继续执行其他的代码
+    
+    
+    #注意：函数在进行调用的过程中，尽量避免循环调用 或者 调用自身【函数递归】
+    def show1():
+        print("show~~~111")
+        show1()
+        #show2()
+    # def show2():
+    #     print("show~~~222")
+    #     show1()
+    
+    show1()
+
+2.函数的参数
+
+2.1传参
+
+形参和实参
+
+    #1.什么时候需要设置参数：如果需求中有未知项参与运算，则将该未知项设置为形参
+    """
+    形式参数：形参，出现在函数的声明部分，本质是一个变量，等待实参给它赋值
+    实际参数：实参，出现在函数的调用部分，可以是常量，变量或者表达式，为了给形参进行赋值
+    """
+    
+    #需求：封装函数，打印一个学生的姓名和成绩
+    def stuPrint(username,score):
+        print("姓名：%s,成绩：%d" % (username,score))
+        #print(username,score)
+    
+    #调用
+    #stuPrint()  #TypeError: stuPrint() missing 2 required positional arguments: 'username' and 'score'
+    
+    #调用函数的同时需要给形参传参
+    stuPrint("zhangsan",18)
+    
+    #注意1：根据具体的需求来决定传参的顺序【类型】
+    #stuPrint(18,"zhangsan") #TypeError: %d format: a number is required, not str
+    
+    #注意2：要根据形参的个数进行传参【数量】
+    #stuPrint("zhangsan",18,19)  #TypeError: stuPrint() takes 2 positional arguments but 3 were given
+    
+    #需求：封装函数，比较两个数的大小
+    def compare(num1,num2):
+        if num1 > num2:
+            print(num1)
+        elif num1 < num2:
+            print(num2)
+        else:
+            print("相等")
+    
+    compare(23,129)
+    compare(34,23)
+    compare(34,44)
+
+2.2值传递和引用传递
+
+    """
+    不可变数据类型：tuple,number,string,boolean
+    可变数据类型：list,dict,set
+    """
+    
+    #1.值传递,实际上传递的是不可变数据类型
+    def func1(a):
+        print("修改之前a=%d,地址：%d" % (a,id(a)))
+        a = 20
+        print("修改之后a=%d,地址：%d" % (a,id(a)))
+    
+    b = 10
+    print("调用函数之前，b=%d，地址：%d" % (b,id(b)))
+    func1(b)   #a = b
+    print("函数调用完毕，b=%d,地址：%d" % (b,id(b)))
+    
+    print("over")
+    
+    
+    #2.引用传递，传递的是可变的数据类型
+    def func1(a):
+        print("修改之前a=%s,地址：%d" % (a,id(a)))
+        a[0] = 1111
+        print("修改之后a=%s,地址：%d" % (a,id(a)))
+    
+    b = [10,20,30,40]
+    print("调用函数之前，b=%s，地址：%d" % (b,id(b)))
+    func1(b)   #a = b
+    print("函数调用完毕，b=%s,地址：%d" % (b,id(b)))
+    
+    """
+    函数传参的过程中，
+        值传递：如果形参被修改，对实参没有任何影响
+        引用传递：如果形参被修改，则实参会随着被修改
+    """
+
+2.3参数的类型
+
+a.必需参数
+
+b.关键字参数
+
+c。默认参数
+
+d.不定长参数【可变参数】
+
+    #1.必需参数
+    #必需按照指定的类型【函数体中的需求】，指定的数量，指定的顺序进行传参
+    def func1(a,b):
+        print(a,b)
+    func1(23,"fheg")
+    
+    #2.关键字参数
+    #使用关键字参数允许函数调用的时候实参的顺序可以和形参的不一致
+    def func2(name,age):
+        print("%s:%d" % (name,age))
+    func2("ahf",18)
+    func2(13,19)
+    #func2(18,"abc")  #TypeError: %d format: a number is required, not str
+    #注意1：关键字参数需要和形参的变量名保持一致
+    func2(age=18,name="abc")
+    
+    #注意2：可以不全部设置为关键字参数，但是，让关键字参数出现在实参列表的最后
+    #func2(age=18,"abc") #SyntaxError: positional argument follows keyword argument
+    #func2(18,name="abc") #TypeError: func2() got multiple values for argument 'name'
+    func2("abc",age=18)
+    
+    def func21(a,b,c,d):
+        print(a,b,c,d)
+    func21(a=1,b=2,c=2,d=4)
+    func21(b=1,d=2,a=2,c=4)
+    func21(1,b=2,c=2,d=4)
+    func21(1,2,c=2,d=4)
+    func21(1,2,2,d=4)
+    #func21(1,b=2,2,d=4)  #SyntaxError: positional argument follows keyword argument
+    
+    #应用在系统函数中
+    #print(23,34,end=" ",54)
+    
+    #使用场景：当一个函数的参数比较多的情况下，可以采用关键字参数传参，避免遗漏某些参数
+    
+    #3.默认参数
+    #注意2：在定义默认参数的时候，可以不全部设置为默认参数，但是，默认参数只能出现在形参列表的最后面
+    #SyntaxError: non-default argument follows default argument
+    def func3(name,age=0):
+        print(name,age)
+    #注意1：可以采用下面不同的方式使用默认参数，默认参数的好处：简化函数的调用
+    func3("serg")
+    func3("hello",18)
+    func3(age=19,name="zhangsan")
+    
+    #注意3：关键字参数主要应用在实参列表中，默认参数主要应用在形参列表中，二者可以同时使用
+    #关键字参数和默认参数在系统函数中使用较多
+    print("ff",end="")
+    print(int("110",base=2))
+    
+    #4.不定长参数/可变参数【掌握】
+    #函数调用的时候可以处理比声明时候更多的参数
+    #4.1*
+    def func41(*num):
+        print(num,type(num))
+        #num相当于一个元组的引用，如果要获取其中的元素，只能遍历
+        for i in num:
+            print(i)
+    func41(10)
+    func41("fae",43,24,4,4,134)
+    func41()
+    
+    #注意1：不定长参数可以和必需参数混合使用,最好将不定长参数出现在形参列表的最后
+    def func42(num1,num2,*num):
+        print(num1,num2,num)
+    func42(23,3,5)
+    func42(23,3,5,45,656,6,6)
+    
+    #注意2：定长参数和必需参数混合使用的时候，可以出现在形参列表的中间或者前面，可以结合关键字参数进行传参
+    def func42(num1,*num,num2):
+        print(num1,num2,num)
+    
+    #func42(23,3,5) #TypeError: func42() missing 1 required keyword-only argument: 'num2'
+    func42(23,3,num2=5)
+    # func42(23,3,5,45,656,6,6)
+    
+    #注意3：在形参列表中，同种不定长参数只能出现一个
+    # def func43(num1,*num2,*num3):   #SyntaxError: invalid syntax
+    #     print(num1,num2,num3)
+    # func43(34,54,54,54,5,656,5,6)
+    
+    #注意4：对不定长参数进行传参，可以直接传入一个元组，会生成一个二维元组
+    def func44(*num):
+        print(num)
+    func44((23,4,34,3))
+    
+    #4.2**,
+    def func5(**num):
+        print(num)
+    
+        #注意2：被当做字典处理
+        for key,value in num.items():
+            print(key,value)
+    
+    #func5(23,3,43)  #TypeError: func5() takes 0 positional arguments but 3 were given
+    #注意1：**的不定长参数，实参必需以key=value的方式传参
+    func5(a=10,b=20,c=30)  #{'a': 10, 'b': 20, 'c': 30}
+    
+    def func51(num1,**num2):
+        print(num1,num2)
+    
+    func51(23,x=32,y=5)
+    
+    #结论：如果不确定一个函数需要接受什么类型或者几个参数，可以将函数的参数设置为def 函数名(*args,**kwargs)
+    #注意：在自定义函数中，使用较多的是必需参数，其次是不定长参数
+    #在系统函数中，默认参数和关键字参数使用较多
+
+3.函数的返回值
+
+作用：表示一个函数运算完成的结果
+
+使用return关键字返回函数的返回值，用于结束函数
+
+    """
+    封装函数，参数和返回值
+        参数：未知项
+        返回值：是否需要在函数外面使用函数运算的结果
+    """
+    #1.需求：求两个数的和，返回和
+    #全局变量:在当前整个py文件中都有效，当程序执行完毕之后会自动销毁
+    total = 100
+    def add(num1,num2):
+        #局部变量：只能局部使用【在一个函数内部定义的变量，该变量只能在该函数内部被访问，一旦出了该函数，则该变量会被销毁】
+        total = num1 + num2
+        #注意：返回值的设置不是必须的，根据具体的需求决定
+        return total
+    
+    #返回值：在哪里调用，返回到哪里
+    print(add(19,2))
+    
+    result = add(12,3)
+    print(result)
+    
+    #注意：局部变量和全局变量可以重名，不影响使用
+    print(total)  #NameError: name 'total' is not defined
+    
+    #2.特殊情况1：return后面可以跟多个值，返回之后被当做元组处理
+    def fun1(num1,num2):
+        return  num1,num2
+    print(fun1(23,3))
+    
+    #3.特殊情况2：return应用在多分支中
+    def fun2(num):
+        if num > 0:
+            return "aaa"
+        elif num < 0:
+            print("1111")
+            #注意1：一旦使用了return，在return后面将不需要添加任何语句
+            return  "bbbb"
+            print("22222")
+        else:
+            #return  0
+            print("等于0")
+    r0 = fun2(-8)
+    print(r0)
+    #注意2：在多分支中，不同的分支可以返回不同类型的数据【Python是动态类型的语言】
+    #注意3：在多分支中，并不是所有的分支都需要设置返回值
+    
+    #4.特殊情况3：break跳出就近循环，return结束函数，return的作用权限比break大
+    #return关键字只能使用在函数内部
+    def show():
+        for i in range(10):
+            print(i)
+            if i == 3:
+                #break
+                return
+        print("over")
+    
+    show()
+    
+    
+    #5,如果两个函数之间要互相访问内部的变量，则还是通过return将值返回
+    def f1():
+        num1 = 10
+        return num1
+    
+    def f2():
+        num1 = 20
+    
+        r = f1()  #r = num1
+        print(num1 + r)
+    
+    f2()
+    
+    #6.reutrn可以单独作为一条语句
+    def text():
+        for i in range(5):
+            for j in range(3):
+                print(i,j)
+                if j == 1:
+                    #结束函数
+                    return
+    
+    text()
+    print(text())
+
+4.函数练习
+
+    #1.封装函数功能，判断年的平润性，如果是闰年返回True，不是返回False
+    def isleapyear(year):
+        if (year % 4 == 0 and year % 100 != 0) or year % 400 == 0:
+            return True
+        else:
+            return False
+    
+    if isleapyear(2010):
+        print("闰年")
+    else:
+        print("平年")
+    
+    #2.封装函数功能，统计1~某个数范围内能被3整除的数的个数
+    def   getcount(num):
+        c = 0
+        for i in range(1,num + 1):
+            if i % 3 == 0:
+                c += 1
+        return c
+    
+    print(getcount(100))
+    
+    #3.封装函数功能，统计2~某个数范围内质数的个数
+    #判断一个数是否是质数
+    def isprime(n1):
+        if n1 <= 1:
+            return False
+        else:
+            result  = True
+            for i in range(2,n1):
+                if n1 % i == 0:
+                    result = False
+    
+            return result
+    
+    #统计符合条件的个数
+    def getnum(num):
+        c = 0
+        for i in range(2,num):
+            if isprime(i):
+                c += 1
+        return c
+    
+    print(getnum(100))
+
+三、函数的本质
+
+1.变量可以指向函数
+
+2.函数名其实就是一个变量名
+
+3.函数可以作为参数使用
+
+    # 1.变量可以指向函数
+    #获取-10的绝对值
+    print(abs(-10))  #10
+    #获取的函数本身
+    print(abs)  #<built-in内置或者內建 function abs>
+    
+    x = abs(-8)
+    print(x)
+    y = abs
+    print(y)  #built-in function abs>
+    
+    #调用
+    print(y(-7))
+    
+    def test():
+        print("text")
+    test()
+    f = test
+    f()
+    
+    #结论：一个变量可以指向一个函数，指向之后，该变量可以代替函数进行调用
+    
+    
+    # 2.函数名其实就是一个变量名
+    print(abs(-18))
+    #abs = "abc"
+    #print(abs(-20))  #TypeError: 'str' object is not callable可调用
+    
+    t1 = (2,3,3)
+    l1 = list(t1)
+    
+    list = [34,4,54,54]
+    #l1 = list(t1)  #TypeError: 'list' object is not callable
+    
+    #结论：函数名其实就是一个变量名,所以，可以给该函数名重新赋值，但是，重新赋值之后，原来的函数将不能被再次调用
+    #注意：自定义变量或者函数，命名的时候，尽量不要和系统的函数或者模块重名
+    
+    
+    # 3.函数可以作为参数使用,实参部分只需要传递一个函数名
+    #注意：不管是什么情况的函数调用，都需要注意参数的匹配
+    def func1(f,num1,num2):
+        return f(num1) + f(num2)    #abs(-19) + abs(7)
+    #func1(3,4,53)  #TypeError: 'int' object is not callable
+    r = func1(abs,-19,7)   #f = abs  num1 = -19   num2 = 7
+    print(r)
+
+四、匿名函数
+
+不再使用def的标准格式定义一个函数，使用lambda表达式创建匿名函数
+
+特点：
+
+	a.lambda本质是一个表达式，执行完毕之后会得到一个结果
+
+	b.函数主体只有一行代码，其中只能实现有限的逻辑
+
+	c.拥有自己独立的命名空间，可以定义形参，可以书写函数体，可以设置返回值
+
+语法：
+
+	lambda  形参列表：函数体和返回值
+
+    #1
+    def add(num1,num2):
+        return  num1 + num2
+    print(add(23,3))
+    print(add)
+    
+    result = lambda  num1,num2:num1 + num2
+    print(result)
+    print(result(3,4))
+    
+    #2.匿名函数也可以使用关键字参数和默认参数
+    f1 = lambda x=1,y=1:x ** 2 + y ** 2
+    print(f1())
+    print(f1(2))
+    print(f1(2,3))
+    print(f1(x=2,y=4))
+    print(f1(y=2,x=4))
