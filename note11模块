@@ -1,0 +1,590 @@
+ 
+
+二、高阶函数
+
+map(),映射
+
+    """
+    map(fn,Iterable)
+        fn:函数
+        Iterable：可迭代对象,可以有多个
+    
+    功能：将fn作用于可迭代对象中的每一个元素，每次返回一个新的数据，生成一个新的可迭代对象
+    
+    #需要注意的问题：1.函数必须设置返回值，否则map没有意义，    2.函数中的形参个数取决于可迭代对象的个数
+    """
+    
+    #1.需求：已知列表[1,2,3,4],生成一个列表[1,4,9,16]
+    list1 = [1,2,3,4]
+    #方式一
+    newList1 = []
+    for num in list1:
+        newList1.append(num ** 2)
+    print(newList1)
+    
+    #方式二
+    newList2 = [i ** 2 for i in list1]
+    print(newList2)
+    
+    #方式三：def
+    def square(x):
+        return x ** 2
+    
+    r1 = map(square,list1)
+    print(r1)
+    print(list(r1))
+    
+    #map的工作原理
+    """
+    newList3 = []
+    for num in list1:
+        newList3.append(square(num))
+    print(newList3)
+    """
+    
+    #方式四：匿名函数
+    r2 = map(lambda x:x ** 2,list1)
+    print(list(r2))
+    
+    
+    #2.需求：已知列表[1,2,3,4],使用不同的方式生成一个新的列表["1","2","3","4"]
+    list2 = [1,2,3,4]
+    #方式一
+    newList1 = []
+    for num in list2:
+        newList1.append(str(num))
+    
+    #方式二
+    newList2 = [str(num) for num in list2]
+    
+    #方式三
+    def numToStr(x):
+        return str(x)
+    r1 = map(numToStr,list2)
+    print(list(r1))
+    
+    #方式四
+    r2 = map(lambda x:str(x),list2)
+    print(list(r2))
+    
+    
+    #3.需求;提供两个数字列表，将两个列表对应位置上的元素进行求和
+    list1 = [1,2,3,4]
+    list2 = [5,6,7,8]
+    #方式一
+    newList1 = []
+    for i in range(len(list1)):
+        newList1.append(list1[i] + list2[i])
+    print(newList1)
+    
+    #方式二
+    newList2 = [list1[i] + list2[i] for i in range(len(list1))]
+    print(newList2)
+    
+    #方式三：
+    def add(x,y):
+        return x + y
+    r1 = map(add,list1,list2)
+    print(list(r1))
+    
+    #TypeError: add() takes 1 positional argument but 2 were given
+    
+    #方式四
+    r2 = map(lambda x,y:x + y,list1,list2)
+    print(list(r2))
+
+reduce()，减少
+
+    """
+    reduce(fn,Iterable)
+    
+    功能：使用fn对Iterable中的第0个和第1个元素进行运算，将得到的结果再和第2个元素进行运算，。。。。。
+    直到所有的元素参与运算，得到的结果为一个数据
+    
+    工作原理：
+    reduce(f,[a,b,c,d])
+    
+    f(f(f(a,b),c),d),类似于递归
+    
+    
+    需要注意的问题：1.函数需要设置返回值，得到最终计算的结果     2.函数必须有参数，必须有两个
+    """
+    from functools import  reduce
+    
+    #1.需求：求一个列表中所有元素的和
+    list1 = [34,54,5,2,54,6]
+    #方式一
+    sum1 = 0
+    for num in list1:
+        sum1 += num
+    print(sum1)
+    
+    #方式二
+    def add(x,y):
+        return x + y
+    r1 = reduce(add,list1)
+    print(r1)
+    
+    #add(add(add(34,54),5),2)
+    
+    #方式三
+    r2 = reduce(lambda  x,y:x + y,list1)
+    print(r2)
+    
+    #2.需求：已知列表[2,4,6,8],输出整数2468
+    list2 = [2,4,6,8]
+    #方式一
+    result = ""
+    for num in list2:
+        result += str(num)
+    result = int(result)
+    print(result)
+    
+    #方式二
+    """
+    2，4----》24----》2 * 10 + 4
+    2,4,6---》246-----》24 * 10 + 6
+    2,4，6,8----》2468----》246 * 10 + 8
+    """
+    def add(x,y):
+        return x * 10 + y
+    
+    result2 = reduce(add,list2)
+    print(result2)
+    
+    #3.需求：实现将str转为int的功能 int(xx)
+    #举例："3454"---->3454
+    def charToNum(ch):
+        digits = {"0":0,"1":1,"2":2,"3":3,"4":4}
+        return digits[ch]
+    #charToNum("3")
+    r = reduce(add,map(charToNum,"1243"))
+    print(r,type(r))
+
+filter()，过滤
+
+    """
+    filter（fn,Iterable）
+    
+    功能：根据fn给定的条件过滤可迭代对象中的数据，根据fn的返回值为True表示保留，False表示过滤来操作
+    
+    需要注意的问题：1，函数必须有返回值，返回必须为布尔值
+    """
+    
+    #1.需求：已知列表[3,44,54,5,23,],将列表的奇数过滤掉
+    list1 = [3,44,54,5,23]
+    #方式一
+    #注意：remove多个元素的时候，一定要注意，根据列表元素个数的不同，有可能有的元素不会被remove
+    newList1 = []
+    for num in list1:
+        if num % 2 == 0:
+            newList1.append(num)
+    print(newList1)
+    
+    #方式二
+    def func(num):
+        if num % 2 == 0:
+            return True
+        return False
+    r1 = filter(func,list1)
+    print(r1)
+    print(list(r1))
+
+sorted()，排序
+
+    #一、sort()，列表.sort()
+    list1 = [45,3,5,4,54,7,8]
+    print(list1)
+    #1.升序
+    # list1.sort()
+    # print(list1)
+    
+    #2.降序
+    list1.sort(reverse=True)
+    print(list1)
+    
+    #3.自定义排序规则
+    list11 = ["faefh","yyya","rqryuyyr","agaeg"]
+    print(list11)
+    # list11.sort(reverse=True)
+    # print(list11)
+    
+    #根据字符串的长度排序
+    list11.sort(key=len,reverse=True)
+    print(list11)
+    
+    #二、sorted() ,sorted(列表)
+    list1 = [45,3,5,4,54,7,8]
+    print(list1)
+    #1.升序
+    newList1 = sorted(list1)
+    print(list1)
+    print(newList1)
+    
+    #2.降序
+    newList2 = sorted(list1,reverse=True)
+    print(newList2)
+    
+    #3.自定义排序
+    #3.1
+    list11 = ["faefh","yyya","rqryuyyr","agaeg"]
+    newList3 = sorted(list11,key=len)
+    print(newList3)
+    
+    #3.2
+    def func(s):
+        return s.upper()
+    
+    newList4 = sorted(list11,key=func)
+    print(newList4)
+    
+    """
+    不同点：
+        1.调用方式：列表.sort()     sorted(列表)
+        2.sort在原列表的内部排序，不会生成新的列表；sorted会生成一个新的列表，对原列表没有任何影响
+    相同点：
+        1.默认情况下都是升序排序，如果要降序，都需要通过reverse=True
+        2.都可以通过关键字key自定义排序的规则
+    """
+
+三、模块
+
+1.包
+
+    在普通的目录中创建一个__init__.py,则该目录被称为包，__init__.py在目前只是为了标记当前目录是一个包，后期会在其中书写项目的配置信息
+    
+    包的作用：
+    	a.管理Python模块命名空间的形式，采用"点语法"，例如：os.path.join()
+    	b.为了解决模块命名冲突的问题，一个py文件就是一个模块
+
+    #需求：调用textDemo01和textDemo02中的func函数
+    
+    
+    #语法：import   模块的相对路径
+    #相对路径的层级关系采用的是"点语法"，默认的参照路径是当前工程
+    import  text01.textDemo01
+    #import  text01.textDemo01
+    
+    import  text02.textDemo02
+    
+    
+    # text01.textDemo01.func()
+    # text02.textDemo02.func()
+    
+    """
+    注意：
+        1.import的作用【import :导入，表示将指定的模块加载一遍】
+        2.如果模块的路径书写错误，报错ModuleNotFoundError: No module named 'textDemo01'
+        3.模块只能被加载一次【
+        模块的工作原理：当第一次import的时候，会将py文件生成.pyc文件，当第二次再次import，
+        直接执行.pyc文件，这种现象被称为单例设计模式】
+        4.模块的相对路径默认以当前工程作为路径的参照
+    """
+
+2.系统模块
+
+模块的作用
+
+	a.提高代码的维护性
+
+	b.提高代码的复用度
+
+	c.避免函数名或者类名，以及变量名的命名冲突
+
+	d.可以引用第三方模块
+
+2.1time时间
+
+UTC:格林威治时间，世界标准时间，在中国UTC+8
+
+时间间隔是以秒为单位的浮点数
+
+时间戳：指定时间距离1970.1.1 00:00:00的差值
+
+【要求：时间不同的表示形式之间的转换】
+
+时间的表示：
+
+	a.时间戳
+
+	b.元组格式【年月日时分秒，星期，天数，夏令时格式：常用0，表示正常格式】
+
+		月份：1~12
+
+		星期：0~6，0表示星期一
+
+	c.格式化时间字符串
+
+	       %Y；年
+
+		%m:月
+
+		%d；天
+
+		%H；时，,%H表示24小时制，%h表示12小时制
+
+		%M;分
+
+		%S;秒
+
+    import  time
+    
+    #1.获取当前时间的时间戳
+    t1 = time.time()
+    print(t1)
+    
+    #2.获取当前时间的元组形式,为UTC
+    t2 = time.gmtime()
+    print(t2)
+    #time.struct_time(tm_year=2019, tm_mon=7, tm_mday=2, tm_hour=6, tm_min=51, tm_sec=7, tm_wday=1, tm_yday=183, tm_isdst=0)
+    
+    #3.获取当地时间的元组形式
+    t3 = time.localtime()
+    print(t3)
+    
+    #4.将时间的元组形式转换为时间戳
+    t4 = time.mktime(t3)
+    print(t4)
+    t41 = time.mktime((2017,10,9,10,10,10,0,0,0))
+    print(t41)
+    
+    #5.将时间戳转换为时间字符串格式化
+    #5.1默认格式
+    t5 = time.ctime(t1)
+    print(t5)   #Tue Jul  2 14:58:09 2019
+    
+    #6.将时间元组形式转换为格式化字符串
+    #默认格式
+    t6 = time.asctime(t3)
+    print(t6)   #Tue Jul  2 15:00:07 2019
+    
+    #自定义格式
+    t61 = time.strftime("%Y-%m-%d %H:%M:%S",t3)
+    print(t61)
+    
+    #7.将格式化字符串转换为时间元组
+    #注意：将格式化字符串转换为时间元组实质是解析字符串，解析的格式必须和字符串中时间的格式完全一致，否则解析失败
+    #ValueError: time data '2019.07.02 15:01:39' does not match format '%Y-%m-%d %H:%M:%S'
+    str1 = "2019.07.02 15:01:39"
+    t7 = time.strptime(str1,"%Y.%m.%d %H:%M:%S")
+    print(t7)
+    
+    
+    #8.休眠
+    #当程序执行到sleep的时候，会造成程序的阻塞，直到给定的时间结束，会自动解决阻塞，代码接着向下执行，
+    #时间的单位为秒
+    #使用场景：应用在多线程或者协程中
+    #time.sleep(5)
+    
+    print("over")
+    
+    #9.
+    #time(),获取当前设备的时间
+    #clock(),获取的当前设备的内存时间，用浮点数的科学计数法返回当前cpu的秒数，用来衡量不同程序的耗时时间
+    print(time.time())
+    print(time.clock())
+    
+    
+    #练习：
+    #1.书写一个装饰器，装饰器的作用可以统计任意函数的执行时间
+    def wrapper(func):
+        def inner(*args,**kwargs):
+            start = time.time()
+            func(*args,**kwargs)
+            end = time.time()
+    
+            result = end - start
+            print("该函数耗时：%.2f" % (result))
+        return inner
+    
+    
+    #2。已知一个时间的字符串"2019-4-5",计算该时间5天之后的日期，输出格式为2019-4-10
+    #方式一
+    timeStr = "2019-4-5"
+    timeList = timeStr.split("-")
+    day = int(timeList[-1]) + 5
+    newTime = "%s-%.2d-%.2d" % (timeList[0],int(timeList[1]),day)
+    print(newTime)
+    
+    #方式二
+    timeStr = "2019-4-5"
+    #1.将时间字符串转换为时间的元组形式
+    time1 = time.strptime(timeStr,"%Y-%m-%d")
+    #2.将时间元组转换为时间戳
+    time2 = time.mktime(time1)
+    #3.进行加法运算，time2 + 5天的秒数
+    time3 = time2 + 5 * 24 * 3600
+    #4.将时间戳转换为时间元组
+    time4 = time.localtime(time3)
+    #5.将时间元组转换为时间字符串
+    time5 = time.strftime("%Y-%m-%d",time4)
+    print(time5)
+    
+    #时间字符串《------》元组形式《----》时间戳
+
+2.2datetime日期
+
+datetime是对time模块的封装，其中提供了更多的功能，
+
+    import  datetime
+    
+    
+    #1.获取当地时间，返回的是日期的对象，并不是一个字符串
+    d1 = datetime.datetime.now()
+    print(d1)
+    print(type(d1))
+    
+    #2.将一个指定的时间转换为你日期对象，必须的参数：年月日时分秒
+    d2 = datetime.datetime(2017,5,3,4,6,7)
+    print(d2)
+    
+    #3.将日期的对象转换为字符串
+    d3 = datetime.datetime.now()
+    d4 = d3.strftime("%Y.%m.%d")
+    print(d4)
+    print(type(d4))
+    
+    #4.将时间的字符串转换为日期对象
+    d5 = datetime.datetime.strptime("2019.07.02","%Y.%m.%d")
+    print(d5)
+    print(type(d5))
+    
+    #5.日期对象之间可以进行减法运算
+    date1  = datetime.datetime(2017,5,3,4,6,7)
+    date2  = datetime.datetime(2017,5,5,5,6,7)
+    
+    #r1 = date1 + date2  #TypeError: unsupported operand type(s) for +: 'datetime.datetime' and 'datetime.datetime'
+    r2 = date2 - date1
+    #print(r1)
+    print(r2)
+    print(type(r2))
+    print(r2.days)  #获取差值的天数
+    print(r2.seconds)  #获取差值的秒数
+
+2.3calendar日历
+
+    import  calendar
+    
+    
+    #获取
+    print(calendar.month(2019,5))
+    print(calendar.calendar(2019))
+    print(calendar.isleap(2000))
+    
+    print(calendar.monthcalendar(2018,3))
+    
+    print(calendar.leapdays(2000,2020))
+
+2.4os操作系统
+
+    import  os
+    
+    #一、属性
+    #nt---->windows, posix---->Linux,Mac os
+    print(os.name)
+    
+    #获取当前操作系统的详细信息Window不支持
+    #print(os.uname())
+    
+    #获取当前操作系统中的环境变量
+    print(os.environ)
+    
+    #获取当前的工作目录
+    #cwd:current working directory
+    print(os.getcwd())   #C:\Users\Administrator\Desktop\XA-Python1903\Day11Code
+    print(os.curdir)  #.代表当前路径，..代表上一级路径
+    
+    
+    #二、函数
+    #获取指定路径下所有的内容
+    print(os.listdir(r"C:\Users\Administrator\Desktop\XA-Python1903\Day11Code"))
+    
+    #创建目录
+    #os.mkdir(r"C:\Users\Administrator\Desktop\aaa")  #绝对路径
+    #os.mkdir(r"aaa")   #相对路径
+    
+    #删除目录
+    #os.rmdir(r"aaa")
+    
+    #获取文件的属性
+    #print(os.stat(r"a.txt"))
+    
+    #对文件或者目录进行重命名
+    #os.rename(r"aaa","check")
+    
+    #删除普通文件
+    #os.remove(r"a.txt")
+    
+    #运算shell命令
+    #os.system("write")
+    #os.system("mspaint")
+    #os.system("msconfig")
+    
+    #os.system("shutdown -s -t 500")  #关机
+    
+    #三、os.path
+    #拼接
+    p1 = os.path.join(r"C:\Users\Administrator\Desktop\XA-Python1903","Day11")
+    print(p1)
+    
+    #拆分路径
+    p2 = os.path.split(r"C:\Users\Administrator\Desktop\XA-Python1903\Day11Code")
+    print(p2)
+    
+    #获取一个文件的扩展名，如果没有扩展名，元组中的第1个袁术为""
+    p2 = os.path.splitext(r"C:\Users\Administrator\Desktop\XA-Python1903\Day11Code")
+    print(p2)
+    
+    #判断路径是否存在
+    print(os.path.exists(r"C:\Users\Administrator\Desktop\XA-Python1903\Day11Code"))
+    
+    #判断路径是否为文件
+    print(os.path.isfile(r"C:\Users\Administrator\Desktop\XA-Python1903\Day11Code"))
+    print(os.path.isdir(r"C:\Users\Administrator\Desktop\XA-Python1903\Day11Code"))
+    
+    #获取一个文件的大小.返回一个文件中的字节数
+    print(os.path.getsize(r"timeDemo.py"))
+    
+    #获取路径
+    print(os.path.dirname(r"C:\Users\Administrator\Desktop\XA-Python1903\Day11Code"))
+    print(os.path.basename(r"C:\Users\Administrator\Desktop\XA-Python1903\Day11Code"))
+
+2.5sys系统
+
+    import  sys
+    
+    #获取当前文件的路径【绝对路径】
+    print(sys.argv)
+    print(sys.argv[0])
+    
+    #获取当前文件的路径集合【包含当前文件的父路径，当前开发环境的路径】
+    print(sys.path)
+    
+    #获取当前平台的名称
+    print(sys.platform)
+    
+    
+    #表示输出的位置为控制台【console】
+    #print(sys.stdout)
+    
+    print("hello")
+    print("hello",file=sys.stdout)
+    
+    f = open("a.txt","w",encoding="utf-8")
+    print("hello~~~",file=f)
+
+3.第三方模块
+
+python setup.py  install  :更新版本或者安装pip
+
+pip install  --upgrade  pip :更新pip到最新版本
+
+pip install xxx:安装第三方模块
+
+pip uninstall  xxx；卸载第三方模块
+
+
+
+
+
+
