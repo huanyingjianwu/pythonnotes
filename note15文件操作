@@ -1,0 +1,572 @@
+一、
+
+2.知识点
+
+1.定义类
+
+	定义类属性【直接定义在类中】和实例属性【定义在构造函数中或者动态绑定】
+
+	定义成员函数【self】，类函数【@classmethod,cls】，静态函数【@staticmethod】
+
+	定义构造函数和析构函数【实质上是成员函数】
+
+2.对象
+
+	封装：私有化属性：将实例属性私有化，如果想要在外界访问，则提供对应的函数【@property,@属性.setter】
+
+	继承：
+
+		如果子类实现了init函数，需要使用父类中的实例属性，则在子类的构造函数中必须手动调用父类的构造函数
+
+	多态：
+
+		注意：必须在继承的前提下
+
+3.其他
+
+	isinstance()
+
+	函数重写和重载【在继承中】
+
+	单例设计模式【非常重要】
+
+    def singleton(cls):
+      instance = None
+      def getInstance(*args,**kwargs):
+        nonlocal instance 
+        if not instance:
+          instance = cls(*args,**kwargs)
+        return instance    
+      return getInstance
+    
+    @singleton
+    class Text1(object):
+      pass
+    
+    @singleton
+    class Text2(object):
+      def __init__(self,name):
+        self.name = name
+        
+    def singleton(cls):
+      instance = {}
+      def getInstance(*args,**kwargs):
+        if cls not in instance:
+          instance[cls] = cls(*args,**kwargs)
+        return instance[cls]    
+      return getInstance   
+
+二、文件读写
+
+在Python中，文件读写都被面向对象化了
+
+文件读写的工作原理：在磁盘上读写文件的功能是由操作系统提供的，但是，现代操作系统不允许普通的程序直接访问磁盘，所以，读写文件就是请求操作系统打开一个文件对象【被称为文件描述符】，然后，通过操作系统提供的接口访问该文件【从文件中读取内容，向文件中写入内容】
+
+可以向文件中进行读写的数据：普通的文本，二进制文件【图片，音视频等】，对象
+
+1.普通文件和二进制文件
+
+1.2读取文件
+
+a.打开文件：open()
+
+b.读取内容：read()/readline()
+
+c.关闭文件：close()
+
+    import  os
+    
+    #IO:Input,Output,输入输出
+    
+    
+    #读取文件：将数据从磁盘传递到内存中
+    #一、打开文件
+    """
+    open(path,flag[,encoding,errors])
+        path:要打开的文件的路径【相对路径和绝对路径】,r"xx"
+        flag:表示文件打开的方式
+            r:read读    w:write写   b：binary二进制    a:append追加
+    
+            r:以只读的方式打开文件，文件的描述符放在文件的开头
+            rb:以二进制的方式打开文件用于只读，文件的描述符放在文件的开头
+            r+:打开一个文件用于读写，文件的描述符放在文件的开头
+    
+            w:打开一个文件用于写入，如果该文件已经存在则会被覆盖，如果不存在则会自动创建
+            wb:打开一个文件用于写入二进制，如果该文件已经存在则会被覆盖，如果不存在则会自动创建
+            w+:打开一个文件用于读写
+            a：打开一个文件用于追加内容，如果文件已经存在并且内容不为空，文件描述符会放在源文件内容的末尾
+        encoding:编码方式，常用utf-8或者gbk
+        errors:错误处理方式，一般使用异常处理
+    """
+    
+    #注意1：进行文件内容读取的时候，指定的文件必须存在，否则FileNotFoundError
+    #绝对路径：\   相对路径;/
+    path = r"致橡树.txt"
+    f = open(path,"r",encoding="gbk")
+    print(f)
+    print(type(f))
+    
+    """
+    注意2：
+        如果以r的方式打开文件，encoding该不该加？
+            a.如果文件格式是gbk的，可以不加encoding="gbk"
+            b.如果文件格式是utf-8的，必须加encoding="utf-8"
+    注意3：
+        如果是rb或者wb的方式打开文件，则一定不能添加encoding参数，如果加上则报错
+    
+    注意4：
+        不管是读取还是写入，编码格式一定和文件本身的编码格式保持一致，否则会出现乱码
+    """
+    
+    #二、读取文件内容
+    """
+    1.read():读取文件全部内容
+    2.read(num):一次读取num个字节，num一般会表示成2的次方
+    """
+    #1
+    # result1 = f.read()
+    # print(result1)
+    
+    #2
+    # result2 = f.read(16)
+    # print(result2)
+    # result2 = f.read(16)
+    # print(result2)
+    #如果要读取全部内容，采用循环
+    #a.获取文件的字节数
+    # size = os.path.getsize(path)
+    # #print(size)
+    # num = 16
+    # while size > 0:
+    #     result2 = f.read(num)
+    #     print(result2)
+    #     size -= num
+    
+    """
+    readline():每次读取一行，不管该行有多少个字节，以换行符作为标记
+    readline(num),作用类似于read(num),表示从头到尾依次进行读取
+    """
+    #3
+    # result3 = f.readline()
+    # print(result3)
+    # result3 = f.readline()
+    # print(result3)
+    #4
+    # result3 = f.readline(2)
+    # print(result3)
+    # result3 = f.readline(2)
+    # print(result3)
+    # result3 = f.readline(2)
+    # print(result3)
+    
+    #5
+    """
+    readlines(),返回一个列表，列表的元素是每一行的数据，其中包含换行符\n
+    """
+    result5 = f.readlines()
+    print(result5)
+    
+    #三、关闭文件
+    #注意：文件使用完毕之后尽量关闭，因为文件对象会占用内存空间，并且操作系统在同一时间内能打开的文件个数是有限的
+    f.close()
+    
+    
+    #简写形式：with  open()  as  引用
+    #代码更加简洁，不必手动关闭文件，执行完相应的操作之后会自动文件，避免忘记关闭文件造成的资源浪费
+    # with open(path,"r",encoding="gbk") as f:
+    #     result = f.read()
+    #     print(result)
+
+1.3写入文件
+
+a.打开文件：open()
+
+b.写入内容：write()/writeline()
+
+c.刷新：flush()
+
+d.关闭文件：close()
+
+    #写入文件：将数据从内存传递到磁盘上的过程
+    
+    #一、打开文件
+    #注意：向文件中写入数据的时候，指定的文件可以不存在，则会自动创建
+    #file = open(r"file1.txt","w",encoding="gbk")
+    file = open(r"file1.txt","a",encoding="gbk")
+    
+    
+    #二、写入内容
+    """
+    write(str)
+    """
+    #注意：采用w，会将源文件中的内容覆盖掉
+    
+    #写入单个的文本
+    file.write("this is a text 534644 测试测试#￥#%")
+    #注意：写入多个文本，通过列表的方式传入，writelines中的参数类型只能是可迭代对象
+    #file.writelines(['致橡树\n', '我如果爱你——\n', '绝不像攀援的凌霄花，\n', '借你的高枝炫耀自己；\n'])
+    #file.writelines("this is a text 534644 测试测试#￥#%")
+    #file.writelines(155)   #TypeError: 'int' object is not iterable
+    
+    #刷新,为了保证数据写入的效率，写入的数据量大的情况下
+    file.flush()
+    
+    #三、关闭文件
+    file.close()
+    
+    
+    #简写形式
+    with open(r"file2.txt","w",encoding="utf-8") as file:
+        file.write("fahgje")
+        file.flush()
+
+1.3读写二进制文件
+
+    #一、读取
+    #注意：类似于if语句等，不会引入新的作用域
+    with open(r"dog.jpg","rb") as f1:
+        result = f1.read()
+    print(result)
+    
+    #ValueError: binary mode权限 doesn't take an encoding argument
+    
+    #二、写入
+    with open(r"image.jpg","wb") as f2:
+        f2.write(result)
+
+1.4文件拷贝
+
+    import os
+    
+    #封装函数，实现将一个文件内容拷贝到另外一个文件中
+    def myCopy(srcPath,desPath,srcFlag,desFlag,srcEncoding,desEncoding):
+        """
+        功能：实现任意文件内容的拷贝
+        :param srcPath: 源文件路径
+        :param desPath: 目标文件路径
+        :param srcFlag: 源文件打开方式
+        :param desFlag: 目标文件打开方式
+        :param srcEncoding: 源文件编码格式
+        :param desEncoding: 目标文件编码格式
+        :return: 无
+        """
+        #判断源文件是否存在，如果不存在，则代码停止
+        if not os.path.exists(srcPath):
+            print("源路径不存在，无法实现拷贝")
+            return
+    
+        #判断源路径是否是文件，如果是目录，则代码停止
+        if os.path.isdir(srcPath):
+            print("源路径不是一个文件路径，无法实现拷贝")
+            return
+    
+        #打开文件,根据文件打开方式进行区分
+        #源文件
+        srcFile = None
+        if srcFlag == "rb":
+            srcFile = open(srcPath,srcFlag)
+        else:
+            srcFile = open(srcPath, srcFlag,encoding=srcEncoding)
+    
+        #目标文件
+        desFile = None
+        if desFlag == "wb":
+            desFile = open(desPath,desFlag)
+        else:
+            desFile = open(desPath, desFlag,encoding=desEncoding)
+    
+        #读取源文件中的内容，将该内容写入到目标文件中
+        #获取源文件的字节数
+        size = os.path.getsize(srcPath)
+        max_num = 1024
+        while size > 0:
+            content = srcFile.read(max_num)
+            desFile.write(content)
+            desFile.flush()
+    
+            size -= max_num
+    
+        #关闭文件
+        srcFile.close()
+        desFile.close()
+    
+    
+    if __name__ == "__main__":
+        myCopy(r"file1.txt",r"file2.txt","r","w","gbk","gbk")
+
+2.csv文件
+
+CSV：Comma Separated Values,逗号分隔值
+
+.csv是一种文件格式，也可以理解是一种特殊的纯文本文件，写法：一组字符序列，字符之间可以使用逗号或者制表符分隔，可以使用excel打开该类型的文件
+
+作用：这种格式的文件经常用来在不同的程序之间进行数据交互
+
+2.1写入csv文件
+
+    import  csv
+    
+    #一、三步曲
+    def readcsv1(path):
+        #1.打开文件
+        f1 = open(path,"r")
+    
+        #2.读取文件内容的同时，将结果转换为可迭代对象
+        r1 = csv.reader(f1)
+        print(r1)
+        print(type(r1))
+    
+        #r1是一个可迭代对象，其中存储着读取出来的文件中的内容
+        infoList = []
+        for content in r1:
+            #print(content)
+            infoList.append(content)
+        print(infoList)
+    
+        #3.关闭
+        f1.close()
+    
+        return infoList
+    
+    #二、使用读取普通文件的方式读取csv
+    #可以读取，但是按照普通文本进行读取，建议：一旦使用csv，尽量采用csv特有的方式进行读取
+    def readcsv2(path):
+        f1 = open(path, "r")
+        r1 = f1.read()
+        print(r1)
+        print(type(r1))
+        f1.close()
+    
+    #三、简写形式
+    def readcsv3(path):
+        infoList = []
+        with open(path,"r") as f1:
+            r1 = csv.reader(f1)
+            for s in r1:
+                infoList.append(s)
+    
+        return infoList
+    
+    if __name__ == "__main__":
+        path = r"text01.csv"
+        readcsv1(path)
+
+2.2读取csv文件
+
+    import  csv
+    
+    #一、从列表中写入文件
+    def writecsv1(path,infoList):
+        #1.打开文件
+        #注意：newline可以消除默认的空行
+        f2 = open(path,"w",newline="")
+    
+        #2.写入并得到一个可迭代对象
+        r2 = csv.writer(f2)
+        print(r2)
+    
+        #遍历二维列表，将其中的一位列表写入到指定文件中
+        for subList in infoList:
+            r2.writerow(subList)
+    
+        #3.关闭
+        f2.close()
+    
+    #二、从字符串中写入文件
+    def writecsv2(path):
+        #1.打开文件
+        #newline可以消除默认的空行
+        f2 = open(path,"w",newline="")
+    
+        #2.写入并得到一个可迭代对象
+        r2 = csv.writer(f2)
+        print(r2)
+    
+        #遍历二维列表，将其中的一位列表写入到指定文件中
+        r2.writerow("hello")
+    
+        #3.关闭
+        f2.close()
+    
+    def writecsv3(path):
+        with open(path,"w") as f2:
+            r2 = csv.writer(f2)
+            r2.writerow("fsjgh")
+    
+    if __name__ == "__main__":
+        #writecsv1(r"text02.csv",[['username', 'password', 'age', 'address'], ['zhangsan', 'abc123', '27', 'china'], ['lisi', 'abcaaa', '35', 'china'], ['jack', 'cbbh', '27', 'china']])
+        writecsv2(r"text03.csv")
+
+3.序列化和反序列化
+
+可以进行序列化和反序列化的模块是pickle和json
+
+序列化：将对象持久化到磁盘上【写：write】,pickling、serialization、marshalling
+
+反序列化：将本地磁盘上的对象读取出来【读：read】,unpickling
+
+3.1pickle
+
+    import  pickle
+    
+    
+    #1.使用普通文件的写入的方式尝试写入对象
+    # class Person(object):
+    #     pass
+    # p1 = Person()
+    
+    # f = open(r"a.txt","w",encoding="utf-8")
+    # f.write(p1)  #TypeError: write() argument must be str, not Person
+    # f.close()
+    
+    
+    #2.pickle进行序列化和反序列化
+    """
+    pickle提供了一个简单的持久化功能，可以将对象以文本的形式固化到磁盘上
+    pickle模块只能在Python中使用，Python中所有的数据类型【list1,tuple,dict,set,str,对象】对应的数据都可以被操作
+    
+    注意：通过pickle操作的数据，人一般无法识别，只给计算机识别
+    """
+    class Person(object):
+        def __init__(self,name,age,score):
+            self.name = name
+            self.age = age
+            self.score =score
+        def __str__(self):
+            return "%s-%s-%s" % (self.name,self.age,self.score)
+    
+        def show(self):
+            print("showing")
+    
+    p1 = Person("zhangsan",18,89)
+    #print(p1)
+    
+    #a.序列化
+    #1.1打开文件,打开方式必须是xb
+    file1 = open(r"obj1.txt","wb")
+    #1.2写入对象
+    """
+    pickle.dump(obj,file)
+        obj:需要序列化的对象
+        file：需要操作的文件的对象，file必须以wb的方式打开
+    """
+    pickle.dump([34,54,54,5,4],file1)
+    #1.3关闭文件
+    file1.close()
+    
+    
+    #b,反序列化
+    #1.1打开文件
+    file2 = open(r"obj1.txt","rb")
+    #1.2读取
+    """
+    pickle.load(file)
+        file：需要操作的文件的对象，file必须以rb的方式打开
+    """
+    result = pickle.load(file2)
+    print(result)
+    #result.show()
+
+3.2json
+
+json:Javascript   Object   notation,在js语言中创建对象的一种字面量语法，但是，被广泛的应用于跨平台跨语言的数据交换，因为JSON是纯文本文件，任何系统任何编程语言都可以处理纯文本文件
+
+JSON和Python中的数据类型的对应关系：
+
+JSON		  Python
+
+object 		 dict
+
+array	         list
+
+string               str
+
+number[int/real]           int/float
+
+true/false	 True/False
+
+null			None
+
+    import  json
+    
+    #一、基本用法
+    #dump:将Python对象按照JSOn格式序列化到文本
+    #dumps：将Python对象处理成JSON格式的字符串
+    d = dict(name="bob",age=18,score=39)
+    r0 = json.dumps(d)
+    print(r0)
+    print(type(r0))  #<class 'str'>
+    
+    
+    #load：将文件中的json数据反序列化成对象
+    #loads：将字符串的内容反序列化为Python对象
+    jsonStr = '{"name": "bob", "age": 18, "score": 39}'
+    r1 = json.loads(jsonStr)
+    print(r1)
+    print(type(r1))
+
+    import json
+    
+    def write():
+        myDict = {
+            'name':"张三",
+            'age':18,
+            'score':99,
+            'friends':["王大锤","元芳"],
+            'cars':[
+                {'brand':'五菱宏光','speed':100},
+                {'brand': 'BMW', 'speed': 190},
+                {'brand': 'BYD', 'speed': 140}
+            ]
+        }
+    
+        with open("data.json","w",encoding="utf-8") as f:
+            json.dump(myDict,f)
+    
+    def read():
+        with open("data.json","r",encoding="utf-8") as f:
+            result = json.load(f)
+            print(result)
+            print(type(result))
+    
+    if __name__ == "__main__":
+        #write()
+        read()
+
+4.StringIO和BytesIO
+
+数据的读写不一定在文件中进行，也可以在内存中进行，StringIO在内存中读写str，BytesIO在内存中读写bytes
+
+    from io import StringIO
+    
+    #1.写入
+    f = StringIO()
+    
+    r0 = f.write("he454")
+    print(r0)
+    
+    #获取写入后的str
+    print(f.getvalue())
+    
+    #2.读取
+    f1 = StringIO("hello\nworld\n51623526")
+    r1 = f1.readline()
+    print(r1)
+
+    from io import  BytesIO
+    
+    #1.写入
+    f1 = BytesIO()
+    r1 = f1.write("中文".encode("utf-8"))
+    print(r1)
+    
+    print(f1.getvalue())
+    
+    #2.读取
+    f2 = BytesIO(b'\xe4\xb8\xad\xe6\x96\x87')
+    r2 = f2.read()
+    print(r2)
+    print(type(r2))
+    r2 = r2.decode("utf-8")
+    print(r2)
+    
