@@ -1,0 +1,620 @@
+
+
+二、字符串string
+
+1.常用功能
+
+1.1转换
+
+字符串和整数之间的转换：int()  str()    eval()
+
+字母的大小写转换:lower()    upper()   swapcase()  * capitalize()  title()  ord()  chr()   
+
+    #1.字符串《-----》整数
+    print(int("123"))
+    print(int("+123"))
+    print(int("-123"))
+    
+    #报错ValueError
+    #print(int("abc"))
+    # print(int("12+3"))
+    # print(int("12-3"))
+    
+    print(str(323))
+    print("*" * 30)
+    
+    #eval（）：可以识别一个字符串中的有效数学表达式，并运算结果
+    print(eval("123"))
+    print(eval("+123"))
+    print(eval("-123"))
+    print(eval("12+3"))   #15
+    print(eval("12-3"))   #9
+    #print(eval("ab+c"))   #NameError: name 'abc' is not defined
+    
+    """
+    int和eval之间的区别
+    相同点：
+        都可以将字符串转换为整型，只能由数字和加减号组成
+    不同点：
+        在int中，+-号必须出现在字符串的首位
+        在eval中，如果全部是数字，+-号可以出现在字符串的任意位置，如果出现在首位，则被识别为正负号，但是
+            出现在中间，则会进行数学运算
+        如果无法转换，int报错ValueError,eval报错NameError
+    """
+    
+    #2.大小写字母转换,注意：转换完成之后，都会生成一个新的字符串
+    str1 = "abCdEf"
+    print(str1.lower())
+    print(str1.upper())
+    print(str1)
+    print(str1.swapcase())
+    
+    str2 = "this is A text"
+    #将每个单词的首字母大写
+    print(str2.title())     #*********
+    #将首单词的首字母大写
+    print(str2.capitalize())    #*******
+    
+    print(chr(66))
+    print(ord("a"))
+    
+    #3.类型转换
+    #int str float chr ord  bool
+    """
+    int(x) 将x转换为十进制
+    bin(x)  将x转换为二进制
+    hex（x）    将x转换为十六进制
+    oct（x） 将x转换为八进制
+    """
+    print(int(6))
+    #print(bin("110"))  #TypeError: 'str' object cannot be interpreted as an integer
+    # print(bin(6))
+    # print(hex(6))
+    # print(oct(6))
+    
+    #注意：int中的base关键字表示当前需要被转换的数据的形式【什么进制】，最终通过int返回的是十进制
+    print(int("110"))
+    print(int("110",base=10))
+    print(int("110",base=2))
+    print(int("110",base=16))
+    print(int("110",base=8))
+    
+    print(int("fah"))  #ValueError: invalid literal for int() with base 10: 'fah'
+
+1.2查找
+
+从左往右查找一个子字符串在原字符串中第一次出现的位置：find(),index()
+
+从右往左查找一个子字符串在原字符串中第一次出现的位置：rfind(),rindex()
+
+查找最值：max()   min（）
+
+    str1 = "de125343abc3636abc46327648237"
+    #1.find
+    #默认查找全部
+    print(str1.find("abc"))
+    #查找指定的区间
+    print(str1.find("abc",11,20))
+    #注意：find和rfind在查找的时候，如果被查找子字符串在原字符串中不存在，则返回-1
+    print(str1.find("def"))
+    
+    print(str1.rfind("abc"))
+    print(str1.rfind("abc",0,15))
+    print(str1.rfind("def"))
+    
+    print("*" * 30)
+    
+    #2.index
+    print(str1.index("abc"))
+    print(str1.index("abc",11,20))
+    #print(str1.index("def"))  #ValueError: substring not found
+    
+    print(str1.rindex("abc"))
+    print(str1.rindex("abc",0,15))
+    #print(str1.rindex("def"))
+    
+    #结论：find和index的作用相同，但是，如果查找不到的情况下，index报错，find返回-1
+    
+    #3.max和min,判断的依据是ASCII码
+    print(max(str1))
+    print(min(str1))
+    
+    #需求：寻找一个自定义字符串中的最大值和最小值【ASCII码】
+    str1 = "de125343abc3636abc46327648237"
+    maxValue = ord(str1[0])
+    for ch in str1:
+        if maxValue < ord(ch):
+            maxValue = ord(ch)
+    maxValue = chr(maxValue)
+    print(maxValue)
+    
+    #注意：只要是字符串类型，数字字符串和字符串之间可以直接比较
+    maxValue = str1[0]
+    for ch in str1:
+        if maxValue < ch:
+            maxValue = ch
+    print(maxValue)
+
+1.3填充和提取
+
+    #1.填充
+    #center(width[,fillchar])
+    #ljust(width[,fillchar])
+    #rjust(width[,fillchar])
+    #zfill(width)
+    str1 = "hello"
+    print(str1.center(30))
+    print(str1.center(30,"*"))
+    #注意：被填充的字符长度只能为1
+    #TypeError: The fill character must be exactly one character long
+    #print(str1.center(30,"**"))
+    print(str1.ljust(30,"*"))
+    print(str1.rjust(30,"*"))
+    
+    #特点：原字符串被居中或者居左，居右，其他剩余的字符串使用指定的字符填充，默认使用空格填充
+    
+    #zfill原字符串居右，剩余字符使用字符0填充
+    print(str1.zfill(30))
+    
+    #2.提取:去除一个字符串中两端指定的字符
+    str1 = "*****abc*******fhaj**fahfg******fahfg****************"
+    print(str1)
+    print(str1.strip("*"))
+    
+    #strip的使用场景
+    # username = input("")
+    # username = username.strip(" ")
+    # print(username)
+    
+    print(str1.lstrip("*"))
+    print(str1.rstrip("*"))
+
+1.4分割和合并
+
+    #1.分隔,split：将字符串转换为列表
+    #split(substr,num),substr表示分隔符，num表示分隔的最大次数
+    str1 = "this is a text"
+    ##需求：将text替换为exam
+    #方式一
+    list1 = list(str1)
+    print(list1)
+    list1[-4:] = ['e','x','a','m']
+    #list1[-4:] = "exam"
+    print(list1)
+    newStr1 = ""
+    for ch in list1:
+        newStr1 += ch
+    print(newStr1)
+    
+    #方式二
+    list2 = str1.split(" ")
+    print(list2)
+    for i in range(len(list2)):
+        if list2[i] == "text":
+            list2[i] = "exam"
+    print(list2)
+    
+    newStr2 = ""
+    for word in list2:
+        newStr2 += word + " "
+    newStr2 = newStr2.strip(" ")
+    print(newStr2)
+    
+    #2.合并:join，将一个列表中的元素合并成一个字符串
+    #方式三
+    list2 = str1.split(" ")
+    print(list2)
+    for i in range(len(list2)):
+        if list2[i] == "text":
+            list2[i] = "exam"
+    print(list2)
+    
+    newStr2 = " ".join(list2)
+    print(newStr2)
+    
+    
+    #连接符.join(列表)
+    l1 = ['this', 'is', 'a', 'text']
+    str2 = "*****".join(l1)
+    print(str2)
+
+1.5替换
+
+    #1.普通替换
+    #replace(old,new[,max]),使用new将old替换掉，可以指定替换的最大次数,默认替换全部
+    str1 = "this is a text"
+    ##需求：将text替换为exam
+    newStr1 = str1.replace("text","exam")
+    print(newStr1)
+    
+    str1 = "this is a text this is a text this is a text"
+    newStr1 = str1.replace("text","exam",1)
+    print(newStr1)
+    
+    #2.映射替换
+    #maketrans("原始数据","需要替换的数据"):生成一个映射表
+    #translate（table），翻译，通过映射表将指定的字符串中的字符替换
+    #注意：生成映射表的时候，两个字符串的长度必须相等
+    t = str.maketrans("abcdef","*&%$#@")
+    t = str.maketrans("abcdef","123456")
+    print(t) #{97: 42, 98: 38, 99: 37, 100: 36, 101: 35, 102: 64}
+    #ValueError: the first two maketrans arguments must have equal length
+    
+    str1 = "this is a text"
+    newStr2 = str1.translate(t)
+    print(newStr2)
+
+1.6判断
+
+    #1.isxxxx,判断的功能，返回的结果是布尔值
+    #isalpha()，如果字符串至少有一个字符并且所有的字符都是字母才返回True，否则结果为False
+    print("".isalpha())
+    print("abc".isalpha())
+    print("123".isalpha())
+    print("abc123".isalpha())
+    
+    print("*" * 30)
+    
+    #isalnum()，如果字符串至少有一个字符并且所有的字符都是字母或者数字才返回True，否则结果为False
+    print("".isalnum())
+    print("abc".isalnum())
+    print("123".isalnum())
+    print("abc123".isalnum())
+    print("abc123%&".isalnum())
+    
+    print("*" * 30)
+    
+    #isupper(),如果字符串至少有一个字符并且所有的字符都是字母,字母全部是大写才返回True，否则结果为False
+    print("".isupper())
+    print("abc".isupper())
+    print("ABC".isupper())
+    print("abcDE".isupper())
+    print("abc123".isupper())
+    
+    #islower()，如果字符串至少有一个字符并且所有的字符都是字母,字母全部是小写才返回True，否则结果为False
+    
+    print("*" * 30)
+    
+    #istitle(),和title有关【将每个单词的首字母大写】
+    print("".istitle())
+    print("this is a".istitle())
+    print("This is a".istitle())
+    print("This Ts A".istitle())
+    
+    print("*" * 30)
+    
+    #isdigit和isnumeric，如果字符串只包含数字则返回True
+    #isdigit()，常用，主要用于要求用户从控制台输入数字，校验    *******
+    print("".isdigit())
+    print("abc".isdigit())
+    print("123".isdigit())
+    print("abc123".isdigit())
+    
+    print("*" * 30)
+    
+    #isnumeric()
+    print("".isnumeric())
+    print("abc".isnumeric())
+    print("123".isnumeric())
+    print("abc123".isnumeric())
+    
+    print("*" * 30)
+    
+    #isdecimal(),如果字符串只包含十进制数[0~9]，则返回True
+    print("".isdecimal())
+    print("23423".isdecimal())
+    print("abc123".isdecimal())
+    print("abc".isdecimal())
+    print("0x1234".isdecimal())
+    
+    print("*" * 30)
+    
+    #isspace(),如果字符串中只包含空格，则返回True
+    print("".isspace())
+    print(" ".isspace())
+    print(" 123".isspace())
+    print("mabc".isspace())
+    
+    print("*" * 30)
+    
+    
+    #2.判断前后缀【掌握】
+    #startswith   endswith
+    url = "http://www.baidu.com"
+    print(url.startswith("http"))
+    mail = "123@163.com"
+    print(mail.endswith("com"))
+
+1.7编码和解码
+
+    #编解码实质上是字符串类型和字节类型之间的相互转换
+    
+    #1.编码：将字符串类型转换为字节类型
+    #方式一:encode
+    str1 = "fhajfhj236472364中文测试"
+    r0 = str1.encode("utf-8")
+    r1 = str1.encode("gbk")
+    print(r0,type(r0))
+    print(r1,type(r1))
+    
+    #方式二：bytes()
+    str1 = "fhajfhj236472364中文测试"
+    r10 = bytes(str1,encoding="utf-8")
+    print(r10)  #TypeError: string argument without an encoding
+    r11 = bytes(str1,encoding="gbk")
+    print(r11)
+    
+    #2.解码：将字节类型转换为字符串类型
+    #方式一：decode
+    # str1 = "fhaug"
+    # print(str1.decode("utf-8"))  #AttributeError: 'str' object has no attribute属性 'decode'
+    
+    #注意：编解码的格式必须一致
+    # r2 = r0.decode("gbk")
+    # print(r2) #UnicodeDecodeError: 'gbk' codec can't decode byte 0xad in position 18: illegal multibyte sequence
+    r2 = r0.decode("utf-8")
+    print(r2)
+    r3 = r1.decode("gbk")
+    print(r3)
+    
+    #方式二：str()
+    r20 = str(r10,encoding="utf-8")
+    print(r20)
+    r21 = str(r11,encoding="gbk")
+    print(r21)
+
+2.字符串应用
+
+    """
+    1.已知字符串 a = "aAsmr3idd4bgs7Dlsf9eAF",要求如下
+    	a.请将a字符串的大写改为小写，小写改为大写
+    	b.请将a字符串的数字取出，并输出成一个新的字符串
+    	c.请统计a字符串出现的每个字母的出现次数（忽略大小写，a与A是同一个字母），并输出成一个字典。 例 {'a':4,'b':2}
+    	d.输出a字符串出现频率最高的字母
+    	e.请判断 'boy'里出现的每一个字母，是否都出现在a字符串里。如果出现，则输出True，否则，则输 出False
+    """
+    #a
+    a = "aAsmr3idd4bgs7Dlsf9eAF"
+    s1 = a.swapcase()
+    
+    #b
+    #方式一
+    s2 = ""
+    for ch in a:
+        if ch.isdigit():
+            s2 += ch
+    print(s2)
+    #方式二
+    #生成一个数字字符的列表
+    numList = []
+    for num in range(0,10):
+        numList.append(str(num))
+    print(numList)
+    s3 = ""
+    for ch in a:
+        if ch in numList:
+            s3 += ch
+    print(s3)
+    
+    #c
+    dict1 = {}
+    for ch in a:
+        if ch not in dict1:
+            dict1[ch] = 1
+        else:
+            dict1[ch] += 1
+    print(dict1)
+    
+    #d
+    #第一步；找到dict1中value中的最大值
+    maxValue = max(list(dict1.values()))
+    #第二步：根据value的最大值在dict1中寻找匹配的key
+    for key,value in dict1.items():
+        if value == maxValue:
+            print(key)
+    
+    #e利用的set的排重原理
+    list1 = [1,2,3,4]
+    set1 = set(list1)
+    print(set1)
+    set1.update([4])
+    print(set1)
+    
+    #将字符串转换为集合，
+    strSet = set(a)
+    print(strSet)
+    search = "boy"
+    strSet.update(search)
+    if len(set(a)) == len(strSet):
+        print(True)
+    else:
+        print(False)
+    
+    
+    #2.从控制台输入一句英文，获取一个单词在该字符串中出现的次数
+    #方式一
+    str1 = "this is a text is a text this is a text"
+    key = "text"
+    
+    dict1 = {}
+    
+    wordList = str1.split(" ")
+    for word in wordList:
+        if word not in dict1:
+            dict1[word] = 1
+        else:
+            dict1[word] += 1
+    print(dict1)
+    
+    count1 = dict1[key]
+    print(count1)
+    
+    #方式二
+    str1 = "this is a text is a text this is a text"
+    key = "text"
+    
+    dict1 = {}
+    
+    wordList = str1.split(" ")
+    for word in wordList:
+        c = dict1.get(word)
+        if c == None:
+            dict1[word] = 1
+        else:
+            dict1[word] += 1
+    print(dict1)
+    
+    count1 = dict1[key]
+    print(count1)
+    
+    
+    #3.从控制台输入一个表示时分秒时间的字符串，格式为：xx：xx:xx,获取该时间的下一秒
+    #例如：11:10:10----->11:10:11
+    #11:10:59---->11:11:00
+    #11:59:59---->12:00:00
+    #23:59:59------>00:00;00
+    
+    timeStr = input("请输入一个时分秒的时间：")
+    
+    timeList = timeStr.split(":")
+    h = int(timeList[0])
+    m = int(timeList[1])
+    s = int(timeList[2])
+    
+    s += 1
+    
+    if s == 60:
+        s = 0
+        m += 1
+        if m == 60:
+            m = 0
+            h += 1
+            if h == 24:
+                h = 0
+    
+    print("%.2d:%.2d:%.2d" % (h,m,s))
+
+三、函数
+
+1.函数概述
+
+在一个完整的项目开发中，某些功能会被反复使用，可以将反复使用的功能提取出来，封装成函数，当需要再次使用该功能的时候，只需要使用该函数即可
+
+本质：函数就是对一段特殊功能的封装【书写成一个工具】
+
+优点：
+
+	a.简化代码结构，提高代码的可读性和可维护性
+
+	b.可以提高代码的复用性
+
+    import  math
+    #需求：求一个圆的面积
+    # r1 = 36
+    # a1 = 3.14 * r1 ** 2
+    #
+    # r2 = 17
+    # a2 = 3.14 * r2 ** 2
+    #
+    # r3 = 10
+    # a3 = 3.14 * r3 ** 2
+    
+    #使用函数简化上述功能
+    def circleArea(radius):
+        PI = math.pi
+        return  PI * radius ** 2
+    
+    a1 = circleArea(36)
+    a2 = circleArea(17)
+    a3 = circleArea(10)
+
+2.函数定义
+
+语法：
+
+	def  函数名称(参数1,参数2,参数3....):
+
+		函数体
+
+		return   返回值
+
+说明：
+
+	a.def是一个关键字，专门用于定义函数
+
+	b.函数名称:只要是一个合法的标识符即可，尽量做到顾名思义，尽量遵循小驼峰
+
+	c.(参数1,参数2,参数3....):被称为形式参数列表，简称形参列表，不限类型，不限数量，也可以为空
+
+	d.函数体:被封装的具有特殊功能的代码
+
+	e.return：是一个关键字，可以结束函数
+
+	   返回值：表示当前函数执行完毕之后的结果，可以是常量，变量或者表达式，返回值也可以不写
+
+3.函数使用
+
+3.1最简单的函数
+
+    print("hello world")
+    
+    #定义无参无返回值的函数
+    def myPrint():
+        print("hello world~~~~")
+    
+
+3.2函数的调用
+
+    print("hello world")
+    
+    #定义无参无返回值的函数
+    def myPrint():
+        print("hello world~~~~")
+        
+    #注意：函数不会被自动执行，需要手动调用
+    #使用函数就是函数的调用
+    """
+    函数的定义分为两部分：函数的声明和函数的实现
+    函数调用的语法：
+        函数名(xxx)
+    
+        xxx表示实际参数，简称实参
+    
+    形式参数：出现在函数定义的声明部分，本质是一个暂时没有值的变量
+    实际参数：出现在函数的调用部分，为了给形式参数赋值
+    传参：实参给形参赋值的过程
+    """
+    myPrint()
+    #注意1：一个函数一旦被定义完成，可以被多次调用
+    myPrint()
+    myPrint()
+    myPrint()
+    
+    
+    #注意2:在同一个文件中，可以定义多个函数
+    def test():
+        print("text~~~~")
+    test()
+    
+    #注意3：在同一个文件中出现了同名的函数，调用的时候，执行的是最后定义【就近原则】
+    def test():
+        print("6456723547")
+    test()
+    
+    #注意4:定义一个函数其实相当于定义一个函数类型的变量，可以随时修改该变量的指向
+    
+    #注意5
+    print(myPrint)  #<function myPrint at 0x00000243C17C3E18>
+    print(myPrint())  #None,该函数没有返回值
+    
+    list1 = [23,43,4,3]
+    print(list1.pop())  #3
+    print(list1.remove(23))  #None
+    
+    def show():
+        print("111")
+        return
+        print("222")
+    show()
+
+
