@@ -1,0 +1,507 @@
+
+
+二、布尔值和空值
+
+布尔值：只有两个值：True和False，可以作为if或者while的条件使用
+
+	注意：通过关系运算符或者逻辑运算符计算得到的结果为布尔值
+
+空值：None
+
+	注意：是一种特殊的数据类型，注意区别和0的关系，0属于数字类型，None本身就是一种数据类型
+
+	使用场景：当不确定一个引用指向哪个实体的时候，可以指向None
+
+三、数字类型number
+
+1.基本使用
+
+    #1
+    num1 = 10
+    num2 = num1
+    print(num1,num1)
+    print(id(num1) == id(num2))
+    print(num1 == num2)
+    print(num1 is num2)
+    
+    #2.连续定义多个变量,初始值为同一个
+    num1 = num2 = num3 = num4 = 10
+    print(num1,num3)
+    
+    #3.连续定义多个变量，初始值为不同的值
+    num1,num2,num3 = 10,20,30
+    print(num1,num2,num3)
+    
+    #4.需求：采用不同的方式交换两个变量的值【面试题】
+    
+    #方式一：直接赋值
+    num1 = 10
+    num2 = 20
+    num1,num2 = num2,num1
+    print(num1,num2)   #20,10
+    
+    #方式二：定义一个中间变量
+    num1 = 10
+    num2 = 20
+    temp = num1
+    num1 = num2
+    num2 = temp
+    print(num1,num2)
+    
+    #方式三：加减法
+    num1 = 10
+    num2 = 20
+    num1 = num1 + num2  #10 + 20
+    num2 = num1 - num2  #30 - 20
+    num1 = num1 - num2  #30 - 10
+    print(num1,num2)
+    
+    #方式四:异或
+    num1 = 10
+    num2 = 20
+    num1 = num1 ^ num2   #10 ^ 20
+    num2 = num1 ^ num2  #10 ^ 20  ^ 20   = 10
+    num1 = num1 ^ num2  #10 ^ 20 ^ 10 = 20
+    print(num1,num2)
+    
+    """
+    方式一和方式二常用于实际应用
+    方式三和方式四常用于面试
+    """
+
+2.系统功能
+
+2.1数学功能
+
+    import  math
+    
+    #一、全局功能
+    #1.abs(),求绝对值
+    print(abs(-100))
+    
+    #2。max(),求最大值
+    #min（）
+    num1 = 2
+    num2 = 19
+    num3 = 7
+    print(max([num1,num2,num3]))
+    print(max(num1,num2,num3))
+    
+    #3.pow(),求幂,类似于**
+    print(3 ** 5)
+    print(pow(3,5))
+    
+    #4.round(m,n),求一个浮点数的四舍五入值,表示保留m小数点后n位
+    print(round(19.12))
+    print(round(19.92))
+    
+    print(round(19.12,1))
+    print(round(19.96,1))
+    
+    #二、math模块中的功能
+    #第一步：导入模块
+    #1.ceil(),向上取整
+    print(math.ceil(19.12))
+    print(math.ceil(19.92))
+    
+    #2.floor()，向下取整
+    print(math.floor(19.12))
+    print(math.floor(19.92))
+    
+    #3.modf(),获取浮点数的整数部分和小数部分，结果为一个元组，（小数部分，整数部分）
+    print(math.modf(19.12))
+    print(math.modf(19.92))
+    
+    #4.sqrt(),求平方根,结果为算术平方根，为浮点数
+    print(math.sqrt(25))
+    
+    #5.求三角函数
+    print(math.sin(30))
+    print(math.pi)
+    
+    #需要掌握：round,ceil,floor,sqrt和pow
+
+2.2随机数功能
+
+    #模块的导入方式
+    # import  random
+    # num1 = random.choice([3,54,54,54])
+    
+    # from  random import  *
+    # num2 = choice([23,43,43])
+    
+    
+    from  random import  *
+    #1.choice(容器)，从中指定容器的元素中任意挑选一个数据
+    #1.1列表
+    num1 = choice([345,45,4,5,34.5,10.34])
+    print(num1)
+    #1.2range,注意》range中的step只能为整型
+    num2 = choice(range(1000,10000))
+    print(num2)
+    #1.3字符串
+    r3 = choice("hello4564")  #("h","e","l","l".....)
+    print(r3)
+    
+    #需求：获取4~20之间的整数随机数
+    result1 = choice(range(4,21))
+    print(result1)
+    
+    #2.randint(start,end),获取start到end之间的整数随机数，但是，包头也包尾
+    result2 = randint(4,20)
+    print(result2)
+    
+    #3.randrange(start,end,step)
+    result3 = randrange(4,21)
+    print(result3)
+    
+    
+    #4.random(),获取0~1之间的浮点数
+    #需求：获取4~20之间的随机数
+    r1 = random()
+    print(round(r1,2))
+    r2 = r1 * 16 + 4
+    print(r2)
+    
+    r3 = random() * 16 + 4
+    print(r3)
+    
+    #5.shuffle(),对列表中的元素进行随机排序
+    list1 = [22,33,44,55]
+    shuffle(list1)
+    print(list1)
+    
+    #6.uniform(start,end),获取一个实数【整数和浮点数】
+    r4 = uniform(4,21)
+    print(r4)
+
+四、元组tuple
+
+1.概念
+
+和列表相似，本质上是一种有序的集合
+
+元组和列表的不同之处：
+
+	a.定义，列表:[]  元组：()
+
+	b.列表是一种可变的数据类型，可以增加，删除或者修改其中的元素，但是。元组是一种不可变的数据类型，一旦将一个元组定义完成，该元组中的元素将不能发生任何改变
+
+2.创建元组
+
+    #1.创建空元组
+    #注意：命名的时候，尽量不要直接采用tuple
+    tuple1 = ()
+    print(tuple1,type(tuple1))
+    
+    #2.创建非空元组
+    tuple2 = (345,4,656,5)
+    print(tuple2)
+    
+    #注意1：和列表相似，元组中可以同时存储不同类型的数据
+    tuple3  = ("ag",17,False,None,18.9)
+    print(tuple3)
+    
+    #注意2：和列表相似，元组中可以存储重复元素
+    tuple4  = ("ag",17,False,None,18.9,17,17)
+    print(tuple4)
+    
+    list1 = [10]
+    print(list1,type(list1))
+    
+    #注意3：当元组中只有一个元素的时候，在该元素的后面添加一个逗号，为了和基本数据类型的变量区分
+    tuple5 = ("abc",)
+    str1 = "abc"
+    print(tuple5,type(tuple5))
+
+3.元组元素的访问
+
+    #元素的访问
+    
+    #和列表相同，是有序的，访问元组中的元素，都是通过索引的方式访问
+    
+    #1.获取，元组名[索引]
+    t1 = (34,545,45,34,43,4,3)
+    print(t1[2])
+    print(t1[-1])
+    
+    #注意：索引越界
+    
+    #2.修改
+    #注意1：一个元组一旦被定义完成，其中的元素将不能任意的修改，只要地址不变即可
+    #t1[2] = 100   #TypeError: 'tuple' object does not support item assignment
+    print(t1)
+    
+    #注意2：如果元组中存储了一个列表，该列表中的元素仍然可以任意的修改【面试题】
+    t2 = (23,43,34,2,[22,33])
+    # t2[-1][0] = 100
+    # print(t2)   #(23, 43, 34, 2, [100, 33])
+    
+    #t2[-1] = 28
+    
+    #3.删除列表或者元组
+    #注意：del可以删除任意数据类型的变量
+    list1 = [34,65,65]
+    tuple1 = (34,65,65)
+    del list1
+    del tuple1
+
+4.元组操作
+
+    #注意：一旦涉及到对元组的修改，都是生成了一个新的元组
+    
+    
+    #1.元组组合：+
+    t1 = (1,2,3)
+    t2 = (4,5,6)
+    t3 = t1 + t2
+    print(t3)
+    print(t1,t2)
+    
+    
+    #2.元组元素的重复：*
+    print(t1 * 4)
+    print(t1)
+    
+    #3.判断元素在元组中是否存在
+    print(2 in t1)  #True
+    print(100 not in t1)  #True
+    
+    
+    #4.切片
+    #和列表中的切片完全相同
+    #索引的取值范围：0~len - 1   或者  -1~ -len
+    t1 = (11,22,33,44,55,66,77,88,99)
+    print(t1[2])     #33
+    #print(t1[10])   #报错：下标越界
+    print(t1[10:])  #[]       特殊情况
+    print(t1[:10])   #(11, 22, 33, 44, 55, 66, 77, 88, 99)
+    
+    print(t1[2:])       #(33,44,55,66,77,88,99)
+    print(t1[:2])     #(11,22)
+    print(t1[2:7:2])  #(33,55,77)    2   4   6
+    
+    print(t1[2:7:-1])   #()
+    print(t1[-1:-7])    #()
+    print(t1[-7:-1:-1])  #()
+    
+    print(t1[-7:-1])  #(33, 44, 55, 66, 77, 88)
+    print(t1[::-1])  #(99....11)
+    
+    #0和-9表示第一个元素，8和-1表示最后一个元素
+    print(t1[0:-1])   #（11, 22, 33, 44, 55, 66, 77, 88)     特殊情况
+    print(t1[-9:8])  #（11, 22, 33, 44, 55, 66, 77, 88)     特殊情况
+    print(t1[8:-9])  #()
+    print(t1[8:-9:-1])  #(99, 88, 77, 66, 55, 44, 33, 22)
+
+5.元组功能
+
+    #1.len()
+    t1 = (234,34,34,34)
+    print(len(t1))
+    
+    #2.max()、min()
+    print(max(t1))
+    print(min(t1))
+    
+    
+    #3.list(xx)，xx是一个容器，将xx转换为一个列表
+    #tuple(xx),将xx转换为一个元组
+    print(list(range(1,10)))
+    
+    print(type(t1))
+    l1 = list(t1)
+    print(l1)
+    
+    l2 = [34,54,54,5]
+    print(tuple(l2))
+    
+    
+    #4.元组元素的遍历
+    t1 = (234,34,34,34)
+    for num in t1:
+        print(num)
+    
+    for i in range(len(t1)):
+        print(t1[i])
+    
+    for i,num in enumerate(t1):
+        print(i,num)
+        print(i,t1[i])
+
+6.二维列表和二维元组
+
+简单来说，容器嵌套容器
+
+    #5.二维元组的遍历:类似于二维列表的遍历，都只能通过嵌套循环获取最内层的元素
+    t2 = ((3,4,5),(4,5),(4,5,6,76,7))
+    print(t2[1])  #(4,5)
+    print(t2[1][1])  #5
+    
+    for r in t2:
+        # print(r)
+        for num in r:
+            print(num)
+    
+
+7.列表和元组的区别
+
+1.元组中的元素是不可变的，在实际项目开发中，大多数情况下涉及多线程，在多线程环境中更喜欢使用不可变的数据【临界资源】，所以可以避免由于不恰当的修改引起的临界资源数据错误
+
+2.如果不需要对数据进行删除，添加等操作，则选择元组，但是，必须要进行修改删除或者增加，考虑列表
+
+3.元组在创建时间和占用的空间上都优于列表
+
+五、字典dict
+
+1.概念
+
+    #列表保存学生的乘积
+    scores = [3,4,54,54]
+    #问题：无法查找某个学生的成绩
+    
+    #解决方案：采用字典，将学生姓名作为key【键】，将学生成绩作为value【值】，成对的存储到字典中
+
+字典也是一种存储数据的容器，其中可以存储映射关系【采用的是键值对的方式存储】，字典是无序的，字典中存储的数据，方便快速的查找
+
+2.key的特性
+
+a.字典中的key是唯一的，不能重复
+
+b.key必须是不可变的数据
+
+	list是可变的，不能充当key	
+
+	tuple，number,string，对象等都是不可变的，可以充当key
+
+3.字典的创建
+
+语法：字典名  = {key1:value1,key2:value2.....}
+
+4.字典的使用
+
+    #1.创建一个空字典
+    dict1 = {}
+    print(dict1,type(dict1))
+    
+    #2.创建非空字典
+    dict2 = {"zhangsan":90,"lisi":88,"jack":16}
+    print(dict2)
+    
+    
+    #3.字典中键值对的访问
+    #3.1通过key获取value
+    #语法：字典名称[key]
+    s1 = dict2["lisi"]
+    print(s1)
+    s1 = dict2.get("lisi")
+    print(s1)
+    
+    #注意：如果试图访问不存在的key，则会报错
+    #s2 = dict2["tom"]   #KeyError: 'tom'
+    
+    #注意：通过get获取指定key的value，如果key不存在，则返回None，但是，如果指定了default，则返回default对应的数据
+    #s2 = dict2.get("tom",100)
+    s2 = dict2.get("tom")
+    print(s2)
+    
+    dict2 = {"zhangsan":90,"lisi":88,"jack":16}
+    #3.2修改键值对
+    #注意：字典类似于列表，也是一种可变的数据类型
+    print(dict2)
+    dict2["zhangsan"] = 100
+    print(dict2)
+    
+    dict2["bob"] = 75
+    print(dict2)
+    
+    #结论：字典名[key] = value，如果key存在，则表示修改，如果key不存在，则表示添加键值对
+    
+    
+    #4.删除
+    #注意只要删除指定的key，对应的value也同时会被删除
+    #pop的返回值是被删除的键对应的值
+    result = dict2.pop("jack")
+    print(result)
+    print(dict2)
+    
+    
+    #5.获取键值对的个数
+    print(len(dict2))
+    
+    
+    #6.字典的遍历
+    d1 = {'zhangsan': 100, 'lisi': 100, 'jack': 16, 'bob': 75}
+    
+    #a.方式一：操作key    *******
+    for key in d1:
+        print(key,d1[key])
+    
+    #方式二：keys()
+    print(d1.keys(),type(d1.keys()))
+    for key in d1.keys():
+        print(key,d1[key])
+    
+    #方式三：values()
+    print(d1.values())
+    for value in d1.values():
+        print(value)
+    
+    #方式四：enumerate()
+    for i,key in enumerate(d1):
+        print(i,key,d1[key])
+    
+    #方式五：items(),同时获取key和value      *******
+    print(d1.items())  #dict_items([('zhangsan', 100), ('lisi', 100), ('jack', 16), ('bob', 75)])
+    num1,num2 = (10,20)
+    for key,value in d1.items():
+        print(key,value)
+        print(key,d1[key])
+
+总结：
+
+	list和dict之间的区别：
+
+		a.dict的查找和插入的速度比较快，不会因为key-value的增加而减慢，但是，list每次都是从头到尾进行挨个遍历，如果数据量增大，则查找的速度减慢
+
+		b.dict需要占用大量的内存空间，内存浪费多，但是，list只相当于存储了全部的key或者全部的value
+
+5.字典练习
+
+    #1.list1 = [0,1,2,3,4,5,6],list2 = ["a","b","c","d","e","f","g"],以list1中的元素作为key，
+    # 以list2中的元素作为value，生成一个字典dict1,结果为{0:"a",1:"b",........}
+    
+    dict1 = {}
+    # dict1[0] = "a"
+    # print(dict1)
+    
+    list1 = [0,1,2,3,4,5,6]
+    list2 = ["a","b","c","d","e","f","g"]
+    for i in range(len(list1)):
+        #list1[i]   list2[i]
+        dict1[list1[i]] = list2[i]
+    print(dict1)
+    
+    
+    #优化：任意两个列表
+    if len(list1) <= len(list2):
+        for i in range(len(list1)):
+            dict1[list1[i]] = list2[i]
+    else:
+        for i in range(len(list2)):
+            dict1[list1[i]] = list2[i]
+    
+    #2.从控制台输入一个任意字符串，统计该字符串中每个字符出现的次数，生成一个字典
+    #例如：hello---->{"h":1,"e":1,"l":2,"o":1}
+    result = input("请输入任意的文本：")
+    dict1 = {}
+    #dict1[key] = value,如果key存在，则表示获取，给value重新赋值；如果key不存在，则表示添加键值对
+    for s in result:
+        if s in dict1:
+            #表示key存在，则在原来IDE基础上给value递增1
+            dict1[s] += 1
+        else:
+            #表示key不存在，则添加键值对
+            dict1[s] = 1
+    
+    print(dict1)
