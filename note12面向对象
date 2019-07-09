@@ -1,0 +1,642 @@
+	
+
+二、模块
+
+1.自定义模块
+
+a.import  模块名
+
+b.from 模块名   import  函数，变量或者类 【from  模块名  import   *】
+
+c.import   模块名    as   别名
+
+    #需求：在当前文件中访问moduleDemo01中的内容
+    
+    #1.import xxx
+    
+    """
+    import  module01.moduleDemo01
+    
+    print(module01.moduleDemo01.num1)  #10
+    module01.moduleDemo01.func()  #func~~~
+    
+    num1 = 34
+    def func():
+        print("当前文件")
+    print(num1)
+    func()
+    """
+    
+    #特点：调用函数和访问变量的时候，语法：模块名.函数或者变量
+    #缺点：如果模块中的内容较多，每次调用的时候都需要声明函数或者变量的路径，调用麻烦，后期维护困难
+    #优点：如果在当前文件中出现和模块中重名的函数或者变量，相互之间没有任何影响
+    
+    #2.import xxx as  xxx
+    
+    """
+    import  module01.moduleDemo01 as m
+    
+    print(m.num1)
+    m.func()
+    """
+    
+    #特点：给层级关系比较复杂的模块起别名，为了简化import的调用
+    #缺点：在每次调用函数或者访问变量的时候，还是需要声明
+    
+    #3.from xxx import xxx
+    #选择性加载指定模块中的内容
+    #from module01.moduleDemo01 import num1,func
+    #将指定模块中的所有内容全部加载
+    
+    from module01.moduleDemo01 import  *
+    
+    print(num1)   #10
+    print(num2)   #20 #NameError: name 'num2' is not defined
+    func() #func~~~~
+    
+    num1 = 34
+    def func():
+        print("当前文件")
+    print(num1)
+    func()
+    
+    
+    #特点：导入模块的时候进行了声明，调用函数或者访问变量的时候就不要再次声明
+    #缺点：如果在当前文件中出现和模块中重名的函数或者变量，则会将模块中的函数或者变量覆盖【重新赋值】
+    #优点：函数调用简单，后期维护方便
+    
+    #建议：系统模块使用import较多，自定义模块建议使用from .... import
+    
+    #应用
+    # import  random
+    # from random import  choice
+    # from random import  *
+    # from collections import  Iterator
+
+2.name属性和dir函数
+
+    __name__:如果不想让一个模块中的某些代码被执行，就可以将这些代码书写在__name__的判断中
+    __name__代表当前模块的名称，每个模块都有该属性，当__name__的值为__main__,表名当前文件在执行，否则是被引入
+
+    import os
+    
+    def getTxtFile(srcpath):
+        if not os.path.exists(srcpath):
+            print("输入的路径不存在")
+            return
+    
+        if os.path.isfile(srcpath):
+            print("输入的路径是文件")
+            return
+    
+        # 获取指定路径下的所有内容
+        fileList = os.listdir(srcpath)
+    
+        # 遍历
+        for fileName in fileList:
+            # 拼接路径
+            filePath = os.path.join(srcpath, fileName)
+    
+            # 判断
+            if os.path.isfile(filePath):
+                if filePath.endswith(".txt"):
+                    print(filePath)
+    
+                    # os.path.splitext(filePath)----->("父路径",".txt")
+    
+    if __name__ == "__main__":
+        print("__main__被执行了")
+        getTxtFile(r"C:\Users\Administrator\Desktop\XA-Python1904")
+
+内置的系统函数dir()可以查找模块内定义的所有的内容，以一个字符串列表的形式返回
+
+    #import os,random
+    import  os
+    import  random
+    import  module01.moduleDemo01
+    
+    print(dir(os))
+    print(dir(random))
+    print(dir(module01.moduleDemo01))
+
+3.logging
+
+    """
+    日志：可以追踪一些软件运行的过程中所发生的事件
+    作用：通过对log的分析，可以方便了解当前程序的性能，了解用户的行为；方便调试程序，定位程序运行故障的问题个解决
+    
+    
+    日志包含的信息：事件发生的时间，事件发生位置，事件的严重级别，事件内容
+    
+    日志的等级：debug   info   notice    warning    error   critical   alter  emergency
+    """
+    import  logging
+    
+    #输出一条不同日志级别的记录
+    logging.debug("this is a debug log")
+    logging.info("this is a info log")
+    logging.warning("this is a warning log")
+    logging.error("this is a debug log")
+    logging.critical("this is a critical log")
+    
+    
+    logging.log(logging.DEBUG,"this is a debug log")
+    
+    """
+    1.为什么debug和info没有出现在控制台上
+        logging模块默认设置的日志级别是warning，只有级别大于等于warning的日志才会被输出，而小于warning被丢弃
+    
+    2.日志信息的含义
+        WARNING:root:this is a warning log
+        ERROR:root:this is a debug log
+        CRITICAL:root:this is a critical log
+    
+        日志级别：日志器名称：日志信息，该格式是日志器默认的格式，是BASIC_FORMAT，
+        值为："%(levalname)s:%(name)s:%(message)s"
+    
+    3.工作原理：
+        当没有提供任何配置信息的时候，这些函数会默认调用logging.basciConfig(**kwargs),
+        且不会向该函数中传递任何参数，如果不想使用默认的格式，可以通过给basciConfig传参，自定义格式
+    """
+
+    import  logging
+    
+    #手动配置参数
+    #**kwargs,key=value
+    #1.修改日志等级
+    #logging.basicConfig(level=logging.DEBUG)
+    
+    #2.添加详细信息
+    #"%(levalname)s:%(name)s:%(message)s"
+    log_format = "%(asctime)s - %(levelname)s - %(message)s"
+    date_format = "%m%d%Y %H:%M:%S"
+    logging.basicConfig(filename="mylog.log",level=logging.DEBUG,format=log_format,datefmt=date_format)
+    
+    
+    logging.debug("this is a debug log")
+    logging.info("this is a info log")
+    logging.warning("this is a warning log")
+    logging.error("this is a debug log")
+    logging.critical("this is a critical log")
+
+三、面向对象的思想
+
+1.案例
+
+面向对象：一切皆对象
+
+面向对象，面向过程【处理】
+
+案例：小明是一个电脑小白，想要组装一台电脑，组装完成后打开电脑玩游戏
+
+面向过程
+
+	a.小明补充电脑相关知识
+
+	b.小明去购买电脑的零件
+
+	c.小明需要将电脑零件运回家
+
+	d.小明自己动手进行组装
+
+	e.小明打开电脑玩游戏
+
+面向对象
+
+	a.找到一个懂电脑的人购买电脑零件
+
+	b.找到一个快递小哥将零件运回家
+
+	c.找到一个会组装的人组装起来
+
+	d.小明打开电脑玩游戏	
+
+2.面向对象和面向过程的区别
+
+面向过程：
+
+	生活：一种解决问题的思维方式，但是，在解决问题的时候，侧重点在于问题是怎样一步一步解决的，然后亲力亲为的去解决问题
+
+	程序：代码从上往下依次执行
+
+	           程序流程在书写程序的时候已经确定
+
+面向对象：一种解决问题的思维方式，但是，在解决问题的时候，侧重点在于找到一个具有特殊功能的个体，然后委托该个体帮忙完成某件特定的事情
+
+	程序：程序的流程是由用户在使用的过程中决定的
+
+	              使用面向对象进行开发，先要找到具有特殊功能的个体，如果存在，则直接使用，如果个体不存在，则需要创建
+
+		    面向对象不是一门编程语言，只是一个编程思想，使用面向对象思想的语言：Python，Java,JavaScript,OC等
+
+优缺点：
+
+面向过程：
+
+	优点：性能比面向对象高
+
+	缺点：开销比较，开发成本比较高，比如单片机，嵌入式开发一般采用的是面向过程
+
+面向对象：
+
+	优点：易于维护，易于扩展，易于复用，面向对象语言三大特征：封装，继承和多态，可以设计出低耦合的系统，更加灵活，进行版本更新迭代的时候更加易于维护
+
+	缺点：性能比面向过程低	
+
+四、类和对象
+
+1.概念
+
+类和对象是面向对象的核心
+
+类：多个具有相同特殊功能的个体的集合，类是抽象的存在
+
+对象：在一个类中，一个具有特殊功能的个体，也被称为实例【instance】
+
+思考问题：先有对象还是先有类？
+
+	在代码中，先有类，通过类创建对象
+
+注意：类也是一种数据类型，只不过自定义的，通过类创建对象实质是定义了一个类的变量
+
+2.类的定义
+
+语法：
+
+class   类名():
+
+	类体
+
+说明：
+
+	a.Python中使用关键字class定义类
+
+	b.类名只要是一个合法的标识符即可，尽量遵循大驼峰【变量名，函数名使用的小驼峰】
+
+	c.和if语句，while语句类似，通过缩进区分类体
+
+	d.类体包括两部分：对类的特征描述【名词】和行为的描述【动词】
+
+    #函数的定义：声明和实现
+    #类的定义
+    #类的声明
+    class MyClass():
+        #类的实现
+        #定义变量，定义函数
+        pass
+    
+    
+    class MyClass1():
+        pass
+    
+    
+    #注意：在同一个py文件中可以定义多个类，但是，为了提高代码的可读性，结合模块的使用，最好一个文件一个类
+
+3.类中成员的定义
+
+设计类：只需要关心3个要素
+
+	a.事物名称：类名，例如：Person
+
+	b.特征：变量，例如：姓名，年龄等
+
+	c.行为：函数，例如：学习，工作等
+
+类中成员：成员变量和成员函数
+
+4.创建对象【实例化对象】
+
+定义一个类，在类中定义成员变量和成员函数，但是，如果在类的外面要访问这些成员，直接访问没有权限，必须通过对象访问
+
+语法:	
+
+	变量名  = 类名(),注意：()不能省略
+
+5.类中成员的使用
+
+    #1.类的定义
+    class Person():
+        #2.类中成员的定义
+        #2.1事物的特征：成员变量
+        # name = "abc"
+        # age = 19
+    
+        #2.2事物的行为：成员函数
+        """
+        self:自己
+    
+        类中成员函数和普通函数之间的区别：
+            a.形参列表一定包含self，处于形参列表的首位
+            b.self不需要手动传参，调用成员函数的时候，会自动传参
+            c.self并不是一个关键之，可以是任意的标识符，为了结合编程的习惯使用，一般使用self，表示当前类的对象
+        """
+        def work(self):
+            print("self的地址：",id(self))
+            #per1.name  per1.age
+            print("working",self.name,self.age)
+    
+        def eat(self,food):
+            print("eating" + food)
+    
+    #3.创建对象
+    #注意：类名()每被使用一次，就相当于是创建一个新的对象，每个对象都拥有自己唯一的地址
+    num1 = 10
+    print(num1) #<class "int">
+    num2 = 10
+    print(num2)
+    print(id(num1) == id(num2))  #True
+    
+    p1 = Person()
+    print(p1)  #<class '__main__.Person'>
+    p2 = Person()
+    print(p2)
+    print(id(p1) == id(p2))  #False
+    
+    #定义变量在内存中开辟空间，引用存储在栈空间中，真正的对象存储在堆空间中
+    
+    #4.类中成员的访问
+    #4.1访问成员变量【属性】
+    #语法：获取：对象.属性名     赋值：对象.属性名 = 值
+    per1 = Person()
+    #获取
+    #print(per1.name,per1.age)
+    #赋值【对象.属性 = 值表示给当前对象动态绑定了新的属性,】
+    per1.name = "zhangsan"
+    per1.age = 20
+    print(per1.name,per1.age)
+    
+    per1.score = 100
+    print(per1.score,id(per1.score))
+    
+    #一个类的对象动态绑定的属性只有当前对象能访问
+    per2 = Person()
+    per2.score = 17
+    print(per2.score,id(per2.score))  #AttributeError: 'Person' object has no attribute 'score'
+    
+    #注意：对象在内存中的存储，属性会随着对象的出现而出现，各自回占用一份独立的空间
+    #两个对象的同一个属性占用的是不同的空间
+    per1.score = 88
+    print(per2.score)
+    
+    #4.2调用成员函数
+    #语法：对象.函数名（实参列表）
+    print("per1的地址：",id(per1))
+    #self = per1  per1 = Person(),类中的成员函数被调用的时候，self会被自动传参，实参为当前调用该函数的对象
+    per1.work()
+    
+    #print("per2的地址：",id(per2))
+    #per2.work()
+
+6.动态绑定属性和限制绑定
+
+    #类的定义
+    class Person():
+        #类属性：
+        # name = ""
+        # age = 19
+    
+        #为了避免一个对象可以无限制绑定属性，可以通过元组限制绑定,元组中的元素是字符串，是属性的字段名
+        __slots__ = ("name","height","score")
+    
+        #成员函数的定义
+        def func1(self):
+            print("func~~~~111",self.name,self.height)
+    
+    #对象的创建
+    p1 = Person()
+    
+    #动态绑定属性【成员变量】，可以无限制绑定任意属性
+    #实例属性
+    p1.name = "jack"
+    p1.height = 172.0
+    print(p1.name,p1.height)
+    
+    #调用成员函数
+    p1.func1()
+    
+    # p1.num = 18
+    # p1.abc = 127
+
+7.综合案例
+
+    #测试文件
+    """
+    需求：开学了，张老师让学生小明，小花，小丽做自我介绍
+         介绍姓名，年龄，爱好，来一段才艺展示
+    
+    老师类
+        特征：姓名
+        行为：让。。。做自我介绍
+    
+    学生类
+        特征：姓名，年龄，爱好
+        行为：做自我介绍   来一段才艺展示
+    """
+    from practice01.teacher import Teacher
+    from  practice01.student import Student
+    
+    #1.创建老师的对象并设置属性
+    zhang = Teacher()
+    zhang.name = "张老师"
+    
+    #2.创建学生的对象并设置属性
+    xiaoming = Student()
+    xiaoming.name = "小明"
+    xiaoming.age = 18
+    xiaoming.hobby = "吹牛逼"
+    
+    #3.让老师执行自己的行为
+    zhang.letStuIntroduce(xiaoming)
+    
+    
+    xiaohua = Student()
+    xiaohua.name = "小花"
+    xiaohua.age = 18
+    xiaohua.hobby = "唱歌"
+    zhang.letStuIntroduce(xiaohua)
+
+    """
+    老师类
+        特征：姓名
+        行为：让。。。做自我介绍
+    """
+    class Teacher():
+        # stu = xiaoming = Student(),stu表示的是学生的对象
+        def letStuIntroduce(self,stu):
+            print("%s让%s做自我介绍" % (self.name,stu.name))
+    
+            #学生开始做自我介绍
+            stu.introduce()
+    
+            #学生才艺展示
+            if stu.name == "小花":
+                stu.sing()
+            elif stu.name == "小丽":
+                stu.dance()
+            else:
+                stu.lie()
+
+    """
+    学生类
+        特征：姓名，年龄，爱好
+        行为：做自我介绍   来一段才艺展示
+    """
+    class Student():
+        def introduce(self):
+            print("大家好，我是:%s,年龄:%d,爱好：%s" % (self.name,self.age,self.hobby))
+    
+        def sing(self):
+            print("唱歌")
+        def dance(self):
+            print("跳舞")
+        def lie(self):
+            print("吹牛逼")
+
+五、构造函数
+
+1.使用
+
+    概念：当创建对象的时候，第一个被自动调用的函数被称为构造函数【Constructor】,被称为构造器
+    一般情况下，倾向于将对象创建为有初始状态的，可以在类中定义一个__init__，该函数的作用创建对象并将对象初始化
+    
+    语法：
+    def __init__(self,args1,args2....):
+    	函数体
+
+    #1.构造函数的调用时机
+    class Person1():
+        def __init__(self):
+            print("构造函数被执行了")
+    
+    print("start")
+    #注意1：在默认的情况下，系统提供了一个无参的构造函数
+    #注意2：在创建对象的过程中构造函数会被自动调用
+    p1 = Person1()
+    print("end")
+    
+    #2.定义有参的构造函数
+    class Person2():
+        def __init__(self,a,b):
+            print("构造函数被执行了",a,b)
+    
+    #注意3：当在类中定义了有参的构造函数，系统默认的无参的构造函数会被覆盖，创建对象的时候，根据具体的需求进行传参
+    #p2 = Person2()  #TypeError: __init__() missing 2 required positional arguments: 'a' and 'b'
+    p2 = Person2(2,4)
+    p2.name = "fag"
+    p2.age = 19
+    print(p2.name,p2.age)
+    
+    
+    #3.有参构造函数中的参数一般和成员变量有关
+    class Person3():
+        def __init__(self, name, age):
+            #实例属性
+            self.name = name
+            self.age = age
+    
+        def work(self):
+            print("working")
+    
+    p3 = Person3("zhangsan", 18)
+    print(p3.name, p3.age)
+    
+    p31 = Person3("jack",20)
+    print(p31.name,p31.age)
+    p31.name = "abc"
+    p31.age = 16
+    print(p31.name,p31.age)
+    
+    p31.work()
+    p31.work()
+    p31.work()
+    
+    """
+    【面试题：普通成员函数和构造函数之间的区别】
+    不同点
+        1.普通成员函数的函数名是自定义的，但是，构造函数是__init__
+        2.普通成员函数必须手动调用，而构造函数在创建对象的过程中自动调用
+        3.对于同一个对象而言，普通成员函数可以被无限次调用，但是，构造函数中只能被调用一次
+    相同点：
+        1.都可以设置参数，且第一个参数都是self
+        2.都可以使用关键字参数，默认参数以及不定长参数
+    """
+
+2.练习
+
+    #测试文件
+    """
+    需求：开学了，张老师让学生小明，小花，小丽做自我介绍
+         介绍姓名，年龄，爱好，来一段才艺展示
+    
+    老师类
+        特征：姓名
+        行为：让。。。做自我介绍
+    
+    学生类
+        特征：姓名，年龄，爱好
+        行为：做自我介绍   来一段才艺展示
+    """
+    from practice02.teacher import Teacher
+    from  practice02.student import Student
+    
+    #1.创建老师的对象并设置属性
+    zhang = Teacher("张老师")
+    
+    #2.创建学生的对象并设置属性
+    xiaoming = Student("小明",18,"吹牛逼")
+    
+    #3.让老师执行自己的行为
+    zhang.letStuIntroduce(xiaoming)
+    
+    
+    xiaohua = Student("小花",18,"唱歌")
+    zhang.letStuIntroduce(xiaohua)
+
+    """
+    学生类
+        特征：姓名，年龄，爱好
+        行为：做自我介绍   来一段才艺展示
+    """
+    class Student():
+    
+        def __init__(self,name,age,hobby):
+            self.name = name
+            self.age = age
+            self.hobby = hobby
+    
+    
+        def introduce(self):
+            print("大家好，我是:%s,年龄:%d,爱好：%s" % (self.name,self.age,self.hobby))
+    
+        def sing(self):
+            print("唱歌")
+        def dance(self):
+            print("跳舞")
+        def lie(self):
+            print("吹牛逼")
+
+    """
+    老师类
+        特征：姓名
+        行为：让。。。做自我介绍
+    """
+    class Teacher():
+        def __init__(self,name):
+            self.name = name
+    
+        # stu = xiaoming = Student(),stu表示的是学生的对象
+        def letStuIntroduce(self,stu):
+            print("%s让%s做自我介绍" % (self.name,stu.name))
+    
+            #学生开始做自我介绍
+            stu.introduce()
+    
+            #学生才艺展示
+            if stu.name == "小花":
+                stu.sing()
+            elif stu.name == "小丽":
+                stu.dance()
+            else:
+                stu.lie()
+
+
