@@ -1,0 +1,694 @@
+ 
+
+二、list列表
+
+1.概念
+
+变量：使用变量存储数据，缺点:变量一次只能存储一个数据
+
+需求：存储5个学生的成绩，求这些成绩的平均值
+
+    #需求：存储5个学生的成绩，求这些成绩的平均值
+    score1 = 78
+    score2 = 78
+    score3 = 78
+    score4 = 78
+    score5 = 78
+    
+    avg = (score1 + score2 + score3 + score4 + score5) / 5
+
+优化方案：找到一个容器，可以将多个数据一次性存储起来【采用列表】
+
+作用：列表相当于是一个容器，可以同时存储多个数据
+
+本质：列表是一种有序的集合
+
+	有序：有顺序，数据在内存中的存储顺序和在程序中存放的顺序相同
+
+	集合：collection【容器】
+
+2.创建列表
+
+num = 10
+
+语法：
+
+	变量名 = 列表
+
+	列表名称   = [数据1，数据2.。。。。。]
+
+说明：
+
+	a.创建列表实际上是定义一个列表类型的变量
+
+	b.[]是列表的标识
+
+	c.列表中的数据被称为元素【element】
+
+	d.当多个数据被存储到列表中之后，元素会被自动编号，编号从0开始，这个编号被称为索引【index】,下标或者角标，编号的作用：方便查找或者获取列表中的元素
+
+	e.索引的取值范围：0~列表中元素的个数 - 1，注意：如果索引超出了取值范围，则会出现索引越界【IndexError】的错误
+
+    #1.创建一个空列表
+    #列表名称的命名：listxxxx,不要直接使用list，系统中有一个函数名就是list
+    list1 = []
+    print(list1)
+    
+    #2.创建非空列表
+    list2 = [3,54,5,45]
+    print(list2)
+    
+    #3.注意1：列表中可以存储不同类型的数据
+    #注意2：列表中的元素在内存中的存储地址是连续的，列表元素的存放顺序和内存中的存储顺序是相同的【有序】
+    list3 = [34,"abc",18.5,True,34,54,5]
+    print(list3)
+    
+    #注意3：列表中存储的实际上是变量，进一步来说，列表中存储的是数据的地址
+    
+    #4.向列表中存储数据，需要考虑列表的容量吗？【面试题】
+    #工作原理：将数据存储到列表中，不需要考虑列表的容量，列表是一种可变的数据类型，在数据量大的情况下，
+    # 列表的底层会进行自动的扩容，列表的底层维护了一个栈结构【链表：存储数据的一种方式】，抽象成一个开口向上的容器
+    #栈：先进后出，后进先出  ，append():向栈中添加元素，pop():从栈中删除数据
+
+3.访问列表中的元素
+
+获取元素或者修改元素【列表是一种可变的数据类型】
+
+    #1.获取元素
+    #语法：列表名[索引]
+    list1 = [11,22,33,44,55]
+    num1 = list1[2]   #list1[2]----->33
+    print(num1)
+    
+    #index的取值范围：0~4  或者 -1~-5
+    #结论：index的取值范围：0~列表元素的个数 - 1 【顺序获取】   或者  -1  ~  -（列表元素的个数）【倒序获取】
+    print(list1[0])
+    print(list1[4])
+    #print(list1[5])   #IndexError: list index out of range范围
+    
+    print(list1[-1])
+    print(list1[-5])
+    #print(list1[-6])  #IndexError: list index out of range
+    
+    
+    #2.修改元素
+    #语法：列表名[索引] = 值
+    
+    #注意：列表存储的是元素，元素可以被任意修改，元素实际上是一个变量，变量存储上的是一个地址
+    print(list1)
+    list1[1] = 100
+    print(list1)
+    
+    #注意：在修改一个列表之前，可以对原列表备份
+
+4.列表操作
+
+列表组合：+
+
+列表元素的重复：*
+
+判断元素在列表中是否存在：成员运算符
+
+    #1.组合
+    list1 = [1,2,3]
+    list2 = [4,5,6]
+    print(list1 + list2)
+    print(list1)
+    
+    #2.列表元素的重复
+    print(list1 * 3)
+    print(list1)
+    
+    #结论：列表组合和列表元素的重复操作，都是生成了一个新的列表，对原列表没有任何影响
+    
+    #3.判断一个元素在列表中是否存在,一般结合if语句使用
+    print(2 in list1)
+    print(100 in list1)
+    
+    print(2 not in list1)
+    print(100 not in list1)
+    
+    #需求：自定义功能，判断一个元素在列表中是否存在
+    #工作原理：将指定的数据和列表中的元素进行挨个比对，如果元素的内容和指定的数据相同，则说明存在
+    list1 = [1,2,3,2,2,2]
+    key = 2
+    i = 0
+    while i <= 2:
+        #list1[i]
+        if key == list1[i]:
+            print("存在")
+            break
+        i += 1
+
+列表切片或者截取【重点掌握】
+
+    #切片【截取】：从一个已知的列表中获取子列表，
+    """
+    [1,2,3,4,5,6,7,8,9]
+    
+    [1,3,5,7]是切片,[1,2,3,4]是切片
+    
+    注意：从原列表中获取的元素是连续的,是否连续取决于步长
+    """
+    
+    #语法：列表名[start:end:step]
+    #start,end,step可以进行选择性的省略，start默认为0或者-1，end默认为下标最大值，step默认为1
+    
+    list1 = [11,22,33,44,55,66,77,88,99]
+    
+    #1.获取指定区间的元素
+    #注意1：在Python中，一般只要涉及到区间，包头不包尾,前闭后开区间[start,end)
+    #注意2：切片生成了一个新的列表
+    subList1 = list1[1:3]
+    print(subList1)
+    print(list1)
+    
+    #2.从指定下标开始，获取到结尾
+    subList2 = list1[1:]
+    print(subList2)   #[22, 33, 44, 55, 66, 77, 88, 99]
+    subList21 = list1[1:8]
+    print(subList21)  #[22, 33, 44, 55, 66, 77, 88]
+    
+    #3.从开头开始，获取到指定下标
+    #注意：同样也是包头不包尾
+    subList3 = list1[:4]
+    print(subList3)   #[11, 22, 33, 44]
+    subList31 = list1[0:4]
+    print(subList31) #[11, 22, 33, 44]
+    
+    #4.获取全部的元素
+    subList4 = list1[:]
+    print(subList4)
+    
+    #5.指定步长
+    #需求：获取下标为偶数的元素
+    subList5 = list1[::2]
+    print(subList5)
+    #需求：获取下标为奇数的元素
+    subList51 = list1[1::2]
+    print(subList51)
+    
+    subList52 = list1[2:8:2]
+    print(subList52)
+    
+    list1 = [11, 22, 33, 44, 55, 66, 77, 88, 99]
+    #6.如果start和end为负数,step为正数
+    #a，当start>end,结果为[]
+    subList61 = list1[-1:-4]
+    print(subList61)  #[]
+    
+    #b当start<end,,则获取指定范围内的子列表，同样遵循不包尾
+    subList62 = list1[-4:-1]
+    print(subList62)  #[66, 77, 88]
+    
+    #7.如果start和end为正数,step为负数
+    #a。如果end大于start,结果为[]
+    print(list1[2:5:-1])   #[]
+    #b.如果end小于start,表示倒序获取元素，同样遵循不包尾
+    print(list1[5:2:-1])   #[66, 55, 44]
+    
+    
+    #8.如果start,end，step为负数
+    #a.如果end小于start，表示倒序获取元素，同样遵循不包尾
+    print(list1[-1:-6:-1])  #[99, 88, 77, 66, 55]
+    #b.如果start小于end，则结果为[]
+    print(list1[-6:-1:-1])  #[]
+    
+    
+    #特殊情况1
+    #9.如果start为正数，end为负数
+    #注意：0表示列表的开头，-1表示列表的结尾
+    print(list1[0:-1])  #[11, 22, 33, 44, 55, 66, 77, 88]
+    print(list1[0:8])  #[11, 22, 33, 44, 55, 66, 77, 88]
+    
+    print(list1[0:-1:2]) #[11, 33, 55, 77]
+    print(list1[0:8:2]) #[11, 33, 55, 77]
+    
+    #特殊情况2
+    #获取元素：下标不能越界
+    #print(list1[100])  #IndexError: list index out of range
+    #切片：当start的值远远超过下标的范围，获取的列表为空列表
+    print(list1[100:])   #[]
+    #切片：当end的值远远超过下标的范围，默认获取到列表的最后一个元素，等价于list1[num:]
+    print(list1[4:100])  #[55, 66, 77, 88, 99]
+    print(list1[4:])    #[55, 66, 77, 88, 99]
+    
+    #特殊情况3
+    print(list1[:])   #顺序获取列表中的所有元素
+    print(list1[::-1])   #倒序获取列表中的所有元素
+    
+    #特殊情况4
+    print(list1[0:-1:1])   #[11, 22, 33, 44, 55, 66, 77, 88]
+    print(list1[0:-1:-1])  #[]
+    
+    #练习：
+    list2 = ["a","b","c","d","e","f"]
+    print(list2[2])    #c
+    print(list2[2:])   #["c","d","e","f"]
+    print(list2[:2])    #["a","b"]
+    print(list2[1:4:2])   #["b","d"]
+    print(list2[-1:-4:2])  #[]
+    print(list2[-1:-4:-2]) #["f","d"]
+    print(list2[-4:-1:-2])  #[]
+
+5.列表功能
+
+5.1增加
+
+    #语法：列表名.功能（）
+    
+    #1.append() ，追加，在列表的末尾追加元素
+    #特点：在原列表的基础上直接操作
+    list12 = [1,2,3,4,5]
+    print(list12)
+    #1.1添加单个元素
+    list12.append(6)
+    print(list12)
+    #1.2添加多个元素
+    #注意：append追加的时候，每次都只能追加一个元素
+    #r如果需要追加多个元素，则以容器的方式追加，得到了二维容器
+    #list12.append(7,8,9)  #TypeError: append() takes exactly one argument (3 given)
+    #print(list12)
+    list12.append([7,8,9])
+    print(list12)   #[1, 2, 3, 4, 5, 6, [7, 8, 9]]
+    print(list12[6][1])
+    
+    #2.extend(),扩展，在列表的末尾添加元素,打碎加入
+    list12 = [1,2,3,4,5]
+    print(list12)
+    #1.1添加单个元素
+    #注意：extend添加元素，只能添加可迭代元素【list,tuple,dict,set,str等】
+    #list12.extend(6)   #TypeError: 'int' object is not iterable可迭代对象：可以使用for循环遍历的数据   iterator迭代器
+    #print(list12)
+    list12.extend([6])
+    print(list12)
+    #1.2添加多个元素
+    list12.extend([7,8,9])
+    print(list12)   #[1, 2, 3, 4, 5, 7, 8, 9]
+    
+    """
+    【面试题】
+    append和extend之间的区别：
+        相同点：
+            a。都表示在列表的末尾添加元素
+            b.添加多个元素，append和extend必须以容器的方式添加
+        不同点：
+            a.添加单个元素，append可以直接添加，extend只能通过容器的方式添加
+            b.当以容器的方式添加元素的时候，append将整个容器作为整体添加，extend只添加元素
+    """
+    
+    #3.insert()，插入，在列表中的任意位置进行插入指定的元素
+    #insert(索引，被插入的元素)
+    list12 = [1,2,3,4,5]
+    print(list12)
+    
+    #3.1插入单个元素
+    #需求：将6插入到下标2的位置
+    list12.insert(2,6)
+    print(list12)
+    
+    #注意：插入的时候，如果index超出了下标的范围，如果下标是正数，插入到末尾；如果是负数，插入到开头
+    list12.insert(-10,6)
+    print(list12)
+    
+    #3.2插入多个元素
+    list12.insert(1,[7,8,9])
+    print(list12) #[6, [7, 8, 9], 1, 2, 6, 3, 4, 5]
+    
+
+5.2删除
+
+    #1.pop(),弹出，默认删除列表中的最后一个元素，也可以删除指定位置上的元素，侧重点在于索引
+    list1 = [1,2,3,4,5,6]
+    print(list1)
+    
+    #注意1：pop删除完成之后，返回被删除的元素
+    result = list1.pop()
+    print(list1)
+    print(result)
+    
+    #注意2：可以指明索引，可以删除指定位置上的元素
+    result1 = list1.pop(2)
+    print(list1)
+    
+    
+    #2.remove()：移除，移除指定的元素，侧重点在于元素
+    list2= [22,33,44,33,55,33,66,33,33]
+    print(list2)
+    #注意1：在列表中进行查找指定的元素，只删除第一个匹配到的元素
+    #注意2：被移除的数据在列表中需要一定存在，如果不存在，则报错
+    # list2.remove(33)
+    # print(list2)
+    
+    #需求：删除list2中的所有的33，33出现了5次
+    # list2.remove(33)
+    # print(list2)
+    # list2.remove(33)
+    # print(list2)
+    # list2.remove(33)
+    # print(list2)
+    # list2.remove(33)
+    # print(list2)
+    # list2.remove(33)
+    # print(list2)
+    
+    """
+    n = 0
+    while n < 5:
+        list2.remove(33)
+        n += 1
+    print(list2)  #[22, 44, 55, 66]
+    list2.remove(33)  #ValueError: list.remove(x): x not in list
+    print(list2)
+    """
+    
+    #需求：删除一个列表中任意的重复元素
+    key = 33
+    count1 = 0
+    while True:
+        if key in list2:
+            count1 += 1
+            list2.remove(key)
+        else:
+            break
+    print(list2,count1)
+    
+    #3.clear()：清除，将列表清空
+    print(list2)
+    list2.clear()   #当在循环中，需要将列表进行重置，则clear可以使用
+    print(list2)
+    
+    #del list2
+
+5.3获取
+
+    #1.len(),获取列表的长度或者获取列表中元素的个数
+    list1 = [3,44,54,5,45,4]
+    
+    #索引取值范围：0~len - 1
+    print(len(list1))
+    print(list1.__len__())
+    
+    #2.max()，获取列表中元素的最大值
+    print(max(list1))
+    
+    #3.min()，获取列表中元素的最小值
+    print(min(list1))
+    
+    #需求：求三个任意数中的最大值
+    num1 = 19
+    num2 = 7
+    num3 = 199
+    numList = [num1,num2,num3]
+    maxValue = max(numList)
+    print(maxValue)
+    
+    #4.index()，从列表中获取第一个匹配元素的索引
+    list1 = [3,44,54,5,45,44,44]
+    index1 = list1.index(44)
+    print(index1)
+    
+    #注意：如果要获取元素在列表中的位置，前提是该元素是存在的
+    #index2 = list1.index(100)
+    #print(index2)  #ValueError: 100 is not in list
+    
+    #5.count()，统计一个元素在列表中出现的次数
+    c = list1.count(44)
+    print(c)
+
+5.4反转和排序
+
+    #1.reverse(),反转，倒序
+    list1 = [11,22,33,44,55]
+    
+    #切片:生成了一个新的列表
+    list11 = list1[::-1]
+    print(list11)
+    
+    #reverse；在 原列表的基础上实现了反转
+    list1.reverse()
+    print(list1)
+    
+    #while循环实现倒序
+    n = len(list1) - 1
+    newList = []
+    while n >= 0:
+        newList.append(list1[n])
+        n -= 1
+    print(newList)
+    
+    #2.sort()，排序
+    #注意：默认为升序排序
+    #注意：在原列表的基础上进行操作的
+    list1 = [34,1,435,27,100,88]
+    list1.sort()
+    print(list1)
+    
+    #降序
+    list1 = [34,1,435,27,100,88]
+    list1.sort(reverse=True)
+    print(list1)
+    
+    #冒泡，选择，快速，插入等
+
+5.5拷贝
+
+    import  copy
+    
+    #一、列表本身的copy
+    #1.=:引用赋值
+    list1 = [11,22,33]
+    list2 = list1
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))  #True
+    
+    list1[1] = 100
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    """
+    [11, 22, 33]
+    [11, 22, 33]
+    True
+    [11, 100, 33]
+    [11, 100, 33]
+    True
+    """
+    
+    print("*" * 30)
+    
+    #2.copy()
+    #一维
+    list1 = [11,22,33]
+    list2 = list1.copy()
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    list1[1] = 100
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    """
+    [11, 22, 33]
+    [11, 22, 33]
+    False
+    [11, 100, 33]
+    [11, 22, 33]
+    False
+    """
+    
+    print("*" * 30)
+    
+    #二维
+    list1 = [11,22,33,[44,55]]
+    list2 = list1.copy()
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    list1[3][0] = 100
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    """
+    [11, 22, 33, [44, 55]]
+    [11, 22, 33, [44, 55]]
+    False
+    [11, 22, 33, [100, 55]]
+    [11, 22, 33, [100, 55]]
+    False
+    """
+    
+    #结论：=表示引用赋值，当一个列表中的元素被修改之后，另一个列表也会随着被修改
+    #copy:如果是一维列表，则修改一个列表对另一个列表没有影响，但是如果是一个二维列表，如果修改二维列表，另一个列表也会随着被修改
+    #注意：不管一维还是二维列表，其中存储的实际上都是地址
+    
+    print("*" * 30)
+    
+    #二、copy模块中的copy
+    #第一步：导入模块：import copy
+    #第二步：copy.copy()表示浅拷贝   copy.deepcopy()表示深拷贝
+    
+    #1.一维列表
+    #a.浅拷贝
+    list1 = [11,22,33]
+    list2 = copy.copy(list1)
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    list1[1] = 100
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    print("*" * 30)
+    
+    #b.深拷贝
+    list1 = [11,22,33]
+    list2 = copy.deepcopy(list1)
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    list1[1] = 100
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    print("*" * 30)
+    
+    #2.二维列表
+    #a。浅拷贝
+    list1 = [[11,22,33],[44,55,66]]
+    list2 = copy.copy(list1)
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    list1[0][0] = 100
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    print("*" * 30)
+    
+    #b.深拷贝
+    list1 = [[11,22,33],[44,55,66]]
+    list2 = copy.deepcopy(list1)
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    list1[0][0] = 100
+    print(list1)
+    print(list2)
+    print(id(list1) == id(list2))
+    
+    
+    """
+    深浅拷贝
+        一维列表：不管是copy还是deepcopy，一个列表被修改，另一个列表不受影响
+        二维列表：
+            copy:一个列表修改二维列表，另一个随着修改【只拷贝外层】
+            deepcopy:一个列表被修改，另一个列表不受影响【全部拷贝】
+    
+    """
+    
+    #练习1
+    a = [1,2,3]
+    b = [4,5,6]
+    c = [a,b]
+    print(c)  #[[1,2,3],[4,5,6]]
+    d = copy.copy(c)
+    e = copy.deepcopy(c)
+    print(d)  #[[1,2,3],[4,5,6]]
+    print(e)  #[[1,2,3],[4,5,6]]
+    
+    a.append(7)
+    print(c) #[[1,2,3,7],[4,5,6]]
+    print(d) #[[1,2,3,7],[4,5,6]]
+    print(e) #[[1,2,3],[4,5,6]]
+    
+    #练习2
+    a = [1,2,["a","b"]]
+    b = a
+    c = a.copy()
+    #情况一
+    # a.append(3)
+    # print(b)   #[1,2,["a","b"],3]
+    # print(c)   #[1,2,["a","b"]]
+    
+    #情况二
+    a[-1].append(3)
+    print(b)  #[1,2,["a","b",3]]
+    print(c) #[1,2,["a","b",3]]
+
+三、循环语句之for语句
+
+1.定义
+
+初始化表达式
+
+while  条件表达式;
+
+	循环体
+
+	循环之后的操作表达式
+
+for-in循环
+
+for  变量  in  容器：
+
+	循环体
+
+说明：for-in的作用主要用于遍历可迭代对象中的 元素【遍历：依次访问列表中的每一个元素，获取每一个元素值】
+
+列表名[index]
+
+工作原理;按照顺序获取列表中的每个元素，赋值给变量，再执行循环体，直到列表中的元素全部被获取完毕，则循环自动停止
+
+2.使用以及列表遍历
+
+    list1 = ["abc","faef","faehf",10]
+    # print(list1[0])
+    # print(list1[1])
+    # print(list1[2])
+    # print(list1[3])
+    
+    #采用循环进行遍历
+    #while:操作索引
+    i = 0
+    while i < len(list1):
+        print(list1[i])
+        i += 1
+    
+    #for：操作元素
+    for num in list1:
+        print(num)
+    
+    #for结合range：操作下标
+    """
+    range(start,end,step)
+        start默认为0
+        step默认为1
+    
+    举例：
+        range(1,100),生成一个容器，该容器中的元素为1~99的整数
+        range(1,100，2),生成一个容器，该容器中的元素为1~99的奇数
+        #错误写法：range(100，2),生成一个容器，该容器中的元素为1~99的奇数
+    """
+    for j in range(len(list1)):
+        print(list1[j])
+    
+    
+    #for结合enumerate【枚举】
+    for result in enumerate(list1):
+        print(result)
+    for index,element in enumerate(list1):
+        print(index,element)
+    
+    # num1,num2 = (23,45)
+    # print(num1,num2)
