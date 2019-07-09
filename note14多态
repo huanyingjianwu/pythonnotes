@@ -1,0 +1,601 @@
+一、
+
+
+    """
+    班级类：班级名称、学生列表
+    		显示所有学生
+    		根据学号查找学生
+    		添加一个学生
+    		删除一个学生（学生对象、学号）
+    		根据学号升序排序
+    		根据成绩降序排序
+    """
+    class Grade(object):
+        def __init__(self,name,stulist):
+            self.name = name
+            self.stulist = stulist
+    
+        def showAll(self):
+            print(self.name + "中所有学生的信息如下：")
+            for stu in self.stulist:
+                print(stu)
+    
+        def searchByStuid(self,id):
+            print("查找结果如下")
+            for stu in self.stulist:
+                if stu.stuid == id:
+                    print(stu)
+                    #break
+                    return
+            else:
+                print("未查找到")
+    
+        def addStu(self,stu):
+            if stu not in self.stulist:
+                self.stulist.append(stu)
+            else:
+                print(stu.name + "已经在该班级中")
+    
+            print("添加操作完成之后班级学生如下：")
+            self.showAll()
+    
+        def removeStu(self,id):
+            for stu in self.stulist:
+                if stu.stuid == id:
+                    self.stulist.remove(stu)
+    
+            print("删除操作完成之后班级学生如下：")
+            self.showAll()
+    
+        def scoreSort(self):
+            for i in range(len(self.stulist) - 1):
+                for j in range(len(self.stulist) - i - 1):
+                    if self.stulist[j].score < self.stulist[j + 1].score:
+                        self.stulist[j],self.stulist[j + 1] = self.stulist[j + 1],self.stulist[j]
+            print("排序操作完成之后班级学生如下：")
+            self.showAll()
+
+    """
+    使用封装的思想结合列表完成下面题目
+    	学生类：姓名、年龄、学号、成绩
+    	班级类：班级名称、学生列表
+    		显示所有学生
+    		根据学号查找学生
+    		添加一个学生
+    		删除一个学生（学生对象、学号）
+    		根据学号升序排序
+    		根据成绩降序排序
+    """
+    from  homework.student import Student
+    from homework.grade import Grade
+    
+    #1.创建学生对象
+    stu1 = Student("aaa",10,"1001",89)
+    stu2 = Student("bbb",8,"1002",100)
+    stu3 = Student("ccc",15,"1003",60)
+    stu4 = Student("aaddda",7,"1004",89)
+    
+    l = [stu1,stu2,stu3,stu4]
+    
+    #2.创建班级对象
+    grade1 = Grade("三年一班",l)
+    
+    #3.让班级执行自己的行为
+    grade1.showAll()
+    
+    stu1.name = "zhangsan"
+    grade1.showAll()
+    
+    #grade1.addStu(stu2)
+    stu5 = Student("jack",7,"1005",89)
+    grade1.addStu(stu5)
+    
+    grade1.scoreSort()
+
+    #学生类：姓名、年龄、学号、成绩
+    class Student(object):
+        def __init__(self,name,age,stuid,score):
+            self.name = name
+            self.age = age
+            self.stuid = stuid
+            self.score = score
+    
+        def __str__(self):
+            return "%s-%s-%s-%s" % (self.name,self.age,self.stuid,self.score)
+
+二、函数的重写和重载
+
+重写：override,在继承关系中，如果在子类中定义了和父类中重名的函数，则称为子类重写了父类中的函数
+
+重载：overload，运算符重载，对任意的函数重新实现一次，多用于系统函数
+
+1.系统函数的重写
+
+str:返回一个对象的字符串表示形式
+
+    class Person(object):
+        def __init__(self,name,age):
+            self.name = name
+            self.age = age
+    
+        #注意2：重写__str__函数，必须返回一个字符串
+        def __str__(self):
+            return  "姓名：%s，年龄：%d" % (self.name,self.age)
+    
+        # def __repr__(self):
+        #     return "姓名：%s，年龄：%d" % (self.name,self.age)
+        __repr__ = __str__
+    
+    #1.默认情况下，直接打印自定义类的对象的结果为地址
+    num1 = 10
+    print(num1)  #10   type(num1)-----><class “int”>
+    p1 = Person("jack",10)
+    #注:1：打印对象，对象会默认调用__str__函数，该函数默认返回当前对象的内存地址
+    print(p1)  #"jack",10
+    print(p1.__str__())
+    
+    #2.__str__:返回一个对象的字符串表示形式，来自于object
+    
+    #3.在子类中重写父类中的函数【在子类中定义一个和父类中重名的函数】，子类对象会优先调用子类中的函数【就近原则】
+    
+    #4.__repr__和__str__返回一个对象的字符串表示形式，__repr__是给计算机识别的，__str__是给用户识别的，一般情况下，两者的返回值一致
+    """
+    1.二者都未被重写，打印对象，优先调用的是str
+    2.如果重写str,补充些repr,打印对象，优先调用的是str
+    3.二者都被重写，打印对象，优先调用的是str
+    4.str未被重写，repr被重写，打印对象，优先调用的是repr
+    """
+    
+    #练习
+    class MyClass(object):
+        def __init__(self,num1,num2):
+            self.num1 = num1
+            self.num2 = num2
+        def __str__(self):
+            return "num1=%d num2=%d" % (self.num1,self.num2)
+    
+        __repr__ = __str__
+    
+    m = MyClass(34,54)
+    print(m)
+    
+    print(dir(m))
+    
+    #
+    print("fhjahf" == "fajg")
+
+2.自定义函数的重写
+
+    class Animal(object):
+        def show(self):
+            print("animal")
+    
+    class Cat(Animal):
+        pass
+    
+    class Dog(Animal):
+        def show(self,num1,num2):
+            print("dog")
+            return "fahgj"
+    
+    class Tiger(Animal):
+        pass
+    
+    c = Cat()
+    c.show()
+    
+    #在子类中出现重名的函数，子类对象优先调用子类中的函数
+    d = Dog()
+    d.show()
+
+3.运算符重载
+
+    #__add__
+    
+    #1.+:但凡使用+，在底层调用的是__add__函数，
+    print(19 + 26)
+    print("ahf" + "faj")
+    #对于+，Python解释器对不同的类型有不同的解释
+    
+    print("ahf".__add__("faj"))
+    
+    #print("fa" + 26)
+    
+    #2.
+    class Person(object):
+        def __init__(self,age):
+            self.age = age
+    
+        #使用+的时候调用add
+        def __add__(self, other):
+            #进行相加的是self和other
+            return Person(self.age + other.age)
+    
+        #打印对象的时候获取指定的字符串
+        def __str__(self):
+            return str(self.age)
+        __repr__ = __str__
+    
+    p1 = Person(3)
+    p2 = Person(10)
+    print(p1 + p2)   #13
+    print(p1.__add__(p2))
+    
+    
+    #3.
+    print(10 > 38)
+    print("fa" > "aa")
+    class Person(object):
+        def __init__(self,age):
+            self.age = age
+    
+        def __gt__(self, other):
+            if self.age > other.age:
+                return True
+            elif self.age < other.age:
+                return False
+            else:
+                return "相等"
+    
+    p1 = Person(10)
+    p2 = Person(10)
+    print(p1 > p2)
+
+三、多态
+
+一种事物的多种体现形式
+
+变量定义时的类型和运行时的类型不一致，也就是定义时并不确定调用的是哪个类中的函数，但是，当程序运行之后，才能确定该调用哪个函数
+
+注意：继承是多态的前提
+
+    #父类
+    class Animal(object):
+        pass
+    
+    class Dog(Animal):
+        pass
+    
+    l = list()
+    print(type(l))
+    a = Animal()
+    print(type(a))
+    d = Dog()
+    print(type(d))
+    
+    #isinstance()
+    print(isinstance(a,Animal))
+    
+    #注意：子类对象的类型是当前子类，同时也是父类
+    print(isinstance(d,Dog))
+    print(isinstance(d,Animal))
+    
+    print(isinstance(a,Dog))
+
+    #需求：动物有多种类型，喂人各种动物吃东西
+    
+    class Animal(object):
+        def __init__(self,name):
+            self.name = name
+        def eat(self):
+            print(self.name + "eating")
+    
+    class Dog(Animal):
+        pass
+    
+    class Cat(Animal):
+        pass
+    
+    class Monkey(Animal):
+        pass
+    
+    class Tiger(Animal):
+        pass
+    
+    class Person(object):
+        # def feedCat(self,cat):
+        #     cat.eat()
+        # def feedDog(self,dog):
+        #     dog.eat()
+    
+        #多态的应用
+        #ani会有不同形式的体现，具体是哪种数据类型取决于实参是什么类型
+        def  feedAnimal(self,ani):
+            ani.eat()
+            print(type(ani))
+    
+    p = Person()
+    c = Cat("小白")
+    p.feedAnimal(c)   #ani = c
+    
+    d = Dog("小白")
+    p.feedAnimal(d)
+    
+    #多态的好处：可以简化代码，提高代码的维护性
+
+四、获取对象的信息
+
+type()
+
+isinstance()
+
+dir()
+
+    import  types,random
+    #1.type()，获取对象的类型
+    
+    print(type(123))
+    print(type(123) == type(45))
+    print(type(123) == int)
+    
+    #获取一个函数的类型
+    def func():
+        pass
+    
+    print(type(func) == types.FunctionType)  #自定义函数
+    print(type(abs) == types.BuiltinFunctionType) #系统函数
+    print(type(lambda  x:x) == types.LambdaType) #匿名函数
+    print(type((x for x in range(10))) == types.GeneratorType)  #生成器类型
+    
+    #.isinstance()
+    print(type(123) == int)
+    print(isinstance(123,int))
+    
+    print(isinstance([1,2,3],list))
+    print(isinstance([1,2,3],(list,tuple)))
+    print(isinstance([1,2,3],(tuple,list)))
+    
+    
+    #3.dir()：可以获取一个对象的所有信息
+    print(dir(random))
+    
+    class Person(object):
+        def __init__(self,name,age):
+            self.name = name
+            self.age = age
+    
+        def show(self):
+            pass
+    
+    p= Person("fa",19)
+    print(dir(p))
+    
+    print(len("fawef"))
+    print("fahjfh".__len__())
+
+五、类中特殊的属性和方法
+
+1.类属性和实例属性
+
+【面试题：类属性和实例实例属性的区别】
+
+a.定义的位置不同，类属性直接定义在类中，实例属性定义在构造函数中或者动态绑定
+
+b.访问的方式不同，类属性可以通过类或者对象访问，实例属性只能通过对象访问
+
+c.在内存中出现的时机不同，类属性随着类的加载而出现，实例属性随着对象的创建而出现
+
+d.优先级不同，在类属性和实例属性重名的情况下，如果通过对象访问，优先访问的是实例属性
+
+e.类属性和实例属性的使用场景不同：    a.当前类的所有对象访问类属性，访问的是同一块空间，一般将所有对象的共享数据定义为类属性    b.当前类的所有对象访问实例属性，访问的是不同的空间，一般每个对象特有的数据定义为实例属性
+
+    class Person(object):
+        #1.定义的位置
+        #类属性
+        name = "hello"
+        num = 37
+    
+        def __init__(self,name):
+            #实例属性
+            self.name = name
+    
+    #2.访问的方式
+    #类属性：对象.属性    类名.属性
+    print(Person.name)
+    print(Person.num)
+    
+    #3.访问的优先级不同【重名】
+    p = Person("zhangsan")
+    print(p.name)
+    print(p.num)
+    
+    del p.name
+    print(p.name)
+    
+    """
+    类属性和实例属性的使用场景不同：
+        1.当前类的所有对象访问类属性，访问的是同一块空间，一般将所有对象的共享数据定义为类属性
+        2.当前类的所有对象访问实例属性，访问的是不同的空间，一般每个对象特有的数据定义为实例属性
+    """
+
+2.静态方法和类方法
+
+@staticmethod
+
+@classmethod
+
+总结：
+
+	实例方法，类方法和静态方法的区别
+
+	相同点：
+
+		a.三者都可以通过对象调用
+
+		b.在子类中都可以被继承，三者在子类中也可以被重写
+
+	不同点：
+
+		a.语法，实例方法第一个参数为self，类方法的第一个参数为cls，静态方法对参数没有任何要求
+
+		b.实例方法通过对象调用，类方法和静态方法都可以通过类名或者对象调用
+
+六、单例设计模式
+
+1.案例
+
+需求：模拟
+
+    class Person(object):
+        def __init__(self,name):
+            self.name = name
+    
+        def dance(self):
+            print(self.name + "dancing")
+
+    from  singleton01.person import Person
+    if __name__ != "__main__":
+        print("浙江卫视")
+        p = Person("小彩旗")
+        p.dance()
+        print(id(p))
+
+    from  singleton01.person import Person
+    if __name__ != "__main__":
+        print("山东卫视")
+        p = Person("小彩旗")
+        p.dance()
+        print(id(p))
+
+    from  singleton01.person import Person
+    if __name__ != "__main__":
+        print("江苏卫视")
+        p = Person("小彩旗")
+        p.dance()
+        print(id(p))
+
+    from  singleton01.person import Person
+    import singleton01.text01
+    import singleton01.text02
+    import singleton01.text03
+    
+    if __name__ == "__main__":
+        print("中央卫视")
+        p = Person("小彩旗")
+        p.dance()
+        print(id(p))
+
+2.概念
+
+设计模式：设计模式是经过总结，实践，优化之后的用于解决常见问题的解决方案，在实际的项目开发中，一般会用到3到4种设计模式，常用的设计模式是单例设计模式，工厂设计模式，生产者消费者设计模式，装饰器设计模式，代理委托设计模式等
+
+单例设计 模式：程序在运行的过程中，确保当前类只能创建出一个对象【实例】，不管在一个项目的哪个位置获取，获取到的应该都是同一个对象
+
+单例设计模式的核心：一个类有且仅有一个对象，并且该对象需要应用在一个项目的任何地方【只有第一次创建对象，其他的应该在获取对象】
+
+3.单例的实现
+
+3.1模块
+
+Python中的模块就是一个天然的单例【因为模块在第一次导入的时候，会生成一个.pyc文件，当第二次导入时，就会直接加载.pyc文件，就不会再次执行源文件，我们只需要将相关的函数或者数据定义在一个模块中，就可以获得一个单例对象】
+
+    class Singleton(object):
+        def func(self):
+            pass
+    
+    instance = Singleton()
+    
+
+    from singleton02.single import instance
+    print(instance)
+    
+    from singleton02.single import instance
+    print(instance)
+    
+    from singleton02.single import instance
+    print(instance)
+
+3.2使用new
+
+    class Singleton(object):
+        #1.定义一个类属性，用于表示当前类的一个唯一的对象
+        instance = None
+    
+        #__new__,类方法
+        def __new__(cls, *args, **kwargs):
+            #思路：cls.instance为None,则说明是第一次执行new函数，则创建，如果cls.instance不是NOne，则获取
+            if not cls.instance:
+                cls.instance = super(Singleton,cls).__new__(cls, *args, **kwargs)
+            return  cls.instance
+    
+    s1 = Singleton()  #s1  = cls.instance
+    print(s1)
+    s2 = Singleton()
+    print(s2)
+    print(id(s1) == id(s2))
+    
+    s3 = Singleton()
+    s4 = Singleton()
+    print(s3)
+    print(s4)
+    
+    #动态绑定
+    s1.name = "zhangsan"
+    print(s4.name)
+
+3.3使用装饰器
+
+    #装饰器实现单例
+    #思路;在外部函数中定义一个变量，在内部函数中进行单例的设置，最终将设置的结果返回
+    
+    #装饰器不但可以装饰函数，也可以装饰类
+    #方式一
+    def singleton(cls):
+        instance = None
+    
+        #如果要书写单例，命名为：defaultInstance,currentInstance,getInstance等
+        def getInstance(*args,**kwargs):
+            nonlocal  instance
+            if not instance:
+                instance = cls(*args,**kwargs)
+            return instance
+        return getInstance
+    
+    @singleton
+    class Check():
+        def __init__(self,name,age):
+            self.name = name
+            self.age = age
+    
+    c1 = Check("jack",10)
+    print(c1)
+    
+    c2 = Check("abc",45)
+    print(c2)
+    
+    #方式二
+    def singleton(cls):
+        #定义一个字典，字典用来保存被装饰的类和对应的唯一的对象,{类:对象}
+        instanceDict  = {}
+    
+        def getInstance(*args,**kwargs):
+            if cls not in instanceDict:
+                 instanceDict[cls] = cls(*args,**kwargs)
+            return instanceDict[cls]
+        return getInstance
+    
+    @singleton
+    class Person(object):
+        def __init__(self,name):
+            self.name = name
+    
+        def show(self):
+            pass
+    
+        @classmethod
+        def func(cls):
+            pass
+    
+        @staticmethod
+        def func2():
+            pass
+    
+    p1 = Person()
+    print(p1)
+    p2 = Person()
+    print(p2)
+    
+    p1.show()
+    p1.func()
+    
+    #单例类和普通类的区别仅仅是单例类只能创建一个对象，其余的用于和普通类完全相同
