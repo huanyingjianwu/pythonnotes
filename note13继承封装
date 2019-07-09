@@ -1,0 +1,495 @@
+
+
+二、析构函数
+
+    构造函数：为了将对象创建成有初始状态的，一般在类中定义有参的构造函数
+    析构函数：和构造函数相反，当对象被销毁的时候会自动调用的函数，__del__可以在对象销毁的时候做一些清理工作，比如：关闭文件，关闭数据库等
+    
+    问题：对象被销毁的时机？__del__函数被调用的时机？
+    a.对象在程序执行结束自动被销毁   b.通过del 变量名手动销毁
+
+    import  time
+    
+    class Person():
+        #构造函数
+        def __init__(self,name,age):
+            self.name = name
+            self.age = age
+            print("构造函数被执行了")
+    
+        #析构函数
+        def __del__(self):
+            print("析构函数被执行了")
+    
+    print("start")
+    
+    #1.全局变量：当程序执行完毕自动被销毁
+    #p1 = Person("abc",10)
+    #time.sleep(10)
+    #print("end")
+    
+    #2.局部变量:当对应的函数执行完毕自动被销毁
+    # def show():
+    #     p1 = Person("abc", 10)
+    #     print("show函数被执行了")
+    #
+    # show()
+    # print("end")
+    
+    #3.通过del强制让对象销毁
+    p1 = Person("abc", 10)
+    del p1
+    print("end")
+
+三、封装
+
+1.概念
+
+广义的封装：函数的定义【对特殊功能的封装】，类的定义【对多个具有特殊功能的个体的封装】
+
+狭义的封装：一个类中的某些属性，在使用的过程中，不希望被外界直接访问，而是将该属性作为私有的【只有当前类持有】，然后暴露给外界一个访问的函数即可【间接访问】
+
+在面向对象中，封装的本质：属性私有化的过程
+
+封装的好处：提高了代码的安全性，提高了代码的复用性
+
+说明：插排，不需要关心属性在类的内部做了什么样的操作，只需要关心将值传进去，或者将结果获取出来
+
+2.属性私有化
+
+如果想让属性只能被当前类访问，可以在属性的前面添加两个下划线，例如：self.__name
+
+私有属性的特点：只能在类的内部被直接访问，在外界不能直接访问
+
+    #1.属性未被私有化
+    class Person1():
+        def __init__(self,name,age):
+            self.name = name
+            self.age  = age
+    p1 = Person1("abc",18)
+    #直接访问属性
+    #获取值
+    print(p1.name,p1.age)
+    #修改值
+    p1.name = "zhangsan"
+    p1.age = 20
+    print(p1.name,p1.age)
+    
+    #2.将属性私有化：不想被外界直接访问的属性
+    class Person2():
+        def __init__(self,name,age):
+            self.name = name
+            #属性私有化过程
+            self.__age  = age
+    
+    p2 = Person2("jack",19)
+    print(p2.name)
+    #print(p2.age)   #AttributeError: 'Person2' object has no attribute 'age'
+    #print(p2.__age)   #ttributeError: 'Person2' object has no attribute '__age'
+    
+    #私有化属性的原理
+    #一个属性一旦被私有化，在Windows下，会被Python的解释器解释成_类名__属性名
+    #Python的特点：Python是跨平台的，一份Python代码可以运行在不同的系统上
+    #print(p2._Person2__age)  #能够获取，但是不建议使用，因为使用只能在windows上使用
+
+3.get函数和set函数
+
+get函数和set函数并不是一个系统函数，是自定义的，get函数的作用是获取私有化属性的值，set函数的作用是给私有化属性进行赋值
+
+    #3.get函数和set函数：在类的外部间接访问私有化的属性
+    class Person3():
+        def __init__(self,name,age):
+            self.__name = name
+            self.__age  = age
+    
+        #定义普通的成员函数
+        # def show(self):
+        #     print("姓名：%s,年龄：%d" % (self.name,self.__age))
+    
+        #get函数
+        #作用：获取私有化属性的值
+        #特点：设置返回值，没有参数
+        #函数命名：getXxx,Xxx表示被私有化属性的变量名
+        def getAge(self):
+            return self.__age
+    
+        #set函数
+        #作用：给私有化属性进行赋值
+        #特点：设置参数，没有返回值
+        #函数命名，setXxx,Xxx表示被私有化属性的变量名
+        def setAge(self,age):
+            self.__age = age
+    
+        def getName(self):
+            return self.__name
+    
+        def setName(self,name):
+            self.__name = name
+    
+    p3 = Person3("bob",10)
+    #p3.show()
+    print(p3.getAge())   #类似p3.age
+    p3.setAge(33)   #类似p3.age = 33
+    print(p3.getAge())
+    
+    
+    #4.get和set的存在仅仅是为了传值和获取值，
+    class Person3():
+        def __init__(self,name,age):
+            self.__name = name
+            self.__age  = age
+    
+        def getAge(self):
+            return self.__age
+        def setAge(self,age):
+            #对数据进行校验
+            if str(age).isdigit():
+                if int(age) < 0:
+                    age = -int(age)
+            else:
+                print("输入错误")
+    
+            self.__age = age
+    
+        def getName(self):
+            return self.__name
+        def setName(self,name):
+            self.__name = name
+    
+    p3 = Person3("bob",10)
+    #p3.show()
+    print(p3.getAge())   #类似p3.age
+    p3.setAge(33)   #类似p3.age = 33
+    p3.setAge("33")
+    print(p3.getAge())
+    
+    #封装的意义：通过将属性私有化，然后提供get函数和set函数，外部代码就不能随意更改属性的值，
+    # 在类的内部也可以进行数据的校验，这样在一定程度上保证了数据的安全性，提高了代码的复用性
+
+4.@property装饰器
+
+装饰器：给函数动态的增加功能，对于类的成员函数而言，装饰器同样起作用
+
+@property装饰器的作用：将一个函数转换为属性使用
+
+在封装的概念中
+
+@property装饰器：相当于get函数，获取被私有化属性的值
+
+@属性名.setter装饰器：相当于set函数，给私有化属性进行赋值
+
+    #5.使用装饰器在类的外面访问和赋值
+    class Person5():
+        def __init__(self,name,age):
+            self.__name = name
+            self.__age  = age
+    
+        #a.
+        #@property修饰一个函数
+        #特点：相当于get函数，为了获取值，设置返回值，没有参数
+        #命名方式：函数可以是任意的标识符，但是，为了和私有化属性匹配起来，尽量使用被私有化属性的名称
+        @property
+        def name(self):
+            return self.__name
+    
+        #b
+        #@标识符.setter修饰一个函数
+        #特点：相当于set函数，为了给私有化属性进行赋值，设置参数，没有返回值
+        #命名方式：函数和被@property装饰器修饰的函数命名保持一致
+        @name.setter
+        def name(self,name):
+            self.__name = name
+    
+        @property
+        def age(self):
+            return self.__age
+    
+        @age.setter
+        def age(self,age):
+            self.__age = age
+    
+    
+    p5 = Person5("fer",19)
+    #print(p5.name()) #TypeError: 'str' object is not callable
+    print(p5.name)
+    #p5.name("jack")  #TypeError: 'str' object is not callable
+    p5.name = "jack"
+    print(p5.name)
+    
+    print(p5.age)
+    p5.age = 20
+    print(p5.age)
+    
+    
+    #6.@property可以单独使用，可以将一个函数的调用转变为属性的访问
+    #【面试题:阅读下面的代码，如果没有错误的情况下，写出代码的运行结果】
+    class MyClass():
+        @property
+        def show(self):
+            print("showing")
+    
+    my = MyClass()
+    #my.show()  #TypeError: 'NoneType' object is not callable
+    print(my.show)
+
+四、继承
+
+1.概念
+
+如果两个或者两个以上的类具有相同的属性和方法，就可以将相同的属性或者方法提取出来，在一个新的类中进行声明
+
+	被抽取出来的类----》父类【father】，超类【super】，基类【base】
+
+	两个或者两个以上的类----》子类   ，派生类
+
+	他们之间的关系：父类  派生了  子类，子类   继承了  父类
+
+2.单继承
+
+单继承：一个子类只有一个父类
+
+注意：如果一个类没有显式定义它的父类，父类默认为object，object是所有类的根类
+
+语法：
+
+父类：
+
+class  父类类名(object):
+
+	类体【相同的属性或者方法】
+
+子类
+
+class  子类类名(父类类名):
+
+	类体【子类特有的属性或者方法】
+
+    from extends01.person import Person
+    from extends01.teacher import Teacher
+    from extends01.student import Student
+    from extends01.doctor import Doctor
+    
+    
+    #1.创建父类的对象
+    p = Person("jack")
+    print(p.name)
+    p.show()
+    
+    #2.如果子类中没有定义构造函数
+    # 创建子类的对象，通过子类的对象可以访问父类中未被私有化的的属性和调用父类中的函数
+    #t1 = Teacher()   #TypeError: __init__() missing 1 required positional argument: 'name'
+    t1 = Teacher("bob")
+    print(t1.name)
+    t1.show()
+    
+    #注意：如果子类中没有定义构造函数，则子类会将父类中的构造函数继承下来
+    
+    #3.如果子类中定义了构造函数
+    #s1 = Student("zhangsan")  #TypeError: __init__() missing 1 required positional argument: 'age'
+    s1 = Student("zhangsan",18)
+    print(s1.name)  #AttributeError: 'Student' object has no attribute 'name'
+    print(s1.age)
+    
+    #注意：如果子类中定义了构造函数，如果想要使用父类中的属性，则必须在当前子类的构造函数中手动调用父类的构造函数
+    
+    d1 = Doctor("jack",28,100)
+    print(d1.name,d1.age,d1.num)
+
+    class Person(object):
+        def __init__(self, name):
+            self.name = name
+    
+        def show(self):
+            print("~~~show")
+
+    from  extends01.person import Person
+    class Student(Person):
+        def __init__(self, name,age):
+    
+            #注意：调用父类的构造函数，一定要注意参数的匹配
+    
+            #4.在子类的构造函数中调用父类的构造函数
+            #方式一：super(当前类，self).__init__(属性列表)
+            #super(Student,self).__init__(name)
+    
+            #方式二：父类名.__init__(self,属性列表)
+            #Person.__init__(self,name)
+    
+            #方式三：super().__init__(属性列表)
+            super().__init__(name)
+    
+            #子类特有的属性
+            self.age = age
+    
+        def study(self):
+            print("studing")
+
+    from  extends01.person import Person
+    
+    class Teacher(Person):
+        pass
+
+总结：
+
+1.继承的特点：
+
+	a.子类对象可以直接访问父类中未被私有化的属性
+
+	b.子类对象可以直接调用父类中未被私有化的函数
+
+	c.父类对象不能访问子类中特有的属性和方法
+
+2.继承的优缺点：
+
+	优点：
+
+		a.可以简化代码
+
+		b.提高了代码的可维护性
+
+		c.提高了代码的可扩展性
+
+		d.是多态的前提
+
+	缺点：
+
+		代码之间的耦合性较高，如果修改父类，子类也会随着修改
+
+注意：不要为了继承而继承
+
+3.多继承
+
+多继承：一个子类可以有多个父类
+
+语法：
+
+子类
+
+class  子类类名(父类类名1，父类类名2.....):
+
+	类体【子类特有的属性或者方法】
+
+    #父类1
+    class Runnable(object):
+        def __init__(self,num):
+            self.num = num
+    
+        def run(self):
+            print("running")
+    
+        def func(self):
+            print("func~~~runnable")
+    
+    #父类2
+    class Flyable(object):
+        def __init__(self,num1,num2):
+            self.num1 = num1
+            self.num2 = num2
+    
+        def fly(self):
+            print("flying")
+    
+        def func(self):
+            print("func~~~flyable")
+    
+    #子类
+    class Animal(Runnable,Flyable):
+        def __init__(self,name,num,num1,num2):
+            self.name = name
+    
+            #调用父类中的构造函数
+            #注意：在多继承的子类中，如果要调用多个父类中的构造函数，则使用父类类名.__init__(slef，属性列表)
+            Flyable.__init__(self,num1,num2)
+            Runnable.__init__(self,num)
+    
+    
+    #1.在多继承中，如果父类和子类中都没有定义构造函数，则创建子类对象，默认调用的数系统提供的无参的构造函数
+    #a1 = Animal()
+    
+    #2.在多继承中，如果父类中都定义构造函数，则创建子类对象，调用的是父类列表中第一个父类中的构造函数
+    #a1 = Animal(34,12)
+    
+    #3.在多继承中，如果子类中定义了构造函数,则创建子类对象，调用的是子类中的构造函数
+    # a1 = Animal(46)
+    
+    #4.通过子类对象调用父类中的未被私有化函数
+    # a1.run()
+    # a1.fly()
+    
+    #5.在子类的构造函数中调用父类的构造函数
+    a1 = Animal("abc",13,43,43)
+    print(a1.name,a1.num,a1.num1,a1.num2)
+    
+    #6.注意：如果多继承的多个父类中存在重名的函数,则子类对象调用的是父类列表中的第一个父类中的函数
+    a1.func()
+
+    #父类
+    class BaseClass(object):
+        def show(self):
+            print("BaseClass")
+    #子类
+    class SubClassA(BaseClass):
+        def show(self):
+            print("enter class~~~~A")
+            super().show()
+            print("exit  class~~~~A")
+    
+    class SubClassB(BaseClass):
+        def show(self):
+            print("enter class~~~~B")
+            super().show()
+            print("exit  class~~~~B")
+    
+    class SubClassC(SubClassA):
+        def show(self):
+            print("enter class~~~~C")
+            super().show()
+            print("exit  class~~~~C")
+    class SubClassD(SubClassB,SubClassC):
+        def show(self):
+            print("enter class~~~~D")
+            super().show()
+            print("exit  class~~~~D")
+    
+    
+    # a = SubClassA()
+    # a.show()
+    
+    d = SubClassD()
+    d.show()
+    
+    
+    """
+    继承树:
+    在多继承中，如果中间某个类有向上一层解析的迹象，则会根据父类列表的顺序解析，解析到具有共同父类的一层灰停止，
+    接着解析父类列表其他的类
+    
+    
+    经典类：py2,x,没有继承自object，深度优先解析
+    新式类：py3.x,继承自object，广度优先解析
+    """
+
+4.new函数
+
+    #__init__,__new__都可以创建对象
+    class Person(object):
+        def __init__(self):
+            print("构造函数被zhixingke")
+    
+        #cls是class的缩写，表示类方法
+        #self表示当前的对象，cls表示当前的类
+        def __new__(cls, *args, **kwargs):
+            print("new~~~~~")
+    
+            return super(Person,cls).__new__(cls,*args, **kwargs)
+    
+    p = Person()
+    print(type(p))
+    p.name = "zhangsan"
+    print(p.name)
+    
+    """
+    1.在一个类中同时书写了__init__和__new__,则init没有执行的机会
+    2.__new__也可以用来创建对象，也是创建对象的过程中自动调用的函数
+    3.区别于init，new必须手动设定一个当前类的对象返回值
+    """
