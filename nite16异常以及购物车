@@ -1,0 +1,774 @@
+一、
+
+
+
+1.封装函数，实现对普通文件内容的拷贝
+
+    import os
+    def myCopy(srcpath,despath):
+      if not os.path.exists(srcpath):
+        #return可以单独使用，也可以携带返回值，都是结束当前的函数
+        return
+      
+      if not  os.path.isfile(srcpath):
+        return
+      
+      #with...as只是一个语句，类似于if，while等，可以任意的嵌套
+      max_value = 1024
+      size = os.path.getsize(srcpath)
+      with open(srcpath,"r",encoding="utf-8") as f1:
+      	with open(despath,"w",encoding="utf-8") as f2:
+          while size > 0:
+            content = f1.read(max_value)
+            f2.write(content)
+            f2.flush()
+            
+            size -= max_value
+
+2.实现对象的序列化和反序列化
+
+    import pickle
+    #序列化
+    pickle.dump([345,54,5,45],open(r"xxxx","wb"))
+    
+    #反序列化
+    result = pickle.load(open(r"xxx","rb"))
+
+
+
+3.
+
+    """"
+    开房查询
+    	输入名字，查询其开房记录，如果没有，是一个单纯哥们，如果有的话，将其所有开房信息写入到以这哥们命名的文件中
+    """
+    import  os
+    
+    #1.读取文件
+    def loadFile(path):
+        f = open(path,"r",encoding="utf-8")
+        infoList = f.readlines()
+        f.close()
+    
+        return infoList
+    
+    
+    #2.查询
+    #思路：根据人的名字在数据库中进行查询，如果有记录，则返回一个列表
+    def searchByName(infoList,name):
+        singleList = []
+    
+        #遍历infoList
+        for line in infoList:
+            resultList = line.split(",")
+            if name == resultList[0]:
+                singleList.append(line)
+    
+        return singleList
+    
+    
+    #3.写入
+    if __name__ == "__main__":
+        #所有的信息
+        allList = loadFile(r"kaifanglist.txt")
+        #print(allList)
+        while True:
+            name = input("请输入需要查询的人的姓名【输入q退出】：")
+            if name == "q":
+                break
+            else:
+                #进行搜索
+                singleList = searchByName(allList,name)
+    
+                #写入
+                if singleList:
+                    print(name + "有开房记录")
+                    with open(name + ".txt","w",encoding="utf-8") as f:
+                        for line in singleList:
+                            f.write(line)
+    
+                    print("数据提取成功")
+    
+                else:
+                    print(name + "没有记录")
+
+二、面向对象综合练习-购物车
+
+仓库类
+
+    """
+    仓库类：【信息保存在本地磁盘：程序刚启动时把列表先存储到文件中，之后使用再读取出来】
+    	商品列表
+    	       商品名称    	价格        剩余量
+    		Mac电脑	   	20000    100
+    		PthonBook 	30	  	200
+    		草莓键盘         80      	60
+    		iPhone		7000		70
+    """
+    import  os,pickle
+    from shopcar.goods import Goods
+    
+    #仓库类需要使用单例设计模式，表示不管在哪个地方，或者哪个用户，访问到的额仓库应该都是同一个
+    #使用装饰器的方式实现单例设计模式
+    def singleton(cls):
+        instance = None
+        def getInstance(*args,**kwargs):
+            nonlocal  instance
+            if not instance:
+                instance = cls(*args,**kwargs)
+            return instance
+        return getInstance
+    
+    @singleton
+    class Storage(object):
+        def __init__(self):
+            #程序刚启动时把列表先存储到文件中，之后使用再读取出来
+            #注意：一般情况下，在构造函数中写的代码逻辑尽量简单
+            self.__loadGoods()
+    
+        #加载商品
+        def __loadGoods(self):
+            #假设：保存仓库商品列表的文件名为goodslist.txt
+            if not os.path.exists("goodslist.txt"):
+                #虚拟仓库中的商品，写入到对应的文件中
+                self.goodsList = []
+    
+                names = ["book","iphone","bicycle","kindle"]
+                prices = [78,8888,1000,500]
+                balances = [100,100,100,100]
+    
+                #遍历上述三个列表，将获取的商品对应的信息创建对象
+                for i in range(len(names)):
+                    goods = Goods(names[i],prices[i],balances[i])
+                    #将创建好的仓库中的商品对象添加到虚拟商品列表中
+                    self.goodsList.append(goods)
+    
+                #将仓库中的商品列表持久化到本地磁盘
+                self.save_goods()
+            else:
+                self.get_goods()
+    
+        #保存数据
+        def save_goods(self):
+            with open(r"goodslist.txt", "wb") as f:
+                pickle.dump(self.goodsList, f)
+    
+        #获取数据
+        def get_goods(self):
+            with open(r"goodslist.txt", "rb")  as f:
+                self.goodsList = pickle.load(f)
+
+用户类
+
+    """
+    用户类：
+    	姓名  用户id【这个标识对于每个用户而言是唯一的]】    密码     拥有购物车  用户登录状态【默认为 False 表示没有登录】
+    
+    """
+    class User(object):
+        def __init__(self,uid,username,password,shoppingcar):
+            self.uid = uid
+            self.username = username
+            self.password = password
+            self.shoppingcar = shoppingcar
+            #登录状态:默认状态下，用户为未登录状态
+            self.isLogin = False
+    
+        def __str__(self):
+            return "【User】uid:%s,username:%s,isLogin:%s" % (self.uid,self.username,self.isLogin)
+    
+
+商品类
+
+    """
+    商品类：
+    	商品名称   商品价格   商品剩余量
+    """
+    class Goods(object):
+        def __init__(self,name,price,balance):
+            self.name = name
+            self.price = price
+            self.balance = balance
+        def __str__(self):
+            return "【Goods】name:%s,price:%s,balance:%s" % (self.name,self.price,self.balance)
+
+购物车类
+
+    """"
+    购物车类：
+    	商品列表：程序初始时，商品列表为空
+    """
+    class ShoppingCar(object):
+        def __init__(self):
+            #将购物车使用字典表示，存储的时候，商品对象作为key，商品数量作为value
+            self.goodsDict = {}
+    
+        def __str__(self):
+            return "【ShoopingCar】%s"% (self.goodsDict)
+
+功能类
+
+    import  os,pickle,random
+    from shopcar.shopingcar import ShoppingCar
+    from shopcar.user import User
+    from  shopcar.storage import Storage
+    from shopcar.goods import Goods
+    
+    class Operation(object):
+        def __init__(self):
+            #当程序启动之后，加载本地文件中的用户
+            self.load_all_users()
+    
+        #加载所有用户
+        def load_all_users(self):
+            if os.path.exists("userlist.txt"):
+                #反序列化
+                with open(r"userlist.txt","rb") as f:
+                    self.userDict = pickle.load(f)
+            else:
+                #定义一个容器【字典】，用于存储当前应用程序的用户对象
+                self.userDict = {}
+        #保存用户信息
+        def save_users(self):
+            #序列化
+            with open(r"userlist.txt", "wb") as f:
+                pickle.dump(self.userDict,f)
+    
+        #随机生成用户id
+        def get_uid(self):
+            #问题：用户id是为了唯一的标记用户，一定不能重复
+            #注意：随机数可能会出现重复的状况，所以需要避免
+            while True:
+                uid = str(random.choice(range(10000, 100000)))
+                if uid not in self.userDict:
+                    print("你的uid是:%s" % (uid))
+                    return uid
+                else:
+                    print("uid已经存在，请重新摇号")
+    
+        #注册
+        def user_register(self):
+            #获取uid
+            uid = self.get_uid()
+            #创建用户的购物车对象
+            sc = ShoppingCar()
+            #引导用户输入用户名和密码
+            username = input("请输入你的用户名：")
+            password = input("请输入你的密码：")
+    
+            #通过上述的操作创建一个用户对象
+            user = User(username=username,password=password,uid=uid,shoppingcar=sc)
+    
+            #将用户添加到用户字典中，uid作为key。用户对象作为value
+            self.userDict[uid] = user
+    
+            #同步数据到本地
+            self.save_users()
+    
+            print("注册成功")
+        #登录
+        def user_login(self):
+            uid = input("请输入你的用户id:")
+            #判断用户是否注册
+            if uid not in self.userDict:
+                print("请先注册")
+                return
+    
+            #判断用户是否已经登录
+            #获取用户对象
+            user = self.userDict[uid]
+            if user.isLogin:
+                #说明该用户已经登录过，不必进行登录
+                print("该用户已经登录过,不必进行登录")
+                return user
+    
+            #用户处于未登录状态，实现登录
+            while True:
+                pwd = input("请输入登录密码：")
+                if pwd == user.password:
+                    print("登录成功")
+                    # 修改用户的登录状态
+                    user.isLogin = True
+                    return user
+                else:
+                    print("密码输入错误，请重新输入")
+        #添加商品
+        def add_goods(self):
+            user = self.user_login()
+            if user == None:
+                print("请先登录")
+                self.user_login()
+                return
+    
+            #说明用户已经登录
+            #展示商店中的商品
+            print("""
+            商店中的商品如下：
+            0.book
+            1.iphone
+            2.bicycle
+            3.kindle
+            """)
+            #引导用户进行选择商品
+            index = int(input("请输入需要购买的商品的编号："))
+    
+            #第一次使用仓库，创建仓库
+            storage = Storage()
+            #在仓库中通过用户的选择编号获取对应的商品对象
+            goods = storage.goodsList[index]
+    
+            #引用用户输入需要购买的商品的数量
+            num = int(input("请输入需要购买的商品的数量:"))
+    
+            if num <= 0:
+                print("输入有误")
+            else:
+                while num > goods.balance:
+                    num = int(input("商品的剩余量为:%d，请重新输入需要购买的商品的数量" % (goods.balance)))
+                else:
+                    #重新实例化购物车中的商品对象
+                    user_goods = Goods(goods.name,goods.price,num)
+                    #将购买的商品添加到购物车中,商品的对象作为key，商品的数量作为value
+                    user.shoppingcar.goodsDict[user_goods] = num
+    
+                    #仓库中对应商品的数量需要相应的较少
+                    goods.balance -= num
+    
+                    #保持程序中的数据和本地文件同步
+                    #保存用户信息
+                    self.save_users()
+                    #保存商店中的商品信息
+                    storage.save_goods()
+    
+                    print("商品添加成功")
+    
+    
+        #删除商品
+        def del_goods(self):
+            user =self.user_login()
+            if user == None:
+                print("请先登录")
+                self.user_login()
+                return
+    
+    
+            #定义一个变量，用于表示需要被删除的商品对象
+            goods = None
+            #定义一个变量，用于标记商品是否存在
+            flag = False
+    
+            g_name = input("请输入需要删除的商品的名称：")
+            #购物车中的商品保存在字典中，遍历
+            for key in user.shoppingcar.goodsDict:
+                if g_name == key.name:
+                    print("fahjfgjahghja")
+                    goods = key
+                    flag = True
+    
+            if not flag:
+                print("你输入的商品不存在，无法删除")
+                return
+    
+            #操作仓库：在购物车中删除商品，则需要在仓库中加回去
+            storage = Storage()
+            #通过用户需要删除的商品对象在仓库中获取该商品原来的位置
+            index = 0
+            for i in range(len(storage.goodsList)):
+                if storage.goodsList[i].name == g_name:
+                    index = i
+    
+            #根据商品的索引获取仓库中的对应的商品对象
+            storage_goods = storage.goodsList[index]
+    
+            #goods表示购物车中的商品对象，storage_goods表示仓库中对应的商品对象
+            #引导用户输入需要删除的商品的数量
+            num = int(input("请输入需要删除的商品的数量："))
+            if num >= goods.balance:
+                #将该商品全部删除
+                user.shoppingcar.goodsDict.pop(goods)
+                #将对应的数量添加到仓库的商品中
+                storage_goods.balance += goods.balance
+            else:
+                #在购物车中只减掉指定的数量
+                goods.balance -= num
+                # 将对应的数量添加到仓库的商品中
+                storage_goods.balance += num
+    
+            #保持本地文件的同步
+            self.save_users()
+            storage.save_goods()
+    
+            print("删除成功")
+    
+        #结算购物车
+        def total(self):
+            user = self.user_login()
+            if user == None:
+                print("请先登录")
+                self.user_login()
+                return
+    
+            #获取购物车中的商品并结算
+            total = 0
+            for goods,num in user.shoppingcar.goodsDict.items():
+                total += goods.price * num
+    
+            print("商品总价为：%d" % (total))
+    
+            #结算玩商品之后清空购物车
+            user.shoppingcar.goodsDict.clear()
+    
+            #保存用户信息
+            self.save_users()
+    
+        #退出系统
+        def exit(self):
+            user = self.user_login()
+            if user != None:
+                #修改用户的登录状态为False
+                user.isLogin = False
+    
+                #保存到本地
+                self.save_users()
+
+测试文件
+
+    from shopcar.operation import Operation
+    
+    #创建对象
+    op = Operation()
+    
+    while True:
+        print("1.注册,2,登录 3,.添加商品  4.删除商品  5.结算购物车  6.退出")
+        select = int(input("请输入你需要进行的操作："))
+        if select == 1:
+            op.user_register()
+        elif select == 2:
+            op.user_login()
+        elif select == 3:
+            op.add_goods()
+        elif select == 4:
+            op.del_goods()
+        elif select == 5:
+            op.total()
+        else:
+            op.exit()
+            break
+
+三、异常和错误
+
+1.概念
+
+Python有两种错误易于辨认：语法错误【代码书写完毕立马报错】和异常【运行代码才会报错】
+
+注意：
+
+	a.异常必须处理，如果不处理，代码会停止继续向下执行
+
+	b.【异常的工作原理】在Python中，处理异常并不是真正的处理，而是异常代码屏蔽，为了不影响后面其他代码的执行
+
+    # list1 = [34,54,54,54]
+    # print(list1[10])
+    #
+    # print("over")
+    
+    
+    try:
+        list1 = [34,54,54,54]
+        print(list1[10])
+    except:
+        print("出现了错误")
+    print("over")
+
+常见的异常：
+
+    #NameError:当一个变量未被定义就使用
+    #print(num)  #NameError: name 'num' is not defined
+    
+    #AttributeError，访问了一个不存在的属性
+    # import random
+    # print(random.int())  #AttributeError: module 'random' has no attribute 'int'
+    
+    #KeyError,当访问了一个不存在在的key
+    # dict1 = {"a":1,"b":2}
+    # print(dict1["c"])  #KeyError: 'c'
+    
+    #UnboundLocalError
+    # def singleton(cls):
+    #     instance = None
+    #     def getInstance(*args,**kwargs):
+    #         nonlocal  instance
+    #         if not instance:
+    #             instance = cls(*args,**kwargs)
+    #         return instance
+    #     return getInstance
+    # @singleton
+    # class Storage(object):
+    #     pass
+    # s = Storage()  #UnboundLocalError: local variable 'instance' referenced before assignment
+    
+    
+    #TypeError:类型不匹配
+    #print("fa" + 3)
+    
+    #ValueErorr
+    
+    #注意：平时在书写代码的过程中遇到的异常，是Python中的系统类
+
+2.异常的处理方式
+
+Python中的异常处理方式：捕获，抛出，断言
+
+2.1try-except-else/finally【重点掌握】
+
+标准写法：
+
+try:
+
+	语句1
+
+except   错误表示码  as  变量名：
+
+	语句2
+
+except   错误表示码  as  变量名：
+
+	语句3
+
+。。。。。
+
+else/finally:
+
+	语句n
+
+说明：
+
+	a.try中的语句1被称为代码监测区，检测其中的代码是否存在异常,不能省略
+
+	b.except或者finally可以同时出现，也可以只出现其中一个，否则try没有任何意义
+
+	c.except语句可以是一个，也可以是多个
+
+	d.如果try中的代码没有异常，会跳过所有的except语句，执行最后的finally
+
+	e.如果try中的代码存在异常，则执行顺序：try----->except---->finally
+
+    #1.只使用一个except
+    """
+    try:
+        list1 = [34,54,54,54]
+        print(list1[10])
+        print("hello")
+    #注意：错误表示码就是当前异常的类，e仅仅是一个变量名，指向在try中出现的异常对象
+    except IndexError as e:
+        print("出现了异常")
+    
+    print("over")
+    
+    
+    #2,except出现多个【掌握】
+    #注意：如果try中可能存在多个异常，每次只能处理一个异常，匹配except从上往下依次匹配
+    try:
+        num = int(input("请输入数字："))
+        list1 = [34,54,54,54]
+        print(list1[num])
+    
+        print("hello")
+    except ValueError as e:
+        print("value")
+    except IndexError as e:
+        print("index")
+    
+    print("over")
+    
+    
+    #3.except中出现异常的父类
+    #注意：Python中异常的父类BaseException----->Exception-----》object
+    #注意：不管try中出现什么样的异常，如果父类出现在except语句的第一个，都会被父类包揽
+    try:
+        num = int(input("请输入数字："))
+        list1 = [34,54,54,54]
+        print(list1[num])
+    
+        print("hello")
+    except IndexError as e:
+        print("index")
+    except Exception as e:
+        print("value")
+    
+    print("over")
+    
+    
+    #4.try后面只使用一个except，但是不使用错误表示码
+    #注意：不管try中的异常是什么类型，都会执行except语句
+    try:
+        num = int(input("请输入数字："))
+        list1 = [34,54,54,54]
+        print(list1[num])
+    
+        print("hello")
+    except:
+        print("value")
+    
+    print("over")
+    
+    
+    #5.try后面只使用一个except，后面跟上指定的错误表示码
+    try:
+        num = int(input("请输入数字："))
+        list1 = [34,54,54,54]
+        print(list1[num])
+    
+        print("hello")
+    except(TypeError,NameError,IndexError):
+        print("value")
+    
+    print("over")
+    
+    
+    #6.一般使用形式
+    try:
+        num = int(input("请输入数字："))
+        list1 = [34,54,54,54]
+        print(list1[num])
+    
+        print("hello")
+    except ValueError as e:
+        #注意：异常的类中已经重写过了__str__函数
+        #注意：直接打印一个异常的对象，获取的是当前异常的描述信息
+        print(e)
+    except IndexError as e:
+        print(e)
+    
+    print("over")
+    
+    
+    #7.else分支:只有当try中的语句没有异常的情况下，else才有执行的机会
+    try:
+        num = int(input("请输入数字："))
+        list1 = [34,54,54,54]
+        print(list1[num])
+    
+    except IndexError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
+    else:
+        print("else被执行了")
+    print("over")
+    
+    
+    #8.finally:不管try中的代码是否存在异常，finally都会被执行
+    try:
+        num = int(input("请输入数字："))
+        list1 = [34,54,54,54]
+        print(list1[num])
+    
+    except IndexError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
+    finally:
+        print("finally")
+    print("over")
+    
+    
+    #特殊情况:如果try-except-finally语句出现在函数中，在try或者except中出现return，则finally不受影响，正常执行
+    #fianlly的使用场景：在其中一般会进行一些清理行为，类似于析构函数
+    def main():
+        try:
+            num = int(input("请输入数字："))
+            #return
+            list1 = [34, 54, 54, 54]
+            print(list1[num])
+    
+            print("hello")
+    
+        except IndexError as e:
+            return
+            print(e)
+        except ValueError as e:
+            print(e)
+        finally:
+            print("finally")
+        print("over")
+    
+    main()
+    """
+    
+    #9.try-finally,如果try中有异常，则会直接报错，如果try中没有异常，执行顺序try-finally
+    try:
+        num = int(input("请输入数字："))
+    
+    finally:
+        print("over")
+
+2.2raise
+
+可以通过raise抛出一个实例化的异常的对象
+
+异常的对象出现的代码中：a.通过具体的问题 b。通过异常的类创建对象
+
+    #raise关键字的作用：抛出一个异常的对象，想要代码继续向下执行，则必须捕获
+    
+    #异常的对象，形式一
+    try:
+        num = int(input("fsg"))
+        print(10 / num)  # ZeroDivisionError: division by zero
+    except:
+        print("出现一个异常")
+    
+    
+    #异常的对象，形式er:通过类创建
+    try:
+        raise ZeroDivisionError("分母不能为0")
+    except:
+        print("出现一个异常")
+
+2.3assert
+
+print:辅助代码调试
+
+assert：替代print，在可能存在问题的代码处做一个预言，如果预测成功，则代码正常执行，如果预测失败，则会报出AssertionError
+
+    def func(num1,num2):
+        assert  num2 != 0,"除数不能为0"
+        # if num2 == 0:
+        #     print("除数不能为0")
+        return  num1 / num2
+    
+    func(2,0)
+
+3.自定义异常
+
+自定义异常的要求：一定要继承自系统的异常类，为了保持系统的异常机制【try-except】
+
+    #1.定义类，继承自BaseException或者Exception
+    class MyException(BaseException):
+        #2.书写构造函数
+        def __init__(self,message):
+    
+            #3.调用父类中的构造函数
+            super(MyException,self).__init__()
+    
+            #用于描述异常的信息
+            self.message = message
+    
+        #4.重写__str__函数，当打印异常对象的时候，得到结果为异常的信息描述
+        def __str__(self):
+            return self.message
+    
+        #5.定义普通的成员函数，当出现异常的时候，解决异常
+        def handle(self):
+            print("异常处理完成")
+    
+    try:
+        raise MyException("出现了异常")
+    except MyException as e:    #e =  MyException("出现了异常")
+        print(e)
+        e.handle()
+    
+    
+    #raise关键字一般使用在自定义异常中
+
+
