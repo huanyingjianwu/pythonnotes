@@ -1,0 +1,1299 @@
+一、linux2
+
+1.系统文件的修改
+
+	vim   filename【/etc/hostname】------>按下a或者i进入编辑状态------》按下esc退出编辑状态-----》按下：，输入wq表示保存退出【如果修改的是只读文件，需要强制保存退出，:wq!】
+
+	su  xxxx:不同用户之间的切换
+
+	sudo :让普通用户拥有超级管理员的权限【/etc/sudoers文件中添加ALL=(ALL:ALL) ALL】
+
+		注意：但凡涉及对系统的设置，一般都要使用超级管理员的权限【a.su root ,  b.sudo xxxx】
+
+	passwd  用户名：给指定的用户设置密码
+
+	reboot：重启
+
+	mv  旧名称  新名称：重命名
+
+2.软件安装
+
+	sudo  apt:在线安装
+
+	sudo dpkg：离线安装，【.deb安装包】
+
+	sudo pip：安装第三方模块
+
+二、目录结构
+
+1.Windows文件系统
+
+特点：会有不同的盘符，每个盘符都有自己的根目录，从而形成多个树并列的情况
+
+2.Linux文件系统
+
+Linux没有盘符这个概念，只有一个根目录：/,所有的文件都存储在该根目录下【在Linux下，文件和目录都被视为文件处理】
+
+    Linux目录结构： 
+    
+    / ： 根目录  #Linux下有且只有一个根目录，在终端输入/etc,/home表示从根目录开始，寻找etc或者home目录
+    /boot : boot 配置文件、内核和其它启动时所需的文件
+    /etc ：存放系统配置有关的文件#hostname,hosts,shadow,sudoers等和用户有关
+    /home ：存放普通用户目录#家目录，其中存储普通用户的主目录，每增加一个新的用户，就会在该目录下出现一个对应的目录
+    
+    /mnt ：硬盘上手动挂载的文件系统 
+    	#挂载：将硬盘连接到文件系统上
+      	#注意：mnt默认是空的，当用户临时使用其他外部设备【光驱，硬盘等】，则该目录下会呈现外部设备中的内容
+    
+    /media ：自动挂载（加载）的硬盘分区以及类似CD、数码相机等可移动介质。	
+    /cdrom ：挂载光盘 
+    
+    /opt ： 存放一些可选程序,如某个程序测试版本,安装到该目录的程序的所有数据,库文件都存在同个目录下
+    	#给主机安装额外软件所存储的目录，默认是空的
+    
+    /root ： 系统管理员的目录，对于系统来说，系统管理员好比上帝
+    	#超级管理员的用户主目录，可以对系统做任何的操作，但是，一般情况下，尽量不要使用root用户，使用普通用户【sudo】
+    
+    /bin ：存放常用的程序文件  #binary,其中存储二进制文件【可执行文件：x】
+    /sbin ：系统管理命令，这里存放的是系统管理员使用的管理程序 #super 
+    
+    /tmp ：临时目录，存放临时文件  #系统会定时自动清理临时文件
+    
+    /usr ：在这个目录下，你可以找到那些不适合放在/bin或/etc目录下的额外的工具。比如游戏、打印工具等。/usr目录包含了许多子目录： 
+    	/usr/bin目录用于存放程序;
+    	/usr/share用于存放一些共享的数据，比如音乐文件或者图标等等;  #
+    	/usr/lib目录用于存放那些不能直接 运行的，但却是许多程序运行所必需的一些函数库文件。
+    	/usr/local ： 这个目录一般是用来存放用户自编译安装软件的存放目录；一般是通过源码包安装的软件，如果没有特别指定安装目录的话，一般是安装在这个目录中。
+    	/usr/bin/ 非必要可执行文件 (在单用户模式中不需要)；面向所有用户。
+    	/usr/include/ 标准包含文件。
+    	/usr/lib/ /usr/bin/和/usr/sbin/中二进制文件的库。
+    	/usr/sbin/ 非必要的系统二进制文件，例如：大量网络服务的守护进程。
+    	/usr/share/ 体系结构无关（共享）数据。
+    	/usr/src/ 源代码,例如:内核源代码及其头文件。
+    	/usr/X11R6/ X Window系统 版本 11, Release 6.
+    	/usr/local/ 本地数据的第三层次，具体到本台主机。通常而言有进一步的子目录， 例如：bin/、lib/、share/.
+    
+    /var ：该目录存放那些经常被修改的文件，包括各种日志、数据文件；
+        /var/cache/ 应用程序缓存数据。这些数据是在本地生成的一个耗时的I/O或计算结果。应用程序必须能够再生或恢复数据。缓存的文件可以被删除而不导致数据丢失。  #缓存
+        /var/lib/ 状态信息。 由程序在运行时维护的持久性数据。 例如：数据库、包装的系统元数据等。
+        /var/lock/ 锁文件，一类跟踪当前使用中资源的文件。
+        /var/log/ 日志文件，包含大量日志文件。  #日志文件是可变的
+        /var/mail/ 用户的电子邮箱。
+        /var/run/ 自最后一次启动以来运行中的系统的信息，例如：当前登录的用户和运行中的守护进程。现已经被/run代替[13]。
+        /var/spool/ 等待处理的任务的脱机文件，例如：打印队列和未读的邮件。
+        /var/spool/mail/ 用户的邮箱(不鼓励的存储位置)
+        /var/tmp/ 在系统重启过程中可以保留的临时文件。
+        
+    /lib : 目录是根文件系统上的程序所需的共享库，存放了根文件系统程序运行所需的共享文件。这些文件包含了可被许多程序共享的代码，以避免每个程序都包含有相同的子程序的副本，故可以使得可执行文件变得更小，节省空间。
+    /lib32 : 同上
+    /lib64 ： 同上
+    #其中存储的是基本的动态连接共享库，几乎所有的应用程序都会用到这些共享库
+    /lost+found ： 该目录在大多数情况下都是空的。但当突然停电、或者非正常关机后，有些文件就临时存放在；
+    /dev : 存放设备文件
+    /run ：代替/var/run目录，
+    /proc : 虚拟文件系统，可以在该目录下获取系统信息，这些信息是在内存中由系统自己产生的，该目录的内容不在硬盘上而在内存里；
+    	#虚拟目录，是系统内存的映射，可以通过访问该目录下的内容访问系统的内容，并不存在于硬盘中，而是存在于内存中
+    	
+    /sys ： 和proc一样，虚拟文件系统，可以在该目录下获取系统信息，这些信息是在内存中由系统自己产生的，该目录的内容不在硬盘上而在内存里；
+    
+    """
+    /
+    /etc
+    /home
+    /root
+    /tmp
+    /usr
+    /bin,/sbin,/usr/bin,/usr/sbin的区别;
+    	都是系统预设的执行文件的放置目录
+    	/bin，/usr/bin：给系统普通用户使用的指令
+    	/sbin，/usr/sbin：给超级管理员使用的指令
+    /var:其中存放的是都是可以随时被系统修改的文件，包括日志，缓存等
+    """
+
+五、常用命令
+
+1.文件管理
+
+1>ls:列举出当前工作目录的内容
+
+    -a 用于显示所有文件和子目录(包括隐藏文件)
+    -A 同-a，但不列出“.”(表示当前目录)和“..”(表示当前目录的父目录)
+    -l 除了文件名之外，还将文件的权限、所有者、文件大小等信息详细列出来。 (文件大小是字节)
+    -lh 与-l 类似  只不过文件大小显示的是 KB [默认是按照文件名的 abcd 排序的]
+    -lht 与-l -lh 类似  排序是按照修改时间降序排的
+    -lhtr 按照时间升序排
+    -r 将目录的内容清单以英文字母顺序的逆序显示
+    -t 按文件修改时间进行排序
+    -F 在列出的文件名和目录名后添加标志。例如，在可执行文件后添加“*”，在目录名后添加“/”以区分不同的类型
+    -R 如果目标目录及其子目录中有文件，就列出所有的文件
+    
+    drwxr-xr-x 3 yangyang rock 4096 7月  15 15:25 Desktop
+    
+    d:代表的是文件的类型，
+    	d；目录
+    	-：文件
+    	b:块设备文件
+    	c:字符设备文件
+    	l:链接文件
+    	p:管道文件
+    	s:socket文件
+    	
+    rwxr-xr-x：代表的是当前文件对于不同用户的权限
+    	rwx   			r-x              			r-x
+    	当前用户的权限	  和当前用户在同一个组中的权限	其他组中用户的权限
+    	
+    3：表示文件个数
+    	如果是文件，则为1
+    	如果是目录，则为其中的文件的个数
+    	
+    yangyang rock：yangyang代表当前文件的拥有者【用户】，rock代表当前用户所在的主组
+    
+    4096：代表当前文件的大小，单位为字节
+    7月  15 15:25：实践
+    Desktop：文件名称
+    
+    补充：
+    
+
+2>pwd	查看当前的工作目录
+
+3>查看文件
+
+    touch filename；创建一个空白文件
+    cat：查看完整的文件内容，顺序显示
+    	-n	:显示每一行的行号，包括空行
+    	-b	:显示每一行的行号，不包括空行
+    tac:查看完整的文件内容，倒序显示
+    
+    head：查看文件内容
+    tail：查看文件内容
+    	head/tail  filename:默认显示10行
+    	head/tail -num  filename:显示num行
+    	
+    less：查看文件
+    more：查看文件
+    	#和cat的作用类似，都是为了查看指定文件的内容，但是，如果文件内容比较少，cat直接输出到终端，less打开一个手册，more直接输出到终端；如果文件内容比较多【一个屏幕显示不下】，cat直接输出到终端，less打开一个手册，more也会打开一个手册
+    	#建议：如果文件内容较少，使用cat，如果内容较多，使用more
+    
+    wc：一次显示文件行数，字节数以及文件名信息
+    stat：查看文件详细信息，可以获取文件的文件名、大小、权限，最近访问以及最近更改的时间，stat命令的输出信息比ls命令还要详细
+    file：查看文件的类型
+    	#建议：如果要查看文件的详细属性，使用stat
+    
+    echo：用于在终端输出字符串或变量的值 #一般用于shell文件中
+    
+    >：输出重定向，Linux允许将执行结果重定向到一个文件，本应显示在终端上的内容保存到指定文件中
+    >>：输出重定向，Linux允许将执行结果重定向到一个文件，本应显示在终端上的内容保存到指定文件中
+    1>  标准正确输出，同上
+    1>> 标准正确输出，同上  
+    2> 标准错误输出，同上
+    2>> 标准错误输出，同上
+    &> 标准正确输出和标准错误输出，同上
+    	将1和2结合在一起了
+    	
+    命令 > 文件
+    说明：命令必须是一个输出命令【默认会将结果输出到终端】
+    
+    演示命令：
+    yangyang@yangyang-host:~/Desktop$ rm -rf *
+    yangyang@yangyang-host:~/Desktop$ ls
+    yangyang@yangyang-host:~/Desktop$ touch a1.txt
+    yangyang@yangyang-host:~/Desktop$ touch a2.txt
+    yangyang@yangyang-host:~/Desktop$ touch b1.txt
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  b1.txt
+    yangyang@yangyang-host:~/Desktop$ ls a*
+    a1.txt  a2.txt
+    yangyang@yangyang-host:~/Desktop$ ls b*
+    b1.txt
+    yangyang@yangyang-host:~/Desktop$ ls *1.txt
+    a1.txt  b1.txt
+    yangyang@yangyang-host:~/Desktop$ touch aaa.txt
+    yangyang@yangyang-host:~/Desktop$ touch ab.txt
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  aaa.txt  ab.txt  b1.txt
+    yangyang@yangyang-host:~/Desktop$ ls ?a.txt
+    ls: 无法访问'?a.txt': 没有那个文件或目录
+    yangyang@yangyang-host:~/Desktop$ touch ca.txt
+    yangyang@yangyang-host:~/Desktop$ ls ?a.txt
+    ca.txt
+    yangyang@yangyang-host:~/Desktop$ ls [abc]1.txt
+    a1.txt  b1.txt
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  aaa.txt  ab.txt  b1.txt  ca.txt
+    yangyang@yangyang-host:~/Desktop$ vim a1.txt 
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    hello
+    fajn
+    fjahg
+    hjahg
+    yangyang@yangyang-host:~/Desktop$ tac a1.txt 
+    hjahg
+    fjahg
+    fajn
+    hello
+    yangyang@yangyang-host:~/Desktop$ cat -n
+    ^C
+    yangyang@yangyang-host:~/Desktop$ cat -n a1.txt 
+         1	hello
+         2	fajn
+         3	fjahg
+         4	hjahg
+    yangyang@yangyang-host:~/Desktop$ vim a1.txt 
+    yangyang@yangyang-host:~/Desktop$ head a1.txt 
+    hello
+    fajn
+    fjahg
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    yangyang@yangyang-host:~/Desktop$ tail a1.txt 
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    hjahg
+    364736
+    4527385
+    yangyang@yangyang-host:~/Desktop$ head -3 a1.txt 
+    hello
+    fajn
+    fjahg
+    yangyang@yangyang-host:~/Desktop$ tail -3 a1.txt 
+    hjahg
+    364736
+    4527385
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    hello
+    fajn
+    fjahg
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    hjahg
+    364736
+    4527385
+    yangyang@yangyang-host:~/Desktop$ less a1.txt 
+    yangyang@yangyang-host:~/Desktop$ more a1.txt 
+    hello
+    fajn
+    fjahg
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    hjahg
+    364736
+    4527385
+    yangyang@yangyang-host:~/Desktop$ vim a1.txt 
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    hello
+    fajn
+    fjahg
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    hjahg
+    364736
+    4527385
+    fhag
+    geajkrg
+    gjakgr
+    jgkg
+    ghsgh
+    ghjgh
+    hgjshg
+    hglshg
+    hgsehg
+    glsigh
+    hglshg
+    bglsgh
+    gshl
+    yangyang@yangyang-host:~/Desktop$ more a1.txt 
+    hello
+    fajn
+    fjahg
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    hjahg
+    364736
+    4527385
+    fhag
+    geajkrg
+    gjakgr
+    jgkg
+    ghsgh
+    ghjgh
+    hgjshg
+    hglshg
+    hgsehg
+    glsigh
+    yangyang@yangyang-host:~/Desktop$ more a1.txt 
+    hello
+    fajn
+    fjahg
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    hjahg
+    364736
+    4527385
+    fhag
+    geajkrg
+    gjakgr
+    jgkg
+    ghsgh
+    ghjgh
+    hgjshg
+    hglshg
+    hgsehg
+    glsigh
+    hglshg
+    bglsgh
+    gshl
+    yangyang@yangyang-host:~/Desktop$ more a1.txt 
+    hello
+    fajn
+    fjahg
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    hjahg
+    364736
+    4527385
+    fhag
+    geajkrg
+    gjakgr
+    jgkg
+    ghsgh
+    ghjgh
+    hgjshg
+    hglshg
+    hgsehg
+    glsigh
+    yangyang@yangyang-host:~/Desktop$ wc a1.txt 
+     26  26 164 a1.txt
+    yangyang@yangyang-host:~/Desktop$ stat a1.txt 
+      文件：'a1.txt'
+      大小：164       	块：8          IO 块：4096   普通文件
+    设备：801h/2049d	Inode：579525      硬链接：1
+    权限：(0644/-rw-r--r--)  Uid：( 1000/yangyang)   Gid：( 1000/    rock)
+    最近访问：2019-07-16 10:35:48.528180790 +0800
+    最近更改：2019-07-16 10:35:45.120107110 +0800
+    最近改动：2019-07-16 10:35:45.120107110 +0800
+    创建时间：-
+    yangyang@yangyang-host:~/Desktop$ file a1.txt 
+    a1.txt: ASCII text
+    yangyang@yangyang-host:~/Desktop$ echo "hello"
+    hello
+    yangyang@yangyang-host:~/Desktop$ touch text01.sh
+    yangyang@yangyang-host:~/Desktop$ vim text01.sh 
+    yangyang@yangyang-host:~/Desktop$ sh text01.sh 
+    hello
+    zhangsan
+    yangyang@yangyang-host:~/Desktop$ cat text01.sh 
+    echo "hello"
+    
+    name="zhangsan"
+    echo ${name}
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  aaa.txt  ab.txt  b1.txt  ca.txt  text01.sh
+    yangyang@yangyang-host:~/Desktop$ cat a2.txt 
+    yangyang@yangyang-host:~/Desktop$ ls > a2.txt 
+    yangyang@yangyang-host:~/Desktop$ cat a2.txt 
+    a1.txt
+    a2.txt
+    aaa.txt
+    ab.txt
+    b1.txt
+    ca.txt
+    text01.sh
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt
+    hello
+    fajn
+    fjahg
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    hjahg
+    364736
+    4527385
+    fhag
+    geajkrg
+    gjakgr
+    jgkg
+    ghsgh
+    ghjgh
+    hgjshg
+    hglshg
+    hgsehg
+    glsigh
+    hglshg
+    bglsgh
+    gshl
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt > b1.txt 
+    yangyang@yangyang-host:~/Desktop$ cat b1.txt 
+    hello
+    fajn
+    fjahg
+    hjahg
+    abc
+    47234
+    hjgrh
+    gakhjgh
+    hjahg
+    hjahg
+    hjahg
+    364736
+    4527385
+    fhag
+    geajkrg
+    gjakgr
+    jgkg
+    ghsgh
+    ghjgh
+    hgjshg
+    hglshg
+    hgsehg
+    glsigh
+    hglshg
+    bglsgh
+    gshl
+    yangyang@yangyang-host:~/Desktop$ stat a1.txt 
+      文件：'a1.txt'
+      大小：164       	块：8          IO 块：4096   普通文件
+    设备：801h/2049d	Inode：579525      硬链接：1
+    权限：(0644/-rw-r--r--)  Uid：( 1000/yangyang)   Gid：( 1000/    rock)
+    最近访问：2019-07-16 10:35:48.528180790 +0800
+    最近更改：2019-07-16 10:35:45.120107110 +0800
+    最近改动：2019-07-16 10:35:45.120107110 +0800
+    创建时间：-
+    yangyang@yangyang-host:~/Desktop$ stat a1.txt > aaa.txt 
+    yangyang@yangyang-host:~/Desktop$ cat aaa.txt 
+      文件：'a1.txt'
+      大小：164       	块：8          IO 块：4096   普通文件
+    设备：801h/2049d	Inode：579525      硬链接：1
+    权限：(0644/-rw-r--r--)  Uid：( 1000/yangyang)   Gid：( 1000/    rock)
+    最近访问：2019-07-16 10:35:48.528180790 +0800
+    最近更改：2019-07-16 10:35:45.120107110 +0800
+    最近改动：2019-07-16 10:35:45.120107110 +0800
+    创建时间：-
+
+4>tree       以树形结构去显示目录结构
+
+    -d 	只显示文件夹
+    -f	显示文件的完整路径
+    -L 2	：只看前两级的内容
+
+5>cd	切换工作目录
+
+    用法：cd  路径[此处可以是相对路径，也可以是绝对路径]
+    特殊用法：
+    cd	切换到当前用户的主目录，用户登录的时候，默认的目录就是用户的主目录
+    cd ~	切换到当前用户的主目录，/home/普通用户
+    cd #	回到当前用户的主目录
+    
+    cd .	切换到当前目录
+    cd ..	切换到上一级目录
+    cd - 	返回上一次切换的目录
+    
+    
+    1.相对路径和绝对路径
+    	相对路径：从当前路径开始
+    	绝对路径：从根目录开始
+
+6>mv	移动或者重命名文件或者目录
+
+    命令格式：mv [参数] 源文件  [目标路径|目标文件名]    ------》可以cd到【文件所在路径下】或者【直接通过路径指明文件】
+    -i	在目标文件存在的时候会询问是否要覆盖
+    -b	当冲突的时候，会对源文件进行备份
+    
+    mv  文件名  文件名 ：给文件进行重名名
+    mv  目录名  目录名 ：给目录进行重命名
+    mv 文件名/目录名   路径：移动
+
+7>cp	复制文件或者目录
+
+    命令格式：cp [参数] 源文件 目标文件
+    
+    -i	在目标文件存在的时候会询问是否要覆盖【交互式复制】
+    -r 若给出的源文件是一目录文件，此时cp将递归复制该目录下所有的子目录和文件。此时目标文件必须为一个目录名
+    -a 复制的时候保持文件原有属性
+    -f 对于已经存在的目标文件不提示
+    -v 显示拷贝进度
+
+8>创建文件或者目录
+
+    8.1>mkdir	创建一个新的目录
+    	-p：创建出具有嵌套层关系的文件目录
+    8.2>touch	创建空白文件，可以设置文件的时间
+    	名词解释：
+    	atime:最后一次访问文件或目录的时间【access time】
+    	mtime：最后一次修改内容的时间【modify time】
+    	ctime ：最后一次改变属性的时间【change time】
+    	参数：
+    	-a   修改atime
+    	-m	修改mtime
+    	-c	修改ctime
+    	-d	同时修改atime与mtime
+    	-t	同时修改atime与mtime，格式{YYYYMMDDhhmm}
+    	注意：只有-d和-t后面可以指定时间，其他的只能把时间修改为当前时间
+
+9>删除文件或者目录
+
+    9.1>rmdir  删除给定的目录,注意：只能删除空文件夹
+    9.2>rm	删除文件或者目录，可以删除一个目录中的一个或多个文件或目录，也可以将某个目录及其下面所有子文件和目录都删掉
+    
+    	-r	删除目录，否则删不掉
+    	-ri	交互式删除，每次删除都会进行询问
+    	-rf	强制删除文件或目录
+    	
+    演示命令：
+    yangyang@yangyang-host:~$ cd Desktop/
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  aaa.txt  ab.txt  b1.txt  ca.txt  text01.sh
+    yangyang@yangyang-host:~/Desktop$ 
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  aaa.txt  ab.txt  b1.txt  ca.txt  text01.sh
+    yangyang@yangyang-host:~/Desktop$ rm -rf *
+    yangyang@yangyang-host:~/Desktop$ ls
+    yangyang@yangyang-host:~/Desktop$ touch a1.txt
+    yangyang@yangyang-host:~/Desktop$ mkdir text-1
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  text-1
+    yangyang@yangyang-host:~/Desktop$ mv text-1 text01
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  text01
+    yangyang@yangyang-host:~/Desktop$ cd text01/
+    yangyang@yangyang-host:~/Desktop/text01$ ls
+    yangyang@yangyang-host:~/Desktop/text01$ cd ..
+    yangyang@yangyang-host:~/Desktop$ mv a1.txt text01/
+    yangyang@yangyang-host:~/Desktop$ ls
+    text01
+    yangyang@yangyang-host:~/Desktop$ cd text01/
+    yangyang@yangyang-host:~/Desktop/text01$ ls
+    a1.txt
+    yangyang@yangyang-host:~/Desktop/text01$ mv a1.txt file1.txt
+    yangyang@yangyang-host:~/Desktop/text01$ ls
+    file1.txt
+    yangyang@yangyang-host:~/Desktop/text01$ cd ..
+    yangyang@yangyang-host:~/Desktop$ ls
+    text01
+    yangyang@yangyang-host:~/Desktop$ touch b1.txt
+    yangyang@yangyang-host:~/Desktop$ ls
+    b1.txt  text01
+    yangyang@yangyang-host:~/Desktop$ cp b1.txt  text01/
+    yangyang@yangyang-host:~/Desktop$ ls
+    b1.txt  text01
+    yangyang@yangyang-host:~/Desktop$ cd text01/
+    yangyang@yangyang-host:~/Desktop/text01$ ls
+    b1.txt  file1.txt
+    yangyang@yangyang-host:~/Desktop/text01$ cd ..
+    yangyang@yangyang-host:~/Desktop$ ls
+    b1.txt  text01
+    yangyang@yangyang-host:~/Desktop$ cp -i b1.txt text01/
+    cp：是否覆盖'text01/b1.txt'？ y
+    yangyang@yangyang-host:~/Desktop$ mkdir text02
+    yangyang@yangyang-host:~/Desktop$ ls
+    b1.txt  text01  text02
+    yangyang@yangyang-host:~/Desktop$ cp -r text01 text02/
+    yangyang@yangyang-host:~/Desktop$ cd text02
+    yangyang@yangyang-host:~/Desktop/text02$ ls
+    text01
+    yangyang@yangyang-host:~/Desktop/text02$ cd text01/
+    yangyang@yangyang-host:~/Desktop/text02/text01$ ls
+    b1.txt  file1.txt
+    yangyang@yangyang-host:~/Desktop/text02/text01$ cd ..
+    yangyang@yangyang-host:~/Desktop/text02$ cd ..
+    yangyang@yangyang-host:~/Desktop$ ls
+    b1.txt  text01  text02
+    yangyang@yangyang-host:~/Desktop$ stat b1.txt 
+      文件：'b1.txt'
+      大小：0         	块：0          IO 块：4096   普通空文件
+    设备：801h/2049d	Inode：579012      硬链接：1
+    权限：(0644/-rw-r--r--)  Uid：( 1000/yangyang)   Gid：( 1000/    rock)
+    最近访问：2019-07-16 11:27:19.245036370 +0800
+    最近更改：2019-07-16 11:26:49.990423657 +0800
+    最近改动：2019-07-16 11:26:49.990423657 +0800
+    创建时间：-
+    yangyang@yangyang-host:~/Desktop$ touch a1.txt
+    yangyang@yangyang-host:~/Desktop$ stat a1.txt 
+      文件：'a1.txt'
+      大小：0         	块：0          IO 块：4096   普通空文件
+    设备：801h/2049d	Inode：579615      硬链接：1
+    权限：(0644/-rw-r--r--)  Uid：( 1000/yangyang)   Gid：( 1000/    rock)
+    最近访问：2019-07-16 11:31:12.960977836 +0800
+    最近更改：2019-07-16 11:31:12.960977836 +0800
+    最近改动：2019-07-16 11:31:12.960977836 +0800
+    创建时间：-
+    yangyang@yangyang-host:~/Desktop$ touch -d "3 days ago" c1.txt
+    yangyang@yangyang-host:~/Desktop$ stat c1.txt 
+      文件：'c1.txt'
+      大小：0         	块：0          IO 块：4096   普通空文件
+    设备：801h/2049d	Inode：572331      硬链接：1
+    权限：(0644/-rw-r--r--)  Uid：( 1000/yangyang)   Gid：( 1000/    rock)
+    最近访问：2019-07-13 11:32:08.531325930 +0800
+    最近更改：2019-07-13 11:32:08.531325930 +0800
+    最近改动：2019-07-16 11:32:08.527705429 +0800
+    创建时间：-
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  b1.txt  c1.txt  text01  text02
+    yangyang@yangyang-host:~/Desktop$ rmdir text01
+    rmdir: 删除 'text01' 失败: 目录非空
+    yangyang@yangyang-host:~/Desktop$ mkdir text03
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  b1.txt  c1.txt  text01  text02  text03
+    yangyang@yangyang-host:~/Desktop$ rmdir text03
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  b1.txt  c1.txt  text01  text02
+    yangyang@yangyang-host:~/Desktop$ rm text01
+    rm: 无法删除'text01': 是一个目录
+    yangyang@yangyang-host:~/Desktop$ rm -r text01
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  b1.txt  c1.txt  text02
+    yangyang@yangyang-host:~/Desktop$ rm -ri text02
+    rm：是否进入目录'text02'? y
+    rm：是否进入目录'text02/text01'? y
+    rm：是否删除普通空文件 'text02/text01/b1.txt'？ y
+    rm：是否删除普通空文件 'text02/text01/file1.txt'？ y
+    rm：是否删除目录 'text02/text01'？ y
+    rm：是否删除目录 'text02'？ y
+    yangyang@yangyang-host:~/Desktop$ rm -rf a1.txt 
+    yangyang@yangyang-host:~/Desktop$ ls
+    b1.txt  c1.txt
+    yangyang@yangyang-host:~/Desktop$ rm -rf *
+    yangyang@yangyang-host:~/Desktop$ ls
+    yangyang@yangyang-host:~/Desktop$ 
+
+10>ln         建立链接文件
+
+ls -l 
+
+链接文件相当于Windows下的快捷方式
+
+	软链接：ln -s 源文件  链接文件【在内存中生成了一个文件，不占用磁盘空间，如果软链接和源文件其中一项被修改，对方也会随着修改，如果源文件被删除，则软连接则会失效，软连接文件的类型为l】
+
+	硬链接：ln  源文件  链接文件【生成了一个文件会占用磁盘空间，如果硬链接和源文件其中一项被修改，对方也会随着修改，如果源文件被删除，则硬连接仍然会正常使用，硬链接文件的类型为-】
+
+    演示命令：
+    #软链接
+    yangyang@yangyang-host:~$ cd Desktop/
+    yangyang@yangyang-host:~/Desktop$ ls
+    yangyang@yangyang-host:~/Desktop$ touch a1.txt
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    yangyang@yangyang-host:~/Desktop$ vim a1.txt 
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    hello
+    yangyang@yangyang-host:~/Desktop$ ll
+    总用量 12
+    drwxr-xr-x  2 yangyang rock 4096 7月  16 11:43 ./
+    drwxr-xr-x 30 yangyang rock 4096 7月  16 11:43 ../
+    -rw-r--r--  1 yangyang rock    6 7月  16 11:43 a1.txt
+    yangyang@yangyang-host:~/Desktop$ ln -s a1.txt  aaa
+    yangyang@yangyang-host:~/Desktop$ ll
+    总用量 12
+    drwxr-xr-x  2 yangyang rock 4096 7月  16 11:44 ./
+    drwxr-xr-x 30 yangyang rock 4096 7月  16 11:43 ../
+    -rw-r--r--  1 yangyang rock    6 7月  16 11:43 a1.txt
+    lrwxrwxrwx  1 yangyang rock    6 7月  16 11:44 aaa -> a1.txt
+    yangyang@yangyang-host:~/Desktop$ cat aaa
+    hello
+    yangyang@yangyang-host:~/Desktop$ vim a1.txt 
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    hello
+    46372364
+    yangyang@yangyang-host:~/Desktop$ cat aaa 
+    hello
+    46372364
+    yangyang@yangyang-host:~/Desktop$ vim aaa
+    yangyang@yangyang-host:~/Desktop$ cat aaa 
+    hello
+    46372364
+    aaaaaa
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    hello
+    46372364
+    aaaaaa
+    yangyang@yangyang-host:~/Desktop$ rm -rf a1.txt 
+    yangyang@yangyang-host:~/Desktop$ ls
+    aaa
+    yangyang@yangyang-host:~/Desktop$ cat aaa 
+    cat: aaa: 没有那个文件或目录
+    yangyang@yangyang-host:~/Desktop$ rm -rf *
+    #硬链接
+    yangyang@yangyang-host:~/Desktop$ ls
+    yangyang@yangyang-host:~/Desktop$ touch a1.txt
+    yangyang@yangyang-host:~/Desktop$ vim a1.txt 
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    fjkghk
+    yangyang@yangyang-host:~/Desktop$ ll
+    总用量 12
+    drwxr-xr-x  2 yangyang rock 4096 7月  16 11:47 ./
+    drwxr-xr-x 30 yangyang rock 4096 7月  16 11:47 ../
+    -rw-r--r--  1 yangyang rock    7 7月  16 11:47 a1.txt
+    yangyang@yangyang-host:~/Desktop$ ln a1.txt  bbb
+    yangyang@yangyang-host:~/Desktop$ ll
+    总用量 16
+    drwxr-xr-x  2 yangyang rock 4096 7月  16 11:47 ./
+    drwxr-xr-x 30 yangyang rock 4096 7月  16 11:47 ../
+    -rw-r--r--  2 yangyang rock    7 7月  16 11:47 a1.txt
+    -rw-r--r--  2 yangyang rock    7 7月  16 11:47 bbb
+    yangyang@yangyang-host:~/Desktop$ cat bbb
+    fjkghk
+    yangyang@yangyang-host:~/Desktop$ vim a1.txt 
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    fjkghk
+    432523
+    yangyang@yangyang-host:~/Desktop$ cat bbb
+    fjkghk
+    432523
+    yangyang@yangyang-host:~/Desktop$ vim bbb 
+    yangyang@yangyang-host:~/Desktop$ cat bbb
+    fjkghk
+    432523
+    hello
+    yangyang@yangyang-host:~/Desktop$ cat a1.txt 
+    fjkghk
+    432523
+    hello
+    yangyang@yangyang-host:~/Desktop$ rm -rf a1.txt 
+    yangyang@yangyang-host:~/Desktop$ cat bbb
+    fjkghk
+    432523
+    hello
+    yangyang@yangyang-host:~/Desktop$ 
+
+11>grep	      文本搜索
+
+    强大的文本搜索工具，grep允许对文本文件进行模式查找，如果找到匹配模式，grep打印包含模式的所有行
+    注意：搜索内容串可以是正则表达式
+    
+    -c：仅显示找到的行数	
+    -i：忽略大小写	
+    -n：显示匹配行以及行号
+    -v：反向选择，列出没有关键词的行【求反】
+    
+    |：管道符
+    用法：命令1  |  命令2 ，将命令1的输出作为命令2的输入
+    
+    #注意：一般结合管道符使用，查找哪种类型的内容取决于管道符前面的命令的输出结果，查找的结果都是包含指定关键字的内容
+    
+    演示命令：
+     1195  ls
+     1196  ls | grep Music
+     1197  ls | grep -c D*
+     1198  cd Desktop/
+     1199  touch a1.txt
+     1200  vim a1.txt 
+     1201  cat a1.txt 
+     1202  cat a1.txt | grep -c this
+     1203  cat a1.txt | grep -n this
+     1204  cat a1.txt | grep -v this
+     1205  ls /
+     1206  ls / | grep initrd
+
+12>which  查找其他命令所在的位置
+
+系统常用的命令一般被存放在/bin中，其中的内容都是可执行命令，系统自带的命令都能查找到所在的路径，但是，后期封装的命令都是查不到路径
+
+    演示命令：
+    1228  which ls
+     1229  cd ..
+     1230  ls /bin
+     1231  which cp
+     1232  which ll
+     1233  which ls
+
+13>type   寻找命令所在的位置，包括命令别名
+
+    -a：可以找到所有，包括别名
+    
+    #type xxx:获取xx命令的别名
+    #type -a xxxx:获取xx命令的别名和路径
+    
+    演示命令：
+     1234  type ls
+    1235  type -a ls
+     1236  type -a ps
+     1237  type -a cp
+
+14>find	  按照指定条件来查找文件
+
+    格式：find  【查找路径】 【查找方式】 【查找条件】
+    
+    -name：匹配名称，默认是精确匹配
+    -size：匹配文件大小，模糊匹配
+    -atime  -n  +n：匹配访问内容的时间（-n指n天以内，+n指n天以前）
+    -empty，文件内容为空的文件
+    
+    #也可以实现查找，但是侧重于搜索文件【路径可以指定】
+    
+    演示命令：
+     1208  touch a2.txt
+     1209  ls
+     1210  find -empty 
+     1211  pwd
+     1212  find . -empty
+     1213  touch -d "2 days ago" c1.txt
+     1214  ls
+     1215  find . -atime -2
+     1216  find . -atime +2
+     1217  find . -atime +1
+     1218  find . -size 1k
+     1219  find . -size +1k
+     1220  find . -size -1k
+     1221  find . -name a1.txt 
+
+15>locate   查找数据
+
+    -i:忽略大小写
+    -c：不输出寻找结果，仅计算找到的文件数量
+    -l：仅输出指定的几行，  例如：-l 8，输出8行
+    -r：后面可以接正则表达式
+    
+    """
+    grep：一般结合管道符使用，根据指定命令的输出进行搜索
+    find：在指定的路径下搜索指定条件的文件
+    locate:在全局范围内根据指定的关键字搜索系统文件
+    """
+    
+    演示命令：
+     1222  locate hello
+     1223  locate . hello
+     1224  locate -i hello
+     1225  locate -c hello
+     1226  locate -l 3  hello
+
+16>sort    给文件内容排序
+
+    -f：忽略大小写的差异，例如 A 与 a 视为编码相同；
+    -b：忽略最前面的空格符部分；  #sort filename ,默认升序，会忽略最前面的空格进行排序
+    -n：使用『纯数字』进行排序(默认是以文字型态来排序的)；
+    -r：反向排序；
+    -u：就是 uniq，表示唯一的，相同的数据中，仅出现一行代表；
+    -t：分隔符，默认是用 [tab] 键来分隔；
+    -k：以那个区间 (field) 来进行排序的意思
+    
+    #sort默认为升序排序，-r为降序排序，排序之后生成了一个虚拟的数据输出到终端，源文件中的内容并没有被修改，
+    #-t和-k一般结合使用，-t用来使用指定的符号进行分隔，-k表示用指定的列进行排序
+    
+    演示命令：
+    1240  vim a1.txt 
+     1241  cat a1.txt 
+     1242  sort a1.txt 
+     1243  sort -r a1.txt 
+     1244  cat a1.txt 
+     1245  vim a1.txt 
+     1246  sort -r a1.txt 
+     1247  vim a1.txt 
+     1248  cat a1.txt 
+     1249  sort a1.txt 
+     1250  sort -b a1.txt 
+     1251  vim a1.txt 
+     1252  sort -u a1.txt 
+     1253  sort -t " " -k 2 a1.txt 
+     1254  cat a1.txt 
+     1255  vim a1.txt 
+     1256  cat a1.txt 
+     1257  sort -t ":" -k 2 a1.txt 
+
+17>cut       可以从一个文本文件或者文本流中提取文本列
+
+    -d ：后面接分隔字符。与 -f 一起使用；
+    -f ：依据 -d 的分隔字符将一段信息分割成为数段，用 -f 取出第几段的意思；
+    -c ：以字符 (characters) 的单位取出固定字符区间；( -表示连接区间  ,取的是和的意思)
+    
+    #cut是生成了一个虚拟的数据输出到终端，类似于sort，
+    #-d------》sort中的-t,用指定的符号进行分隔
+    #-f------->sort中的-k，使用指定的某一列进行指定的操作
+    
+    演示命令：
+    1259  cat a1.txt 
+     1260  cut -d ":" -f 2 a1.txt 
+     1261  cat a1.txt 
+     1262  cut -c 1,3 a1.txt 
+     1263  cut -c 1-3 a1.txt 
+
+18>tee    读取标准输入的数据，并将其内容输出成文件
+
+    -a：读取原文件内容，并追加新的内容,如果不设置该选项，则新的内容直接覆盖旧的内容
+    
+    
+    #大多数的命令都是输出，tee用来输入，默认会覆盖文件中原来的数据，如果向保留原来的数据。添加-a选项
+    
+    演示命令：
+    1264  ls
+     1265  cat c1.txt 
+     1266  tee c1.txt 
+     1267  cat c1.txt 
+     1268  tee c1.txt 
+     1269  cat c1.txt 
+     1270  tee -a c1.txt 
+     1271  cat c1.txt 
+
+19>gedit	打开Linux下的文本编辑器
+
+    gedit :打开一个新的空白的文件
+    gedit filename；打开一个指定的文件，注意和vim打开方式的区别
+
+20>sed      流编辑器，一次处理一行内容，主要用来自动编辑一个或多个文件
+
+    选项：
+    -e<script>或--expression=<script>：以选项中的指定的script来处理输入的文本文件；
+    -f<script文件>或--file=<script文件>：以选项中指定的script文件来处理输入的文本文件；
+    -h或--help：显示帮助；
+    -n或--quiet或——silent：仅显示script处理后的结果；
+    -V或--version：显示版本信息。
+    
+    参数：
+    文件：指定待处理的文本文件列表。
+    
+    命令：增删改查
+    a\ 在当前行下面插入文本。append
+    i\ 在当前行上面插入文本。insert
+    c\ 把选定的行改为新的文本。 change
+    d 删除，删除选择的行。 delete
+    D 删除模板块的第一行。
+    s 替换指定字符       #'s/old/new/'   sub
+    h 拷贝模板块的内容到内存中的缓冲区。
+    H 追加模板块的内容到内存中的缓冲区。
+    g 获得内存缓冲区的内容，并替代当前模板块中的文本。
+    G 获得内存缓冲区的内容，并追加到当前模板块文本的后面。
+    l 列表不能打印字符的清单。
+    n 读取下一个输入行，用下一个命令处理新的行而不是用第一个命令。
+    N 追加下一个输入行到模板块后面并在二者间嵌入一个新行，改变当前行号码。
+    p 打印模板块的行。
+    P(大写) 打印模板块的第一行。
+    q 退出Sed。
+    b lable 分支到脚本中带有标记的地方，如果分支不存在则分支到脚本的末尾。
+    r file 从file中读行。
+    t label if分支，从最后一行开始，条件一旦满足或者T，t命令，将导致分支到带有标号的命令处，或者到脚本的末尾。
+    T label 错误分支，从最后一行开始，一旦发生错误或者T，t命令，将导致分支到带有标号的命令处，或者到脚本的末尾。
+    w file 写并追加模板块到file末尾。  
+    W file 写并追加模板块的第一行到file末尾。  
+    ! 表示后面的命令对所有没有被选定的行发生作用。  
+    = 打印当前行号码。  
+    # 把注释扩展到下一个换行符以前。  
+    
+    sed替换标记
+    g 表示行内全面替换。  
+    p 表示打印行。  
+    w 表示把行写入一个文件。  
+    x 表示互换模板块中的文本和缓冲区中的文本。  
+    y 表示把一个字符翻译为另外的字符（但是不用于正则表达式）
+    \1 子串匹配标记
+    & 已匹配字符串标记
+    
+    sed元字符集【正则表达式】
+    ^ 匹配行开始，如：/^sed/匹配所有以sed开头的行。
+    $ 匹配行结束，如：/sed$/匹配所有以sed结尾的行。
+    . 匹配一个非换行符的任意字符，如：/s.d/匹配s后接一个任意字符，最后是d。
+    * 匹配0个或多个字符，如：/*sed/匹配所有模板是一个或多个空格后紧跟sed的行。
+    [] 匹配一个指定范围内的字符，如/[ss]ed/匹配sed和Sed。  
+    [^] 匹配一个不在指定范围内的字符，如：/[^A-RT-Z]ed/匹配不包含A-R和T-Z的一个字母开头，紧跟ed的行。
+    \(..\) 匹配子串，保存匹配的字符，如s/\(love\)able/\1rs，loveable被替换成lovers。
+    & 保存搜索字符用来替换其他字符，如s/love/**&**/，love这成**love**。
+    \< 匹配单词的开始，如:/\<love/匹配包含以love开头的单词的行。
+    \> 匹配单词的结束，如/love\>/匹配包含以love结尾的单词的行。
+    x\{m\} 重复字符x，m次，如：/0\{5\}/匹配包含5个0的行。
+    x\{m,\} 重复字符x，至少m次，如：/0\{5,\}/匹配至少有5个0的行。
+    x\{m,n\} 重复字符x，至少m次，不多于n次，如：/0\{5,10\}/匹配5~10个0的行。
+    
+    #注意：磁盘和缓冲区【有些命令，比如g操作的源文件来自于缓冲区，如果没有任何说明，源文件来自于磁盘】
+    
+    #默认只是生成了虚拟数据输出到终端上，如果想要修改原文件，可以添加-i选项
+    
+    演示命令：
+    1276  cat a2.txt 
+     1277  sed '/text$/a\hello' a2.txt      #追加
+     1278  cat a2.txt 
+     1279  sed '/text$/i\hello' a2.txt     #插入
+     1280  sed -e '/text$/i\hello' a2.txt 
+     1281  cat a2.txt 
+     1282  sed  '/text$/c\hello' a2.txt     #修改
+     1283  cat a2.txt 
+     1284  sed 's/text/exam/' a2.txt       #替换
+     1285  sed -i 's/text/exam/' a2.txt    #替换
+     1286  cat a2.txt 
+     1287  sed -n 's/text/exam/' a2.txt 
+     1288  sed -n 's/exam/hello/' a2.txt 
+     1289  cat a2.txt 
+     1290  vim a2.txt 
+     1291  cat a2.txt 
+     1292  cd Desktop/
+     1293  cat a2.txt 
+     1294  sed 's/exam/hello' a2.txt 
+     1295  sed 's/exam/hello/' a2.txt 
+     1296  cat a2.txt 
+     1297  vim a2.txt 
+     1298  sed '3d' a2.txt          #删除第三行
+     1299  cat a2.txt 
+     1300  sed '1,3d' a2.txt        #删除第一到三行
+     1301  sed '1d;3d' a2.txt 		#删除第一行和第三行
+     1302  sed '/exam/d' a2.txt      #删除内容包含exam的行
+     1303  cat a2.txt 
+     1304  sed '/exam/,+2d' a2.txt     #删除内容包含exam的行，并向后删除两行
+     1305  sed '1~2d' a2.txt 		  #删除第一行，第三行。。。。
+     1306  cat a2.txt 
+     1307  sed '2~2d' a2.txt          #删除第二行，第四行。。。。
+     1308  cat a2.txt 
+     1309  sed "$d" a2.txt 
+     1310  sed "/^this/"d a2.txt      #删除以this开头的行
+     1311  sed '/dd\|cc/d' a2.txt     #删除内容包含bb或者cc的行
+     1312  sed -n "3p" a2.txt          #显示第三行
+     1313  cat a2.txt 
+     1314  sed -n "1,3p" a2.txt        #显示第一行到第三行
+     1315  sed -n "2,+3p" a2.txt 		#显示第二行，以及后面的三行
+     1316  sed -n "1p;3p;5p" a2.txt 	#显示第一行和第三行和第五行
+     1317  sed -n "$=" a2.txt     #统计所有的行数
+
+21>打包和压缩
+
+操作：先将多个文件打包【tar】,然后再进行压缩【gzip】
+
+    a.tar     可以把一大堆的文件和目录全部打包成一个文件
+    	-A或--catenate：新增文件到已存在的备份文件；
+    	-B：设置区块大小；-c或--create：建立新的备份文件；
+    	-C <目录>：这个选项用在解压缩，若要在特定目录解压缩，可以使用这个选项。
+    	-d：记录文件的差别；
+    	-x或--extract或--get：从备份文件中还原文件；
+    	-t或--list：列出备份文件的内容；
+    	-z或--gzip或--ungzip：通过gzip指令处理备份文件；
+    	-Z或--compress或--uncompress：通过compress指令处理备份文件；
+    	-f<备份文件>或--file=<备份文件>：指定备份文件；
+    	-v或--verbose：显示指令执行过程；
+    	-r：添加文件到已经压缩的文件；
+    	-u：添加改变了和现有的文件到已经存在的压缩文件；
+    	-j：支持bzip2解压文件；
+    	-v：显示操作过程；
+    	-l：文件系统边界设置；
+    	-k：保留原有文件不覆盖；
+    	-m：保留文件不被覆盖；
+    	-w：确认压缩文件的正确性；
+    	-p或--same-permissions：用原来的文件权限还原文件；
+    	-P或--absolute-names：文件名使用绝对名称，不移除文件名称前的“/”号；
+    	-N <日期格式> 或 --newer=<日期时间>：只将较指定日期更新的文件保存到备份文件里；
+    	--exclude=<范本样式>：排除符合范本样式的文件。
+    
+     tar -cvf xxx.tar   filename :仅仅打包，不压缩
+     tar -zcvf xxx.tar.gz   filename:实现打包，也实现了压缩，采用gzip格式
+     tar -jcvf xxx.tar.bz2   filename:实现打包，也实现了压缩，采用bzip2格式
+     tar -xf xx.tar/xx.tar.gz/xx.tar.bz2：实现解包，实现解压
+    	
+    演示命令：
+    yangyang@yangyang-host:~/Desktop$ ls
+    a2.txt  c1.txt  text01.tar
+    yangyang@yangyang-host:~/Desktop$ tar -xf text01.tar 
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  c1.txt  text01.tar
+    yangyang@yangyang-host:~/Desktop$ tar -zcvf text02.tar.gz a1.txt 
+    a1.txt
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  c1.txt  text01.tar  text02.tar.gz
+    yangyang@yangyang-host:~/Desktop$ rm -rf a1.txt 
+    yangyang@yangyang-host:~/Desktop$ ls
+    a2.txt  c1.txt  text01.tar  text02.tar.gz
+    yangyang@yangyang-host:~/Desktop$ tar -xf text02.tar.gz 
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  c1.txt  text01.tar  text02.tar.gz
+    yangyang@yangyang-host:~/Desktop$ tar -jcvf text03.tar.bz2 a1.txt 
+    a1.txt
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  c1.txt  text01.tar  text02.tar.gz  text03.tar.bz2
+    yangyang@yangyang-host:~/Desktop$ rm -rf a1.txt 
+    yangyang@yangyang-host:~/Desktop$ tar -xf text03.tar.bz2 
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  a2.txt  c1.txt  text01.tar  text02.tar.gz  text03.tar.bz2
+
+    b.gzip	 对文件进行压缩和解压缩，压缩之后用“.gz”作为扩展名
+    
+    还可以和tar命令一起构成Linux操作系统中比较流行的压缩文件格式
+    
+    -d或--decompress或----uncompress：解开压缩文件；
+    -f或——force：强行压缩文件。不理会文件名称或硬连接是否存在以及该文件是否为符号连接；
+    -l或——list：列出压缩文件的相关信息；
+    -L或——license：显示版本与版权信息；
+    -n或--no-name：压缩文件时，不保存原来的文件名称及时间戳记；
+    -N或——name：压缩文件时，保存原来的文件名称及时间戳记；
+    -q或——quiet：不显示警告信息；
+    -r或——recursive：递归处理，将指定目录下的所有文件及子目录一并处理；
+    -t或——test：测试压缩文件是否正确无误；
+    -v或——verbose：显示指令执行过程；
+    -V或——version：显示版本信息
+    
+    gzip filename:压缩指定文件，替换原文件
+    gzip -d xxx.gz:解压指定文件
+    gzip -r  directory:递归压缩指定目录中的所有的文件
+    gzip -dr directory:递归解压缩指定目录中的所有的文件
+    
+    演示命令：
+    yangyang@yangyang-host:~/Desktop$ rm -rf *
+    yangyang@yangyang-host:~/Desktop$ touch a1.txt
+    yangyang@yangyang-host:~/Desktop$ touch b1.txt
+    yangyang@yangyang-host:~/Desktop$ gzip *
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt.gz  b1.txt.gz
+    yangyang@yangyang-host:~/Desktop$ gzip -dv *
+    a1.txt.gz:	  0.0% -- replaced with a1.txt
+    b1.txt.gz:	  0.0% -- replaced with b1.txt
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt  b1.txt
+    yangyang@yangyang-host:~/Desktop$ gzip a1.txt 
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt.gz  b1.txt
+    yangyang@yangyang-host:~/Desktop$ mkdir check
+    yangyang@yangyang-host:~/Desktop$ cp b1.txt check/
+    yangyang@yangyang-host:~/Desktop$ cd check/
+    yangyang@yangyang-host:~/Desktop/check$ ls
+    b1.txt
+    yangyang@yangyang-host:~/Desktop/check$ mkdir text01
+    yangyang@yangyang-host:~/Desktop/check$ cd text01/
+    yangyang@yangyang-host:~/Desktop/check/text01$ touch text01.txt
+    yangyang@yangyang-host:~/Desktop/check/text01$ cd ..
+    yangyang@yangyang-host:~/Desktop/check$ cd ..
+    yangyang@yangyang-host:~/Desktop$ gzip check
+    gzip: check is a directory -- ignored
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt.gz  b1.txt  check
+    yangyang@yangyang-host:~/Desktop$ cd check/
+    yangyang@yangyang-host:~/Desktop/check$ ls
+    b1.txt  text01
+    yangyang@yangyang-host:~/Desktop/check$ cd ..
+    yangyang@yangyang-host:~/Desktop$ gzip -rv check
+    check/b1.txt:	  0.0% -- replaced with check/b1.txt.gz
+    check/text01/text01.txt:	  0.0% -- replaced with check/text01/text01.txt.gz
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt.gz  b1.txt  check
+    yangyang@yangyang-host:~/Desktop$ cd check/
+    yangyang@yangyang-host:~/Desktop/check$ ls
+    b1.txt.gz  text01
+    yangyang@yangyang-host:~/Desktop/check$ cd text01/
+    yangyang@yangyang-host:~/Desktop/check/text01$ ls
+    text01.txt.gz
+    yangyang@yangyang-host:~/Desktop/check/text01$ cd ..
+    yangyang@yangyang-host:~/Desktop/check$ cd ..
+    yangyang@yangyang-host:~/Desktop$ gzip -dr check
+    yangyang@yangyang-host:~/Desktop$ ls
+    a1.txt.gz  b1.txt  check
+    yangyang@yangyang-host:~/Desktop$ cd check/
+    yangyang@yangyang-host:~/Desktop/check$ ls
+    b1.txt  text01
+    yangyang@yangyang-host:~/Desktop/check$ cd text01/
+    yangyang@yangyang-host:~/Desktop/check/text01$ ls
+
+2.vim编辑器
+
+vi命令是UNIX操作系统最通用的全屏幕纯文本编辑器。Linux中的vi编辑器叫vim，它是vi的增强版（vi Improved），与vi编辑器完全兼容，而且实现了很多增强功能
+
+命令模式-----》编辑模式【输入模式】-----》命令模式-----》末行模式【底线命令模式】
+
+    进入vi的命令 
+        #vi filename :打开或新建文件，并将光标置于第一行首 
+        vi +n filename ：打开文件，并将光标置于第n行首 
+        vi + filename ：打开文件，并将光标置于最后一行首
+        vi filename1 filename2   :同时打开多个文件
+    
+    插入文本类命令 
+      	#i ：在光标前 
+      	I ：在当前行首 
+      	#a：光标后 
+      	A：在当前行尾 
+      	o：在当前行之下新开一行 
+      	O：在当前行之上新开一行 
+      	r：替换当前字符 
+      	R：替换当前字符及其后的字符，直至按ESC键 
+    
+    
+    移动光标 
+      	j或下箭头 向下移动一行
+      	k或上箭头 向上移动一行
+      	h或左箭头 左移一个字符
+      	l或右箭头 右移一个字符
+      	#w 　　　　右移一个词
+      	W 　　　　右移一个以空格分隔的词 
+      	#b 　　　　左移一个词
+      	B 　　　　左移一个以空格分隔的词
+      	0 　　　　移到行首
+      	Ctrl-F　　向前翻页
+      	Ctrl-B　　向后翻页
+      	nG　　　　到第n行  ------》先按下数字，再按下G
+      	G 　　　　到最后一行  #shift + g:直接定位到页尾  
+      	gg	     第一行   -----》先按下g，再按下g
+      	n+       光标下移n行 
+      	n-       光标上移n行
+        
+    esc:退出输入模式
+    
+    :set number：在命令模式下，用于在最左端显示行号；
+    :set nonumber：在命令模式下，用于在最左端不显示行号；
+    
+    保存退出 
+      	:wq		执行存盘退出操作；      -----》对内容做修改之后使用
+    	:w		执行存盘操作；
+    	:w！		执行强制存盘操作；
+    	:q		执行退出vi操作；
+    	:q！		执行强制退出vi操作；     -----》如果没有任何修改的时候使用
+    	:e文件名	打开并编辑指定名称的文件；
+    	:n!		如果同时打开多个文件，则保存上个文件继续编辑下一个文件；
+    	:f		用于显示当前的文件名、光标所在行的行号以及显示比例；
+     """
+     1.如果对文件做了修改，使用:wq
+     2.如果对文件未做任何修改，使用：q
+     3.如果权限不够，不让退出，则使用！强制退出
+     """
+    	
+    删除操作【注意：和上面的插入文本类没有关系，进入vim后直接使用】
+      	x		删除光标处的单个字符 
+      	#dd		删除光标所在行 
+      	dw		删除当前字符到单词尾（包括空格）的所有字符 
+      	de		删除当前字符到单词尾（不包括单词尾部的空格）的所有字符 
+      	d$		删除当前字符到行尾的所有字符 
+      	d^		删除当前字符到行首的所有字符 
+      	J		删除光标所在行行尾的换行符，相当于合并当前行和下一行的内容
+      	
+    替换操作
+      	:s/old/new 		将当前行中查找到的第一个字符“old” 串替换为“new”
+      	:#,#s/old/new 	在行号“#,#”范围内替换所有的字符串“old”为“new”
+      	:%s/old/new	    在整个文件范围内替换所有的字符串“old”为“new”
+      	:s/old/new/c 	在替换命令末尾加入c命令，将对每个替换动作提示用户进行确认
+      	
+    撤消操作 【注意：直接在命令模式下使用】
+    	u取消最近一次的操作，并恢复操作结果
+    	可以多次使用u命令恢复已进行的多步操作 
+    	U取消对当前行进行的所有操作 
+    	Ctrl + r对使用u命令撤销的操作进行恢复 
