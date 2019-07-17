@@ -1,0 +1,761 @@
+一、反射
+
+通过字符串操作对象中的字段【属性】
+
+反射就是通过字符串的形式，导入模块，到模块中寻找对应的函数，也可以到类中去操作【查找，修改，增加，删除】成员
+
+1.基本使用
+
+    class Person(object):
+        def __init__(self,name,age):
+            self.name = name
+            self.__age = age
+    
+        #成员函数
+        def show(self):
+            print("showing")
+    
+        #静态函数
+        @staticmethod
+        def func1():
+            print("func~~~1111")
+    
+        #类函数
+        @classmethod
+        def func2(cls):
+            print("func~~222")
+    
+    #1.正常访问属性
+    #创建对象
+    # p = Person("jack",19)
+    # #访问
+    # print(p.name,p.age)
+    # #修改
+    # p.name = "abc"
+    # p.age = 20
+    # print(p.name,p.age)
+    
+    #2.需求：通过“name”字符串访问name的属性值
+    #print(p."name")
+    p = Person("jack",19)
+    #a.getattr(obj,字段，default),获取某个对象某个属性的值，如果属性不存在，则返回default的值
+    r0 = getattr(p,"name")
+    print(r0)
+    r1 = getattr(p,"score",38)
+    print(r1)
+    
+    #r2 = getattr(p,"__age")
+    r2 = getattr(p,"_Person__age")
+    print(r2)
+    
+    #3.获取类中的函数
+    #成员函数
+    r3 = getattr(p,"show")   #r3 = p.show
+    print(r3)
+    print(p.show)
+    #调用show函数
+    r3()
+    
+    #类函数和静态函数
+    #对象.函数名
+    r31 = getattr(p,"func1")
+    print(r31)
+    r32 = getattr(p,"func2")
+    print(r32)
+    r31()
+    r32()
+    
+    print("*" * 20)
+    
+    #类名.函数名
+    r31 = getattr(Person,"func1")
+    print(r31)
+    r32 = getattr(Person,"func2")
+    print(r32)
+    r31()
+    r32()
+    
+    #4.给类中的成员修改值
+    #setattr(obj,字段，value) 给指定对象的指定字段设置值
+    p = Person("abc",20)
+    print(getattr(p,"name"))   #p.name
+    setattr(p,"name","zhangsan")  #p.name = "zhangsan"
+    print(getattr(p,"name"))
+    
+    #5.判断指定对象中的指定字段是否存在
+    #hasattr(obj,字段)
+    print(hasattr(p,"name"))
+    print(hasattr(p,"score"))
+    
+    #6.删除指定对象中的指定字段
+    #delattr(obj,字段)
+    
+    #del操作符
+    # print(p.name)
+    # del p.name
+    # print(p.name)
+    
+    #delattr函数
+    print(getattr(p,"name"))
+    delattr(p,"name")
+    print(getattr(p,"name"))
+    
+    
+    #总结：反射就是一种字符串的事件驱动
+
+2.模块中的反射
+
+    import  module
+    
+    # print(module.num)
+    # module.show()
+    
+    
+    #模块其实也是一个对象
+    print(getattr(module,"num"))
+    
+    f = getattr(module,"show")
+    print(f)
+    f()
+    
+    cls = getattr(module,"MyClass")
+    print(cls)
+    obj = cls(6)
+    print(obj)
+
+    #变量
+    num = 19
+    
+    #函数
+    def show():
+        print("show")
+    
+    #类
+    class MyClass(object):
+        def __init__(self,n):
+            self.n = n
+    
+        def __str__(self):
+            return str(self.n)
+
+3.练习
+
+    #需求：从控制台输入一个请求，跳转到对应的模块
+    #举例：从控制台输入news,执行news函数，打印新闻
+    
+    import reflect03.text
+    
+    op = input("请输入你的选择：")
+    """
+    if op == "news":
+        print(reflect03.text.news())
+    elif op == "games":
+        print(reflect03.text.games())
+    elif op == "video":
+        print(reflect03.text.video())
+    elif op == "audio":
+        print(reflect03.text.audio())
+    elif op == "pic":
+        print(reflect03.text.pic())
+    else:
+        print("暂无次选择")
+    """
+    
+    #问题：上述问题虽然能解决问题，不利于后期的维护
+    #解决方案：采用反射,可以简化代码，提高代码的可读性和后期的可维护性
+    
+    result = hasattr(reflect03.text,op)
+    
+    if result:
+        #获取
+        f = getattr(reflect03.text,op)
+        #执行
+        print(f())
+    else:
+        print("暂无次选择")
+
+    def news():
+        return "新闻"
+    def pic():
+        return "图片"
+    def games():
+        return "游戏"
+    def video():
+        return "视频"
+    def audio():
+        return "音频"
+    def pe():
+        return "体育"
+    
+
+二、collections模块
+
+    #import  collections
+    from collections import  *
+    
+    #1.Iterator和Iterable
+    
+    #2.namedtuple
+    #需求：表示二维坐标
+    #a，采用元组tuple
+    #p = (3,4)
+    
+    #b。定义类
+    class Point1(object):
+        def __init__(self,x,y):
+            self.x = x
+            self.y = y
+    print(Point1)
+    p1 = Point1(3,4)
+    print(p1.x,p1.y)
+    p1.x = 10
+    p1.y = 20
+    print(p1.x,p1.y)
+    
+    
+    #c.采用namedtuple:相当于定义了一个类，并且定义对象的实例属性
+    #语法：namedtuple("名称"，[属性列表])，名称相当于自定义类名，属性列表相当于自定义类中的实例属性
+    Point2  = namedtuple("Point",["x","y"])
+    print(Point2)
+    p2 = Point2(4,6)
+    print(p2.x,p2.y)
+    
+    #AttributeError: can't set attribute
+    # p2.x = 29
+    # p2.y = 10
+    # print(p2.x,p2.y)
+    
+    """
+    namedtuple是一个函数，它用来创建一个自定义的tuple对象，并且规定了元素的个数，
+    并且可以使用属性而不是索引来引用tuple中的某个元素
+    
+    好处：可以很方便定义一种新的数据类型，它同时具备tuple的不变性,又可以通过属性来访问
+    """
+    
+    #验证
+    print(isinstance(p1,tuple))    #False
+    print(isinstance(p2,Point2))  #True
+    print(isinstance(p2,tuple))  #True
+    print(isinstance(p2,object))  #True
+    
+    #2.deque()
+    #使用list存储数据，按照索引访问元素很快，但是插入和删除操作相对比较慢，
+    # 因为list是线性存储，数据量大的时候，插入和删除的效率很低
+    #deque是为了高效的实现插入和删除操作的双向链表
+    d1 = deque([11,22,33,44,55,66,77])
+    print(d1)
+    #增加
+    d1.append(88)
+    print(d1)
+    d1.appendleft(99)
+    print(d1)
+    
+    #删除
+    d1.pop()
+    print(d1)
+    d1.popleft()
+    print(d1)
+    
+    #3.defaultdict
+    #使用dict的时候，如果key不存在，则会抛出KeyError异常，如果希望key不存在的时候，不要抛出异常，返回一个默认值
+    # d1 = defaultdict(None)
+    # print(d1)
+    
+    d2 = defaultdict(lambda:"not found")
+    print(d2)
+    #访问指定key的value，不存在，则返回第一个参数函数的返回值
+    print(d2["a"])
+    
+    #和普通的dict一样，向其中添加键值对
+    d2["a"] = 1
+    print(d2["a"])
+    print(d2)
+    
+    d3 = defaultdict(lambda:"not found",{"name":"jack","age":10})
+    print(d3)
+    
+    
+    #4.Counter:是一个简单的计数器，同时是dict的子类
+    #需求：统计一个字符串中每个字母出现的次数
+    #方式一：通过普通的dict实现
+    def getCount(s):
+        dict1 = {}
+        for ch in s:
+            if ch not in dict1:
+                dict1[ch] = 1
+            else:
+                dict1[ch] += 1
+        return dict1
+    
+    d1 = {"a":1}
+    print(type(d1))
+    
+    #方式二：通过Counter
+    #创建Counter对象
+    c = Counter()
+    #遍历字符串，让Counter对象自动计数
+    for ch in "hello":
+        #c[ch] = c[ch] + 1
+        c[ch] += 1
+    print(c)
+    print(dict(c))
+    
+    
+    #5.OrderedDict
+    #使用dict的时候，key是无序的，在对key进行迭代时，无法确定key的顺序，如果要保持key的顺序，可以使用OrderedDict
+    d1 = dict({"a":1,"c":2,"b":3})
+    print(d1)
+    print(d1.keys())
+    print(d1.values())
+    print(d1.items())
+    
+    d2 = OrderedDict([("a",1),("c",2),("b",3)])
+    print(d2)
+    print(d2.keys())
+    print(d2.values())
+    print(d2.items())
+
+三、单元测试和文档测试
+
+1.单元测试
+
+    def mysum(x,y):
+        return  x + y + 1
+    def mysub(x,y):
+        return  x - y
+
+    #1.导入模块
+    import  unittest
+    from text01.module01 import *
+    
+    #2.自定义一个测试类，继承自unittest.TestCase类
+    class Test(unittest.TestCase):
+        #3.重写两个函数
+        #意义：分别在开始测试和结束测试的时候会自动调用
+        def setUp(self):
+            print("开始测试~~~~")
+        def tearDown(self):
+            print("结束测试~~~~")
+    
+    
+        #4.测试指定的函数的正确性
+        #一般情况下，命名格式;test_被测试的函数名
+        #测试：设置值，观察结果和预期的结果是否一致，如果一致，说明代码是正确的
+        def test_mysum(self):
+            #参数：调用原函数   预期的结果   如果函数计算的结果和预期的不一致，报出错误信息
+            self.assertEqual(mysum(2,3),5,"加法有误")
+    
+        """
+        Failure
+        Traceback (most recent call last):
+        File "C:\Users\Administrator\Desktop\XA-Python1903\Day17Code\text01\textDemo01.py", line 20, in test_mysum
+        self.assertEqual(mysum(2,3),5,"加法有误")
+        AssertionError: 6 != 5 : 加法有误
+        """
+    
+        def test_mysub(self):
+            self.assertEqual(mysub(5, 2), 3, "减法有误")
+    
+    
+    #当主程序开始运行的时候，开始单元测试
+    if __name__ == "__main__":
+        unittest.main()
+
+2.文档测试
+
+    #1.导入模块
+    import  doctest
+    
+    def mysum(x,y):
+        #2.书写文档
+        """
+        求和
+        :param x: 第一个数
+        :param y: 第二个数
+        :return: 和
+    
+        example:
+        >>> result = mysum(2,3)
+        >>> result
+        5
+        """
+        return  x + y
+    
+    print(mysum(10,45))
+    
+    #3.开始文档测试
+    doctest.testmod()
+
+四、Python2.x和Python3.x的区别
+
+1.性能：py3起始比py2的效率低，py3有极大地优化空间，效率处于追赶状态
+
+2.编码：py3使用utf-8编码格式，使得变量名更加广阔【可以使用中文作为变量名】
+
+3.语法：
+
+	a.去除了<>,py3使用的是!=
+
+	b.加入了with...as关键字，新增了None，True，False
+
+	c.加入了nonlocal语句
+
+	d.去除了print操作符，新增了print()函数
+
+	e.去除了raw_input操作符，,加入了input()函数
+
+	f.新的super()函数，可以不用传参
+
+	g:新的八进制的字面量：py2中使用0表示八进制，py3中使用0o表示八进制
+
+4.字符和字符串
+
+	py2中8-bit字符串存储，py3中16-bit Unicode字符串存储
+
+	py3中不管是一个字符，还是多个字符，都是字符串表示
+
+5.数据类型
+
+	py2中数字类型分为int和long
+
+	py3中数字类型只有一种int，新增了一种bytes【实现了字符串的编码encode和解码decode】
+
+6.异常
+
+	py2中：try ....  except  错误表示码,变量：
+
+	pyt3中：try ....except  错误表示码 as 变量：
+
+7.其他
+
+	a.py2中使用xrange(),py3中使用range()
+
+	b.打开文件
+
+		py2中打开文件需要两步：file(path)  open(path)
+
+		py3中打开文件只需要一步:open(path)
+
+五、进程
+
+1.概念
+
+应用程序的运行是cpu和内存协同工作的结果
+
+操作系统：Linux,Windows，Mac os，都是支持多任务的操作系统
+
+a.什么是多任务？
+
+	操作系统可以同时运行多个任务
+
+b.即使是单核cpu，也可以执行多任务，由于cpu执行程序是顺序执行，单核cpu是如何执行多任务的？
+
+	操作系统上的多个任务在进行交替执行，由于交替的时间非常短暂，好像每个任务是同时进行的
+
+c.多核cpu实现多任务的工作原理：真正的并行执行任务只能在多核cpu上实现，但是=由于任务数量远远大于cpu的核心数量，所以操作系统会自动做出调度，将多个任务在多核上进行交替执行
+
+	并行：真正一起执行，任务数量小于cpu核心数量【理想型】
+
+	并发：看上去一起执行，任务数量大于cpu核心数量【现实型】
+
+d.进程是什么？
+
+	对于操作系统而言，一个任务就是一个进程【Process】
+
+	是一个程序的运行状态和资源占用【cpu,内存】情况的描述
+
+	进程是一个动态过程，它指的是从代码加载到最后完成的过程
+
+e.进程的特点：
+
+	1>独立性:不同的进程之间是相互独立的，相互之间资源不共享
+
+	2>动态性：进程是一个动态过程，它指的是从代码加载到最后完成的过程
+
+	3>并发性：一个操作系统可以同时处理多个任务，多个任务之间交替执行
+
+f。在Python中，实现多任务的编程，实现方式：
+
+	1》多进程模式
+
+	2》多线程模式
+
+	3》协程模式
+
+2.单任务现象
+
+    import  time
+    
+    
+    def run():
+        while True:
+            print("runing")
+            time.sleep(1.2)
+    
+    if __name__ == "__main__":
+        while True:
+            print("主函数")
+            time.sleep(0.8)
+    
+        run()
+
+3.多任务现象
+
+3.1启动进程
+
+    #1.导入模块
+    #Process是专门用来创建进程对象的类
+    from multiprocessing import  Process
+    import  time,os
+    
+    #5.子进程需要执行的任务
+    """
+    def run():
+        while True:
+            #os.getpid()为了获取当前进程的进程号
+            #os.getppid()为了获取当前进程的父进程的进程号
+            print("子进程启动：%s-%s" % (os.getpid(),os.getppid()))
+            time.sleep(1.2)
+    """
+    #注意：子进程的函数命名可以是任意的，一般情况下，使用run表示某个任务的执行
+    def run(num):
+        while True:
+            #os.getpid()为了获取当前进程的进程号
+            #os.getppid()为了获取当前进程的父进程的进程号
+            print("子进程启动：%s-%s" % (os.getpid(),os.getppid()))
+            time.sleep(1.2)
+    
+    if __name__ == "__main__":
+        #2.__main__中书写的代码表示主进程，也可以成为父进程
+        #3.os.getpid()会获取当前正在执行任务的进程
+        print("主进程启动-%s" % (os.getpid()))
+    
+        #4.在主进程中创建子进程
+        """
+        Process(target,args)
+            target表示进程执行的任务
+            args:表示所执行任务的参数，不管有几个参数，都使用元组
+        """
+        #4.1子进程的任务没有参数
+        #p1 = Process(target=run)
+        #注意：进程创建之后不会自动启动，必须手动启动
+        #p1.start()
+    
+        #4.2子进程的任务有参数
+        p2 = Process(target=run,args=(37,))
+        p2.start()
+    
+        #6.主进程的任务
+        while True:
+            print("主函数")
+            time.sleep(0.8)
+
+3.2父子进程之间的先后顺序
+
+    from multiprocessing import  Process
+    import  os,time
+    
+    #join():合并，将子进程合并到主进程
+    
+    def run():
+        print("子进程启动")
+        time.sleep(2)
+        print("子进程结束")
+    
+    
+    if __name__ == "__main__":
+        print("父进程启动")
+    
+        time.sleep(2)
+    
+        #创建子进程并启动
+        p = Process(target=run)
+        p.start()
+    
+        #可以改变父子进程之间的执行顺序【未添加join，子进程只能等待父进程结束之后才启动；
+        # 添加join之后，父进程等待子进程结束之后才结束】
+        p.join()
+    
+        print("父进程结束")
+    
+    """
+    默认：
+    父进程启动
+    父进程结束
+    子进程启动
+    子进程结束
+    
+    父进程启动
+    子进程启动
+    子进程结束
+    父进程结束
+    """
+
+3.3多个进程中的全局变量
+
+    from multiprocessing import  Process
+    from time import  sleep
+    import  os
+    
+    #全局变量
+    num = 888
+    
+    #需求：在一个进程中修改num的值，观察该num在另一个进程的值
+    
+    def run():
+        print("子进程开始")
+        global  num
+        num += 1
+        print("子进程%s中的num=%d" % (os.getpid(),num))
+        print("子进程结束")
+    
+    if __name__ == "__main__":
+        print("父进程启动")
+    
+        p = Process(target=run)
+        p.start()
+    
+        p.join()
+    
+        """
+        说明：在子进程中修改全局变量对父进程中的全局变量没有影响
+        工作原理：在创建子进程的时候实际上对全局变量做了一个备份，
+                父进程中的num和子进程中的num属于完全不同的两个变量
+    
+        进程是系统中程序执行状态和资源分配的基本单位，每个进程都有自己的数据段，代码段，堆栈段等 【进程之间的资源不共享】
+        """
+        print("父进程%s中的num=%d" % (os.getpid(),num))
+        print("父进程结束")
+
+3.4启动多个子进程【进程池】
+
+    from multiprocessing import  Pool
+    import  os,time,random
+    
+    
+    def run(name):
+        print("子进程%s启动：%s" % (name,os.getpid()))
+    
+        start = time.time()
+        time.sleep(random.choice(range(1,4)))
+        end = time.time()
+    
+        print("子进程%s结束,进程号：%s,耗时：%.2f" % (name,os.getpid(),end - start))
+    
+    
+    if __name__ == "__main__":
+        print("父进程启动")
+    
+        #创建多个子进程，采用进程池的方式，通过系统的类Pool创建多个进程对象
+        #参数：可以同时执行的任务的数量
+        #如果不设置参数，默认为cpu的核心数量
+        p = Pool(3)
+    
+        #通过循环的方式创建多个子进程
+        for i in range(10):
+            #创建进程，并且将进程放入进程池统一的管理
+            p.apply_async(run,args=(i,))
+    
+        #close():在close之后将不能再添加新的子进程，必须在join之前调用close
+        p.close()
+        p.join()
+    
+        print("父进程结束")
+    
+        """
+        并发,
+        设定了在同一时间可以同时执行的任务的数量，会交替执行，
+        当其中的一个任务结束，立马新的任务加入，以此类推，直到所有的任务全部执行完毕
+        """
+
+3.5封装进程对象
+
+    from  multiprocessing import  Process
+    import  os,time
+    
+    #1.自定义一个类，表示进程类,继承自Process
+    class CustomProcess(Process):
+        def __init__(self,name):
+            #2.调用父类中的构造函数
+            Process.__init__(self)
+            #3.定义实例属性，用于表示当前执行的进程的名称
+            self.name = name
+    
+        #3.定义进程执行的函数
+        def run(self):
+            print("子进程（%s-%s）启动" % (self.name,os.getpid()))
+            #子进程的任务
+            time.sleep(2)
+            print("子进程（%s-%s）结束" % (self.name, os.getpid()))
+
+    from  customProcess import  CustomProcess
+    
+    
+    if __name__ == "__main__":
+        print("父进程启动")
+    
+        #创建子进程
+        p = CustomProcess("子进程1")
+        #调用start，触发了进程类中任务的执行【成员函数的调用】
+        p.start()
+    
+        p.join()
+    
+        print("父进程结束")
+
+3.6进程之间的通信
+
+    #需求：在父进程中创建两个子进程，一个往队列里写数据，一个从队列里读取数据
+    from  multiprocessing import  Process,Queue
+    import  os,time
+    
+    #1.写数据的任务
+    def write(queue):
+        print("子进程%s开始" % (os.getpid()))
+        print("进程用于write数据")
+        for value in ["AAA","BBB","CCCC"]:
+            print("add %s to queue" % (value))
+            #添加
+            queue.put(value)
+            time.sleep(1)
+    
+        print("子进程%s结束" % (os.getpid()))
+    
+    
+    #2.读数据的任务
+    def read(queue):
+        print("子进程%s开始" % (os.getpid()))
+        print("进程用于read数据")
+    
+        n = 0
+        while n < 3:
+            #从队列中获取数据
+            value = queue.get(True)
+            print("get %s from queue" % (value))
+    
+            n += 1
+    
+        print("子进程%s结束" % (os.getpid()))
+    
+    
+    #主进程
+    if __name__ == "__main__":
+        print("父进程开始")
+    
+        #3.创建队列对象
+        q = Queue()
+    
+        #4.创建读和写的进程，并启动
+        pw = Process(target=write,args=(q,))
+        pr = Process(target=read, args=(q,))
+        pr.start()
+        pw.start()
+    
+        pw.join()
+        #pr.join()
+    
+        print("父进程结束")
+    
+        #进程之间的通信的实质：在多个进程之间进行数据的交换
+
+
