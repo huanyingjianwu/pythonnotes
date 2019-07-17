@@ -1,0 +1,424 @@
+一、Linux系统简介
+
+1.Linux发展史
+
+1946年世界上的第一台计算机就产生了，刚产生出的计算机并没有操作系统，需要手工输入
+
+人机矛盾:1. 只能一个人使用  2.人工速度慢于计算
+
+产生操作系统（根据人的需求产生）
+
+1965年麻省理工，ATT，贝尔实验室去研发一套操作系统，想要允许300台操作并使用
+
+1969年实现进度缓慢，计划失败了
+
+1969-1970 肯.汤姆逊移植了一个软件，定制一套标准，Unix系统
+
+1970 推出了Unix系统，Unix系统元年，操作系统元年，电脑底层时间 1970
+
+1985 年推出了windows
+
+Unix是一个传统的美国人思维，按年，按月，或者按设备收美金
+
+林纳斯.托瓦兹看不惯Unix
+
+1991年模拟Unix写了一套操作系统Linux
+
+开源，当时也只有大约100开发者，核心开发者大约5人
+
+1993年Linux使用者大约10w数量级
+
+2.Linux的应用领域
+
+IT服务器Linux、Unix、Windows三分天下，Linux系统可谓后起之秀，特别是最近几年来，服务器端Linux操作系统不断地扩大市场份额，且每年增长势头迅猛，并且开始对Windows及Unix服务器市场的地位构成严重的威胁。Linux占80%左右（包括CentOS,Ubuntu等），Windows占12.8%,solaris占6.2%。可见，在未来的服务器领域市场里Linux是大势所趋。
+
+Linux作为企业级服务器的应用十分广泛，利用Linux系统可以为企业架构WWW服务器、数据库服务器、负载均衡服务器、邮件服务器、DNS服务器、代理服务器、路由器等，不但使企业降低了运营成本，同时还获得了Linux系统带来的高稳定性和高可靠性，且无须考虑商业软件的版权问题
+
+Linux操作系统应用的三大领域
+
+a.企业级服务器应用领域【利用Linux系统可以为企业架构WWW服务器、数据库服务器、负载均衡服务器、邮件服务器、DNS服务器、代理服务器、路由器等，不但使企业降低了运营成本，同时还获得了Linux系统带来的高稳定性和高可靠性，且无须考虑商业软件的版权问题，随着Linux在服务器领域的广泛应用，近几年来，该系统已经参透到电信、金融、政府、教育、银行、石油等各个行业，同时各大硬件厂商也相继支持Linux操作系统。这一切表明，Linux在服务器市场前景光明。同时，大型、超大型互联网企业都在使用Linux系统作为其服务器端的程序运行平台，全球及国内排名前十的网站使用的几乎都是Linux系统，Linux已经逐步渗透到了各个领域的企业里】
+
+b.嵌入式Linux系统应用领域【由于Linux系统开放源代码，功能强大、可靠、稳定性强、灵活而且具有极大的伸缩性，再加上它广泛支持大量的微处理体系结构、硬件设备、图形支持和通信协议，因此，在嵌入式应用的领域里，从因特网设备（路由器、交换机、防火墙，负载均衡器）到专用的控制系统（自动售货机，手机，PDA，各种家用电器），LINUX操作系统都有很广阔的应用市场。特别是经过这几年的发展，它已经成功地跻身于主流嵌入式开发平台。例如《在智能手机领域，Android Linux已经在智能手机开发平台牢牢地占据了一席之地。嵌入式系统应用领域是另一个应用领域】
+
+c.个人桌面Linux应用领域【所谓个人桌面系统，其实就是我们在办公室使用的个人计算机系统，例如：Windows xp、windows 7、Mac等。Linux系统在这方面的支持也已经非常好了，完全可以满足日常的办公需求】
+
+服务器、云计算、嵌入式、政府、企业、影视、超算、桌面
+
+3.Linux的特点
+
+开放
+
+多用户
+
+多任务
+
+出色的速度性能
+
+良好的用户界面
+
+丰富的网络功能
+
+可靠的系统安全
+
+良好的移植性
+
+具有标准兼容性
+
+4.系统的使用
+
+	严格来讲，Linux不是一个操作系统，Linux只是一个操作系统中的内核。内核是什么？内核建立了计算机软件与硬件之间通讯的平台，内核提供系统服务，比如文件管理、虚拟内存、设备I/O等。
+
+	既然Linux只是一个内核。那么我们通常所说的Linux操作系统又是什么？我们通常所说的Linux，指 GNU/Linux ，即采用Linux内核的GNU操作系统。是的，操作系统的实际名称是GNU。什么是GNU？GNU代表GNU’s Not Unix。可以说是一个操作系统又可以说是一种规范
+
+参考资料：https://blog.csdn.net/baidu_32134295/article/details/52439823
+
+5.Linux组成
+
+Linux内核:
+
+	操作系统的心脏，运行程序和管理硬件设备的核心程序
+
+Linux Shell:
+
+	系统的用户界面，提供用户与内核进行交互操作的一种接口
+
+Linux 文件系统:
+
+	文件存储在磁盘等存储设备上的组织方法
+
+Linux 应用程序
+
+	标准的程序集，比如文本编辑，编程语言，Window，办公套件，Internet工具，数据库等
+
+6.Linux版本
+
+RedHat ：性能稳定，老牌的linux发行版。收费的是RedHat Enterprise Linux（RHEL,redhat的企业版）
+
+Fedora  ：界面比较好看，RedHat的社区免费版，非常强大。
+
+Centos  ：可以算是RHEL的克隆版，但它最大的好处是免费
+
+SUSE  ：德国最著名的linux发行版
+
+Debian：算是迄今为止最遵循GUN规范的linux系统（GUN的目标就是创建一套完全自由的操作系统）
+
+Ubuntu  ：Debian的后继或是一个分支，对于初学者而言比较友好
+
+Ubuntu的优点：
+
+	a.简便易用，对于初学者，Ubuntu系统算是非常简单的了
+
+	b.版本更新定期而频繁，每六个月就有一个新的ubuntu版本
+
+	c.使用者非常多，支持的社区也很多
+
+	d.标准化	
+
+7.Linux VS Windows
+
+见图
+
+二、环境安装
+
+1.VMWare安装
+
+VMWare是一个虚拟机
+
+虚拟机是在操作系统中使用软件模拟出来的，可以被当做操作系统使用
+
+虚拟机和物理机之间是寄宿和被寄宿的关系，真实的物理机被称为宿主机
+
+2.Ubuntu系统安装
+
+【可能会出现的问题】
+
+1.CPU 不支持虚拟化，见图
+
+    解决办法：
+    https://jingyan.baidu.com/article/b24f6c82c11ad286bfe5da23.html
+    
+    BIOS：全称(Base  Input  Output System)，中文是基本输入输出系统
+    虽然BIOS成百上千，但功能都是一样的，对硬件信息进行保存设置，所以设置方法上也大同小异，90%以上的电脑设置方法都差不多，进入BIOS按键也就那几个<del，Esc，F1，F2，F8，F9，F10，F11，F12>
+    
+    英文：Press Esc to enter SETUP
+    中文：按Esc键进入BIOS设置
+    
+    英文：Press F2 go to Setup Utility
+    中文：按F2去设置BIOS实用程序
+    
+    英文：Press DEL to enter EFI BIOS SETUP
+    中文：按Del键进入EFI模式的BIOS进行设置
+    
+    英文：Press Del run Setup
+    中文：按Del键运行BIOS设置
+    
+    英文：Press F1 run Setup
+    中文：按F1键运行BIOS设置
+    
+    英文：Press <F2> to Setup
+    中文：按F2进行BIOS设置
+    
+    【t400进入bios的方法:按f1】
+    1.首先需要确定计算机型号和菜谱，BIOS(基本输入输出系统)系统型号，因为过老的计算机是不支持虚拟机化的
+    2.检测方式：
+    	开机时按 F2，F12，DEL,ESC 等键就可以进到 BIOS[至于按哪个 看电脑品牌]
+    3.进入 BIOS 后，找到 Configuration 选项或者 Security选项， 然后选择 Virtualization或者 Intel Virtual Technology 就可以开始操作了
+    4.然后回车 将其设置为 Enabled
+    5.保存 BIOS 设置重启计算机
+    6.进入操作系统 右键 选择任务管理器 - 性能 - CPU - 查看虚拟化设置(已启动表示设置成功了， 可以装虚拟机了)
+
+不同型号的电脑进入bios的按键总结：见图
+
+3.VMWare Tools安装
+
+作用：保证两个系统之间可以进行文件共享
+
+三、设置用户和密码
+
+    rock:当前用户
+    
+    root：超级管理员，有等同于操作系统的权限
+    
+    ~:当前所处的路径
+    
+    $：当前用户是一个普通用户
+    
+    #：当前 用户是root用户
+
+1.修改root用户的密码
+
+    su root
+    passwd root
+    reboot
+
+2.修改主机名
+
+    rock@rockrong:~$ su root
+    密码： 
+    su：认证失败
+    rock@rockrong:~$ su root
+    密码： 
+    root@rockrong:/home/rock# vim /etc/hostname 
+    root@rockrong:/home/rock# vim /etc/hostname 
+    root@rockrong:/home/rock# vim /etc/hosts
+    root@rockrong:/home/rock# reboot
+
+3.修改终端中的用户名
+
+    rock@yangyang-host:~$ pwd
+    /home/rock
+    rock@yangyang-host:~$ su root
+    密码： 
+    root@yangyang-host:/home/rock# vim /etc/shadow
+    root@yangyang-host:/home/rock# cd ..
+    root@yangyang-host:/home# ls
+    rock
+    root@yangyang-host:/home# mv rock yangyang
+    root@yangyang-host:/home# ls
+    yangyang
+    root@yangyang-host:/home# vim /etc/passwd
+    root@yangyang-host:/home# reboot
+
+4.设置用户的权限
+
+    yangyang@yangyang-host:~$ sudo useradd user1
+    [sudo] yangyang 的密码： 
+    yangyang 不在 sudoers 文件中。此事将被报告。
+    yangyang@yangyang-host:~$ su root
+    密码： 
+    root@yangyang-host:/home/yangyang# vim /etc/sudoers
+    root@yangyang-host:/home/yangyang# su yangyang
+    yangyang@yangyang-host:~$ sudo useradd user1
+    [sudo] yangyang 的密码： 
+    yangyang@yangyang-host:~$ 
+
+五、快捷键
+
+    ctrl + alt + t:快速打开终端
+    
+    ctrl + shift + +:放大终端并放大字体
+    ctrl +  -:缩小终端并放大字体
+    
+    alt + ctrl:显示鼠标
+    
+    ctrl + f:类似右键，向右跳动一个字符
+    ctrl + b:类似左键
+    
+    ctrl + a:回到行首
+    ctrl + e:回到行尾
+    
+    ctrl + w:向左删除一个单词
+    ctrl + u:向左删除全部
+    ctrl + k:向右删除全部
+    
+    ctrl + y:恢复ctrl + w/u/k删除的内容
+    
+    tab:自动补全
+    
+    ctrl + l:翻页
+    
+    ctrl + c:强制中断
+    
+    ctrl + d:退出终端
+
+六、安装软件
+
+Ubuntu安装软件分为：在线安装，离线安装
+
+一般Linux分为两大类：
+
+	a.RedHat系列，RedHat、CentOS、Fedora等
+
+	b.Debian系列，Debian，Ubuntu等
+
+yum和apt/apt-get的区别：
+
+	a.apt属于Debian系列的包管理工具
+
+	b.yum属于RedHat系列的包管理工具
+
+	c.都是用来安装软件，yum处于落后状态
+
+1.apt
+
+软件管理 apt ( Advanced Packaging Tool ) , 他可以自动下载、配置、安装软件包
+
+apt和apt-get的功能是相同的，但是apt-get是早期的包管理工具，从Ubuntu16开始，建议使用apt
+
+    apt-cache search package 搜索包
+    apt-cache show package 获取包的相关信息，如说明、大小、版本等
+    sudo apt-get install package 安装包
+    sudo apt-get install package –reinstall 重新安装包
+    sudo apt-get -f install 强制安装
+    sudo apt-get remove package 删除包
+    sudo apt-get remove package –purge 删除包，包括删除配置文件等
+    sudo apt-get autoremove 自动删除不需要的包
+    sudo apt-get update 更新源
+    sudo apt-get upgrade 更新已安装的包
+    sudo apt-get dist-upgrade 升级系统
+    sudo apt-get dselect-upgrade 使用 dselect 升级
+    apt-cache depends package 了解使用依赖
+    apt-cache rdepends package 了解某个具体的依赖
+    sudo apt-get build-dep package 安装相关的编译环境
+    apt-get source package 下载该包的源代码
+    sudo apt-get clean && sudo apt-get autoclean 清理下载文件的存档
+    sudo apt-get check 检查是否有损坏的依赖
+
+apt的配置文件
+
+    /etc/apt/sources.list 设置软件包的获取来源
+    /etc/apt/apt.conf apt配置文件
+    /etc/apt/apt.conf.d apt的零碎配置文件
+    /etc/apt/preferences 版本参数
+    /var/cache/apt/archives/partial 存放正在下载的软件包
+    /var/cache/apt/archives 存放已经下载的软件包
+    /var/lib/apt/lists 存放已经下载的软件包详细信息
+    /var/lib/apt/lists/partial 存放正在下载的软件包详细信息
+
+2.dpkg
+
+dpkg是Debian软件包管理器的基础，被用于安装、卸载和供给和.deb软件包相关的信息,dpkg本身是一个底层的工具，本身并不能从远程包仓库下载包以及处理包的依赖的关系，需要将包从远程下载后再安装
+
+    dpkg -i package.deb 安装包
+    dpkg -r package 删除包
+    dpkg -P package 删除包（包括配置文件）
+    dpkg -L package 列出与该包关联的文件
+    dpkg -l package 显示该包的版本
+    dpkg –unpack package.deb 解开 deb 包的内容
+    dpkg -S keyword 搜索所属的包内容
+    dpkg -l 列出当前已安装的包
+    dpkg -c package.deb 列出 deb 包的内容
+    dpkg –configure package 配置包
+
+3.pip
+
+    pip 检测pip是否可用
+    pip install --upgrade pip 升级pip版本
+    pip list:查看所有安装包
+    pip freeze:查看最新安装包
+
+安装虚拟环境【将真实环境拷贝了一份】
+
+    sudo apt update
+    sudo pip3 install virtualenv  virtualenvwrapper
+
+创建和删除虚拟环境
+
+    mkvirtualenv xxx:创建一个名称为xxx的虚拟环境
+    rmvirtualenv  xxx:删除一个名称为xxx的虚拟环境
+    deactivate:退出当前虚拟环境
+    workon  xxx:进入到xxx虚拟环境
+    workon :列出真实环境下所有的虚拟环境
+    
+    创建django
+    pip install   django==1.12：安装指定版本的django，如果不指名版本，则默认安装最新版本
+
+七、常用命令
+
+1.概述
+
+github
+
+在Linux中，命令可以高效的完成工作，比如磁盘操作，文件存取，目录操作，进程管理，用户管理，网络管理等
+
+语法：
+
+	command命令   options选项   paramters参数
+
+	a.command:命令名称，比如：ls
+
+	b.options,对命令可以做出控制，根据需求可写可不写，比如：ls -a
+
+	c.paramters:传给命令的参数，根据需求可写可不写，比如：pip install --upgrade pip
+
+2.查看帮助文档
+
+1>--help：Linux自带的帮助信息
+
+    ls --help
+
+2>man,相当于是一个手册，包含了绝大多数命令的解释
+
+    命令：
+    man  ls
+    
+    空格：翻页
+    上下键：上下翻行
+    fn +  左键：回到首页，可以用home键
+    fn + 右键：回到尾页，可以用end键
+    /xxx:从上往下进行搜索
+    ?xxx:从下往上搜索
+    N:从上往下定位关键字
+    n；从下往上定位关键字
+    q；退出查询文档
+
+3>history   查看执行过的命令
+
+    history  ：默认显示最近的1000条历史命令
+    !number :执行指明编号对应的命令
+    history  num:显示最近的num条命令
+
+3.文件管理
+
+1>ls:列举出当前工作目录的内容，list
+
+    -a 用于显示所有文件和子目录(包括隐藏文件)
+    -A 同-a，但不列出“.”(表示当前目录)和“..”(表示当前目录的父目录)
+    -l 除了文件名之外，还将文件的权限、所有者、文件大小等信息详细列出来。 (文件大小是字节)
+    -lh 与-l 类似  只不过文件大小显示的是 KB [默认是按照文件名的 abcd 排序的]
+    -lht 与-l -lh 类似  排序是按照修改时间降序排的
+    -lhtr 按照时间升序排
+    -r 将目录的内容清单以英文字母顺序的逆序显示
+    -t 按文件修改时间进行排序
+    -F 在列出的文件名和目录名后添加标志。例如，在可执行文件后添加“*”，在目录名后添加“/”以区分不同的类型
+    -R 如果目标目录及其子目录中有文件，就列出所有的文件
+    
+    命令：
+    ls :显示当前路径下所有的内容
+    ls -a:显示当前路径下所有的内容，包含隐藏文件
+    ls -l:显示当前路径下所有的内容，以特定格式显示
+    ls -a -l--->ls -al----->ll
+    
+    ls xxxx:显示指定路径下的所有内容，路径可以绝对路径或者相对路径
+
+2>pwd	查看当前的工作目录,print working directory
