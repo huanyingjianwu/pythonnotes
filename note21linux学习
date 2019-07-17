@@ -1,0 +1,606 @@
+一、linux
+
+1.文件管理	
+
+	ls【-a:显示隐藏文件       -l：以格式化的方式显示文件的属性】
+
+		ls -a/ls -l -a /ls -al /ll
+
+	cd【~:当前用户的主目录    .：当前目录  ..:上一级工作路径   -：上一次的工作路径】
+
+	pwd:查看当前的工作路径
+
+	gedit:结合|使用
+
+	find：根据条件查找文件
+
+	cat/more/less/head/tail:查看文件内容
+
+		head -20 xxx.txt
+
+	touch xxx
+
+	mkdir xxx
+
+		mkdir -p  a/b/c/d
+
+	rmdir:只能删除空目录
+
+	rm 可以删除文件或者目录
+
+		-rf:强制删除文件或者目录
+
+	cp:拷贝
+
+	mv；移动或者重命名
+
+	ln；创建链接【软连接和硬链接】
+
+		软链接：ln -s 源文件   目标文件
+
+		硬链接：ln 源文件  目标文件
+
+	sort:排序，默认为升序，-r表示降序
+
+	cut：提取文本列【对文本使用指定的分隔符进行分隔】
+
+	tee:将指定的数据输入到指定的文件中
+
+	sed:流编辑器【a\   i\    d   c\  s】
+
+	tar:打包
+
+	gzip：使用gzip压缩
+
+二、常用命令
+
+1.用户管理
+
+    linux使用文件保存用户信息 
+    #/etc/passwd 用户账户信息。
+    #/etc/shadow 用户账户的密码信息。
+    #/etc/group 用户的用户组信息。
+    /etc/gshadow 安全组账户信息。
+    /etc/default/useradd 账户创建的默认值。
+    /etc/skel/ 包含默认文件的目录。
+    /etc/login.defs Shadow 密码套件配置。
+
+1>whoami     查看当前系统当前用户的用户名
+
+2>who     查看当前所有登录系统的用户信息
+
+    -q:只显示用户的登录账号的和登录用户的数量
+    -u:显示列标题
+    
+    #whoami获取的是当前正在工作的用户的用户名，who获取当前已经登录的用户名以及登录的时间
+    
+    演示命令：
+    yangyang@yangyang-host:~/Desktop$ whoami
+    yangyang
+    yangyang@yangyang-host:~/Desktop$ su root
+    密码： 
+    root@yangyang-host:/home/yangyang/Desktop# whoami
+    root
+    root@yangyang-host:/home/yangyang/Desktop# who
+    yangyang tty7         2019-07-17 09:08 (:0)
+    root@yangyang-host:/home/yangyang/Desktop# su yangyang
+    yangyang@yangyang-host:~/Desktop$ who
+    yangyang tty7         2019-07-17 09:08 (:0)
+
+3>chown        更改文件的所有者和所有组
+
+4>sudo         用来以其他身份来执行命令，预设的身份为root【让当前普通用户拥有超级管理员的权限】/etc/sudoers
+
+5>exit	退出
+
+6>su	切换用户
+
+    yangyang@yangyang-host:~$ su 
+    密码： 
+    root@yangyang-host:/home/yangyang# pwd
+    /home/yangyang
+    root@yangyang-host:/home/yangyang# exit
+    exit
+    yangyang@yangyang-host:~$ su -
+    密码： 
+    root@yangyang-host:~# pwd
+    /root
+    root@yangyang-host:~# su yangyang
+    yangyang@yangyang-host:/root$ pwd
+    /root
+    yangyang@yangyang-host:/root$ cd /home/yangyang/
+    yangyang@yangyang-host:~$ su root
+    密码： 
+    root@yangyang-host:/home/yangyang# su - yangyang
+
+7>useradd       添加用户
+
+    -c 备注 加上备注。并会将此备注文字加在/etc/passwd中的第5项字段中
+    -d 用户主文件夹。指定用户登录所进入的目录，并赋予用户对该目录的的完全控制权        
+    -e 有效期限。指定帐号的有效期限。格式为YYYY-MM-DD，将存储在/etc/shadow         
+    -f 缓冲天数。限定密码过期后多少天，将该用户帐号停用       
+    -g 主要组。设置用户所属的主要组  www.cit.cn           
+    -G 次要组。设置用户所属的次要组，可设置多组         
+    -M 强制不创建用户主文件夹         
+    -m 强制建立用户主文件夹，并将/etc/skel/当中的文件复制到用户的根目录下         
+    -p 密码。输入该帐号的密码         
+    -s shell。用户登录所使用的shell         
+    -u uid。指定帐号的标志符user id，简称uid
+    
+    #创建用户
+    #方式一：sudo useradd xxx
+    yangyang@yangyang-host:~$ sudo useradd zhangsan    #创建用户
+    [sudo] yangyang 的密码： 
+    yangyang@yangyang-host:~$ vim /etc/shadow
+    yangyang@yangyang-host:~$ sudo !!
+    sudo vim /etc/shadow
+    yangyang@yangyang-host:~$ sudo passwd zhangsan      #设置密码 
+    输入新的 UNIX 密码： 
+    重新输入新的 UNIX 密码： 
+    passwd：已成功更新密码
+    yangyang@yangyang-host:~$ cd /home/
+    yangyang@yangyang-host:/home$ ll
+    总用量 12
+    drwxr-xr-x  3 root     root 4096 7月  15 11:51 ./
+    drwxr-xr-x 24 root     root 4096 3月  25  2018 ../
+    drwxr-xr-x 30 yangyang rock 4096 7月  17 09:37 yangyang/
+    yangyang@yangyang-host:/home$ ls
+    yangyang
+    yangyang@yangyang-host:/home$ pwd
+    /home
+    yangyang@yangyang-host:/home$ sudo mkdir zhangsan   #给新用户创建主目录
+    yangyang@yangyang-host:/home$ ls
+    yangyang  zhangsan
+    yangyang@yangyang-host:/home$ cd yangyang/
+    yangyang@yangyang-host:~$ ls
+    Desktop    Downloads  Pictures  PycharmProjects  Templates
+    Documents  Music      Public    Software         Videos
+    yangyang@yangyang-host:~$ cd ..
+    yangyang@yangyang-host:/home$ cd zhangsan/
+    yangyang@yangyang-host:/home/zhangsan$ ls
+    yangyang@yangyang-host:/home/zhangsan$ cd ..
+    yangyang@yangyang-host:/home$ ls -l
+    总用量 8
+    drwxr-xr-x 30 yangyang rock 4096 7月  17 09:37 yangyang
+    drwxr-xr-x  2 root     root 4096 7月  17 09:41 zhangsan
+    yangyang@yangyang-host:/home$ sudo chown zhangsan:zhangsan /home/zhangsan #修改文件的所有者和所有组
+    yangyang@yangyang-host:/home$ ls -l
+    总用量 8
+    drwxr-xr-x 30 yangyang rock     4096 7月  17 09:37 yangyang
+    drwxr-xr-x  2 zhangsan zhangsan 4096 7月  17 09:41 zhangsan
+    yangyang@yangyang-host:/home$ ls
+    yangyang  zhangsan
+    yangyang@yangyang-host:/home$ su - zhangsan   #切换到新用户
+    密码： 
+    $ su root
+    密码： 
+    root@yangyang-host:/home/zhangsan# su - yangyang
+    yangyang@yangyang-host:~$ su - zhangsan
+    密码： 
+    $ pwd
+    /home/zhangsan
+    $ ls
+    $ ls -a /home/yangyang/.bash*
+    /home/yangyang/.bash_history  /home/yangyang/.bashrc
+    /home/yangyang/.bash_logout
+    $ ls -a /etc/skel/
+    .  ..  .bash_logout  .bashrc  examples.desktop	.profile
+    $ cp /etc/skel/.bash* .       #将正常用户的配置文件拷贝到新用户主目录下
+    $ ls -a
+    .  ..  .bash_logout  .bashrc
+    $ 注销
+    yangyang@yangyang-host:~$ sudo vim /etc/passwd     #修改系统文件
+    yangyang@yangyang-host:~$ su - zhangsan
+    密码： 
+    zhangsan@yangyang-host:~$      #所有配置信息改完之后可以正常使用
+    """
+    问题：
+     切换到普通用户之后：
+    	yangyang@yangyang-host:~$ su - zhangsan
+    	密码： 
+    	$ 
+    原因：缺少配置文件
+    
+    解决方案：对照正常使用的用户，将新用户缺少的文件拷贝过来
+    """
+    
+    #方式二：sudo useradd -m -s /bin/bash lisi
+    #-m:创建用户的主目录，拷贝/etc/skel下面的bash文件
+    #-s:将指定的/bin/bash添加到/etc/passwd文件中
+    yangyang@yangyang-host:~$ sudo useradd -m -s /bin/bash lisi
+    [sudo] yangyang 的密码： 
+    yangyang@yangyang-host:~$ ls /home/
+    lisi  yangyang  zhangsan
+    yangyang@yangyang-host:~$ sudo passwd  lisi
+    输入新的 UNIX 密码： 
+    重新输入新的 UNIX 密码： 
+    passwd：已成功更新密码
+    yangyang@yangyang-host:~$ su - lisi
+    密码： 
+    lisi@yangyang-host:~$ 
+      
+    #方式三：sudo useradd -m xxxx
+    yangyang@yangyang-host:~$ sudo useradd -m jack
+    yangyang@yangyang-host:~$ sudo passwd jack
+    输入新的 UNIX 密码： 
+    重新输入新的 UNIX 密码： 
+    passwd：已成功更新密码
+    yangyang@yangyang-host:~$ su - jack
+
+8>userdel        删除用户
+
+    #删除用户
+    #方式一：sudo userdel  xxxx
+    yangyang@yangyang-host:~$ sudo userdel  jack    #实际上删除的是/etc/passwd中的相关信息
+     #注意：如果要删除一个用户，必须保证该用户已经被注销
+    userdel: user jack is currently used by process 10103
+    yangyang@yangyang-host:~$ exit
+    jack@yangyang-host:~$ 注销    #ctrl + d
+    yangyang@yangyang-host:~$ sudo userdel jack
+    yangyang@yangyang-host:~$ ls /home/
+    jack  lisi  yangyang  zhangsan
+    yangyang@yangyang-host:~$ sudo rm -rf /home/jack   #手动删除用户的主目录
+    yangyang@yangyang-host:~$ ls /home/
+    lisi  yangyang  zhangsan
+    
+    #方式二：sudo userdel  -r xxxx
+    yangyang@yangyang-host:~$ ls /home/
+    lisi  yangyang  zhangsan
+    yangyang@yangyang-host:~$ sudo vim /etc/passwd
+    yangyang@yangyang-host:~$ sudo userdel -r lisi
+    userdel: user lisi is currently used by process 10018
+    yangyang@yangyang-host:~$ exit
+    lisi@yangyang-host:~$ 注销
+    yangyang@yangyang-host:~$ sudo userdel -r lisi
+    userdel: lisi 邮件池 (/var/mail/lisi) 未找到
+    yangyang@yangyang-host:~$ ls /home/
+    yangyang  zhangsan
+
+9>passwd    设置密码
+
+10>查看用户组
+
+    cat /etc/group
+
+11>groupadd 			添加组
+
+    sudo groupadd yangyang
+
+12>usermod     	修改用户的基本信息
+
+    -c<备注> 　修改用户帐号的备注文字。 
+    -d登入目录> 　修改用户登入时的目录。 
+    -e<有效期限> 　修改帐号的有效期限。 
+    -f<缓冲天数> 　修改在密码过期后多少天即关闭该帐号。 
+    -g<群组> 　修改用户所属的群组。 
+    -G<群组> 　修改用户所属的附加群组。 
+    -l<帐号名称> 　修改用户帐号名称。 
+    -L 　锁定用户密码，使密码无效。 
+    -s<shell> 　修改用户登入后所使用的shell。 
+    -u<uid> 　修改用户ID。 
+    -U 　解除密码锁定。
+    
+    演示命令：
+    yangyang@yangyang-host:~$ ll /home/
+    总用量 16
+    drwxr-xr-x  4 root     root     4096 7月  17 10:36 ./
+    drwxr-xr-x 24 root     root     4096 3月  25  2018 ../
+    drwxr-xr-x 30 yangyang rock     4096 7月  17 10:34 yangyang/
+    drwxr-xr-x  2 zhangsan zhangsan 4096 7月  17 09:52 zhangsan/
+    #注意：如果要修改一个用户的用户组，一定要保证指定的用户组是存在的
+    yangyang@yangyang-host:~$ sudo usermod -g yangyang yangyang
+    yangyang@yangyang-host:~$ ll /home/
+    总用量 16
+    drwxr-xr-x  4 root     root     4096 7月  17 10:36 ./
+    drwxr-xr-x 24 root     root     4096 3月  25  2018 ../
+    drwxr-xr-x 30 yangyang yangyang 4096 7月  17 10:34 yangyang/
+    drwxr-xr-x  2 zhangsan zhangsan 4096 7月  17 09:52 zhangsan/
+      
+    #创建用户的同时可以指明该用户所属的组
+    yangyang@yangyang-host:~$ sudo groupadd python1903
+    #修改用户所属的组
+    yangyang@yangyang-host:~$ sudo useradd -m  python -g python1903 
+    yangyang@yangyang-host:~$ ll /home/
+    总用量 20
+    drwxr-xr-x  5 root     root       4096 7月  17 10:49 ./
+    drwxr-xr-x 24 root     root       4096 3月  25  2018 ../
+    drwxr-xr-x  2 python   python1903 4096 7月  17 10:49 python/
+    drwxr-xr-x 30 yangyang yangyang   4096 7月  17 10:34 yangyang/
+    drwxr-xr-x  2 zhangsan zhangsan   4096 7月  17 09:52 zhangsan/
+    yangyang@yangyang-host:~$ sudo usermod -g python python
+    usermod：“python”组不存在
+    yangyang@yangyang-host:~$ sudo groupadd python
+    yangyang@yangyang-host:~$ sudo usermod -g python python
+    yangyang@yangyang-host:~$ ll /home/
+    总用量 20
+    drwxr-xr-x  5 root     root     4096 7月  17 10:49 ./
+    drwxr-xr-x 24 root     root     4096 3月  25  2018 ../
+    drwxr-xr-x  2 python   python   4096 7月  17 10:49 python/
+    drwxr-xr-x 30 yangyang yangyang 4096 7月  17 10:34 yangyang/
+    drwxr-xr-x  2 zhangsan zhangsan 4096 7月  17 09:52 zhangsan/
+      
+    #修改用户的用户名
+    yangyang@yangyang-host:~$ sudo usermod -l tom python
+    yangyang@yangyang-host:~$ ll /home/
+    总用量 20
+    drwxr-xr-x  5 root     root     4096 7月  17 10:49 ./
+    drwxr-xr-x 24 root     root     4096 3月  25  2018 ../
+    drwxr-xr-x  2 tom      python   4096 7月  17 10:49 python/
+    drwxr-xr-x 30 yangyang yangyang 4096 7月  17 10:34 yangyang/
+    drwxr-xr-x  2 zhangsan zhangsan 4096 7月  17 09:52 zhangsan/
+
+13>groupdel 			删除组
+
+    演示命令
+    #注意：要删除一个用户组，首先保证该用户组为空【首先删除该用户组中的用户】
+    yangyang@yangyang-host:~$ sudo groupdel python
+    groupdel：不能移除用户“tom”的主组
+    yangyang@yangyang-host:~$ sudo userdel -r tom
+    userdel: tom 邮件池 (/var/mail/tom) 未找到
+    yangyang@yangyang-host:~$ sudo groupdel python
+
+14>chmod     修改文件权限
+
+    chown:修改文件的所属者和所属组
+    usermod：修改用户的基本信息，包括用户组和用户名称
+    chmod：修改文件权限
+    
+    1.用户的分类
+    	u:user,当前文件的所有者
+    	g:group，与当前文件的所有者在同一个组中的用户
+    	o:other，与当前文件的所有者不在同一个组中的用户
+    	a：all，所有的用户
+    	
+    2.文件的权限
+    	r:read,读取权限，使用数字4表示
+    	w：write，写入权限，使用数字2表示
+    	x：execute,可执行权限，使用数字1表示
+    	-：啥也没有，使用数字0表示
+    	
+    3。文件权限的表示方式
+    	a.字母法
+    		rwxrwxrwx:可读可写可执行
+    		r-x:可读可执行
+    		rw-:可读可写
+    	
+    	b.数字法
+    		777：可读可写可执行，等价于rwxrwxrwx
+    		755：等价于rwxr-xr-x
+    		
+    4.chmod的语法
+    	chmod u/g/o/a     +/-/=   r/w/x    filename
+    	
+    	举例：字母法
+    		假设源文件的权限为rwxr-xr-x
+    		chmod  g+w xxxx.txt----->rwxrwxr-x
+    		chmod  o-x xxxx.txt----->rwxr-xr--
+    		
+    	举例：数字法	
+    		假设源文件的权限为644--->rw-r--r--
+    		chmod 664   xxx.txt------>rw-rw-r--
+    演示命令：
+    yangyang@yangyang-host:~/Desktop$ touch a1.txt
+    yangyang@yangyang-host:~/Desktop$ ll
+    总用量 8
+    drwxr-xr-x  2 yangyang yangyang 4096 7月  17 11:10 ./
+    drwxr-xr-x 30 yangyang yangyang 4096 7月  17 10:34 ../
+    -rw-r--r--  1 yangyang rock        0 7月  17 11:10 a1.txt
+    yangyang@yangyang-host:~/Desktop$ sudo chmod g+w a1.txt 
+    yangyang@yangyang-host:~/Desktop$ ll
+    总用量 8
+    drwxr-xr-x  2 yangyang yangyang 4096 7月  17 11:10 ./
+    drwxr-xr-x 30 yangyang yangyang 4096 7月  17 10:34 ../
+    -rw-rw-r--  1 yangyang rock        0 7月  17 11:10 a1.txt
+    yangyang@yangyang-host:~/Desktop$ touch b1.txt
+    yangyang@yangyang-host:~/Desktop$ ll
+    总用量 8
+    drwxr-xr-x  2 yangyang yangyang 4096 7月  17 11:11 ./
+    drwxr-xr-x 30 yangyang yangyang 4096 7月  17 10:34 ../
+    -rw-rw-r--  1 yangyang rock        0 7月  17 11:10 a1.txt
+    -rw-r--r--  1 yangyang rock        0 7月  17 11:11 b1.txt
+    yangyang@yangyang-host:~/Desktop$ sudo chmod 664 b1.txt 
+    yangyang@yangyang-host:~/Desktop$ ll
+    总用量 8
+    drwxr-xr-x  2 yangyang yangyang 4096 7月  17 11:11 ./
+    drwxr-xr-x 30 yangyang yangyang 4096 7月  17 10:34 ../
+    -rw-rw-r--  1 yangyang rock        0 7月  17 11:10 a1.txt
+    -rw-rw-r--  1 yangyang rock        0 7月  17 11:11 b1.txt
+
+15>chgrp      修改文件所属组
+
+ 	chgrp 组名   文件名
+
+2.系统管理
+
+1>ps       报告当前系统的进程状态
+
+    进程是处于执行期的程序以及它所包含的所有资源的总称，包括虚拟处理器，虚拟空间，寄存器，堆栈，全局数据段等。
+    
+        	针对用户进程，又可以分为交互进程、批处理进程和守护进程三类。 
+    
+        	(1) 交互进程：由一个shell终端启动的进程，在执行过程中，需要与用户进行交互操作，可以运行于前台，也可以运行在后台。 
+    
+        	(2) 批处理进程：该进程是一个进程集合，负责按顺序启动其他的进程。    
+    
+        	(3) 守护进程：守护进程是一直运行的一种进程，经常在linux系统启动时启动，在系统关闭时终止。它们独立于控制终端并且周期性的执行某种任务或等待处理某些发生的事件。例如httpd进程，一直处于运行状态，等待用户的访问。还有经常用的crond进程，这个进程类似与windows的计划任务，可以周期性的执行用户设定的某些任务。
+    
+        	ps命令是最基本同时也是非常强大的进程查看命令，使用该命令可以确定有哪些进程正在运行和运行的状态、进程是否结束、进程有没有僵死、哪些进程占用了过多的资源等等，总之大部分信息都是可以通过执行该命令得到的
+    
+    -a：显示所有进程（包括其他用户的进程）
+    -u：用户以及其他详细信息
+    -x：显示没有控制终端的进程
+    -ef：显示所有
+    
+    演示命令：
+    1435  ps
+    1437  ps -a
+
+2>kill        删除执行中的程序或工作
+
+    -a：当处理当前进程时，不限制命令名和进程号的对应关系；
+    -l <信息编号>：若不加<信息编号>选项，则-l参数会列出全部的信息名称；
+    -p：指定kill 命令只打印相关进程的进程号，而不发送任何信号；
+    -s <信息名称或编号>：指定要送出的信息；
+    -u：指定用户
+    
+    演示命令：
+    yangyang@yangyang-host:~$ kill -l
+     1) SIGHUP	 2) SIGINT	 3) SIGQUIT	 4) SIGILL	 5) SIGTRAP
+     6) SIGABRT	 7) SIGBUS	 8) SIGFPE	 9) SIGKILL	10) SIGUSR1
+    11) SIGSEGV	12) SIGUSR2	13) SIGPIPE	14) SIGALRM	15) SIGTERM
+    16) SIGSTKFLT	17) SIGCHLD	18) SIGCONT	19) SIGSTOP	20) SIGTSTP
+    21) SIGTTIN	22) SIGTTOU	23) SIGURG	24) SIGXCPU	25) SIGXFSZ
+    26) SIGVTALRM	27) SIGPROF	28) SIGWINCH	29) SIGIO	30) SIGPWR
+    31) SIGSYS	34) SIGRTMIN	35) SIGRTMIN+1	36) SIGRTMIN+2	37) SIGRTMIN+3
+    38) SIGRTMIN+4	39) SIGRTMIN+5	40) SIGRTMIN+6	41) SIGRTMIN+7	42) SIGRTMIN+8
+    43) SIGRTMIN+9	44) SIGRTMIN+10	45) SIGRTMIN+11	46) SIGRTMIN+12	47) SIGRTMIN+13
+    48) SIGRTMIN+14	49) SIGRTMIN+15	50) SIGRTMAX-14	51) SIGRTMAX-13	52) SIGRTMAX-12
+    53) SIGRTMAX-11	54) SIGRTMAX-10	55) SIGRTMAX-9	56) SIGRTMAX-8	57) SIGRTMAX-7
+    58) SIGRTMAX-6	59) SIGRTMAX-5	60) SIGRTMAX-4	61) SIGRTMAX-3	62) SIGRTMAX-2
+    63) SIGRTMAX-1	64) SIGRTMAX	
+    
+    INT       2     中断
+    QUIT      3	    退出
+    KILL       9	强制终止 
+    
+    kill -9 pid :强制终止正在执行的某个程序【强制杀死某个指定的进程】
+     
+    TERM15表示发送信息给进程，告诉进程，你需要被关闭，请自行停止运行并退出
+    KILL发送信号给进程，告诉进程，你被关闭了，请立刻退出
+    
+    #注意：一般先通过ps查看进程，然后通过kill杀死进程
+
+3>df           显示磁盘分区上的可使用的磁盘空间
+
+    注意：默认显示单位为KB
+     可以利用该命令来获取硬盘被占用了多少空间，目前还剩下多少空间等信息
+     
+     演示命令：
+     1439  df
+     1440  df -h
+     1441  df -a
+
+4>du 	   显示文件的内存大小
+
+5>crontab		提交和管理用户的需要周期性执行的任务
+
+    注意：当安装完成操作系统后，默认会安装此服务工具，并且会自动启动crond进程，crond进程每分钟会定期检查是否有要执行的任务，如果有要执行的任务，则自动执行该任务
+
+6>free     显示当前系统未使用的和已使用的内存数目，还可以显示被内核使用的内存缓冲区
+
+    -b：以Byte为单位显示内存使用情况；
+    -k：以KB为单位显示内存使用情况；
+    -m：以MB为单位显示内存使用情况；
+    -o：不显示缓冲区调节列；
+    -s<间隔秒数>：持续观察内存使用状况；
+    -t：显示内存总和列；
+    -V：显示版本信息
+    
+    演示命令：
+    yangyang@yangyang-host:~$ free
+                  total        used        free      shared  buff/cache   available
+    Mem:        2018084     1087612      122180        9444      808292      699836
+    Swap:       4192252       10240     4182012
+
+7>mode            权限标记
+
+    ugoa
+    rwx
+
+8>alias       给命令起别名
+
+	格式：alias 别名=原名
+
+    yangyang@yangyang-host:~$ pwd
+    /home/yangyang
+    yangyang@yangyang-host:~$ sudo vim .bashrc 
+    [sudo] yangyang 的密码： 
+    yangyang@yangyang-host:~$ pwd
+    /home/yangyang
+    yangyang@yangyang-host:~$ p
+    p：未找到命令
+    yangyang@yangyang-host:~$ source .bashrc    #让.bashrc文件生效
+    yangyang@yangyang-host:~$ pwd
+    /home/yangyang
+    yangyang@yangyang-host:~$ p
+    /home/yangyang
+
+9>关机重启   
+
+    reboot :重启
+    shutdown -h now  立即关机
+    shutdown -r now 立即重启
+    shutdown -h +1 一分钟后重启
+    
+    clear:清屏，等同于ctrl + l
+    
+    logout:注销
+    telinit 0:关机
+    
+    init 0:关机
+    init 6:重启
+    
+    Linux有7个运行级别：
+    	0：关机
+    	1：单用户模式,root用户
+    	2：多用户模式
+    	3.完整的多用户文本模式
+    	4.系统未使用，保留一般不用
+    	5.图形化模式
+    	6.重启	
+
+3.网络服务和安全机制
+
+ping:检测网络连通性【检测有没有网】
+
+		ping  IP地址
+
+		ping -c n IP地址   连接 n 次结束
+
+	
+
+    ifconfig:查看、设置网卡信息
+
+    演示命令：
+    yangyang@yangyang-host:~$ ifconfig
+    命令 'ifconfig' 可在 '/sbin/ifconfig' 处找到
+    由于/sbin 不在PATH 环境变量中，故无法找到该命令。
+    这很可能是由您的用户账户没有管理员权限造成的。
+    ifconfig：未找到命令
+    yangyang@yangyang-host:~$ sudo !!
+    sudo ifconfig
+    ens33     Link encap:以太网  硬件地址 00:0c:29:38:3d:a7  
+            inet 地址:10.36.174.63  广播:10.36.174.255  掩码:255.255.255.0
+            inet6 地址: fe80::cc05:70f0:38b:b0e8/64 Scope:Link
+            UP BROADCAST RUNNING MULTICAST  MTU:1500  跃点数:1
+            接收数据包:30214 错误:0 丢弃:0 过载:0 帧数:0
+            发送数据包:3991 错误:0 丢弃:0 过载:0 载波:0
+            碰撞:0 发送队列长度:1000 
+            接收字节:11858561 (11.8 MB)  发送字节:291856 (291.8 KB)
+    
+    lo        Link encap:本地环回  
+            inet 地址:127.0.0.1  掩码:255.0.0.0
+            inet6 地址: ::1/128 Scope:Host
+            UP LOOPBACK RUNNING  MTU:65536  跃点数:1
+            接收数据包:382 错误:0 丢弃:0 过载:0 帧数:0
+            发送数据包:382 错误:0 丢弃:0 过载:0 载波:0
+            碰撞:0 发送队列长度:1000 
+            接收字节:36171 (36.1 KB)  发送字节:36171 (36.1 KB)
+    
+    yangyang@yangyang-host:~$ ping www.baidu.com
+    PING www.a.shifen.com (182.61.200.7) 56(84) bytes of data.
+    64 bytes from 182.61.200.7: icmp_seq=1 ttl=52 time=138 ms
+    64 bytes from 182.61.200.7: icmp_seq=2 ttl=52 time=99.6 ms
+    64 bytes from 182.61.200.7: icmp_seq=3 ttl=52 time=55.4 ms
+    64 bytes from 182.61.200.7: icmp_seq=4 ttl=52 time=32.6 ms
+    64 bytes from 182.61.200.7: icmp_seq=5 ttl=52 time=37.1 ms
+    64 bytes from 182.61.200.7: icmp_seq=6 ttl=52 time=34.8 ms
+    64 bytes from 182.61.200.7: icmp_seq=7 ttl=52 time=80.7 ms
+    64 bytes from 182.61.200.7: icmp_seq=8 ttl=52 time=183 ms
+    64 bytes from 182.61.200.7: icmp_seq=9 ttl=52 time=39.9 ms
+    ^C
+    --- www.a.shifen.com ping statistics ---
+    9 packets transmitted, 9 received, 0% packet loss, time 8017ms
+    rtt min/avg/max/mdev = 32.659/78.004/183.342/50.271 ms
+
+
