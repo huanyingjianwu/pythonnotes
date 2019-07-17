@@ -1,0 +1,699 @@
+一、进程
+
+
+
+1.什么是进程？进程有哪些特点？
+
+	是一个程序的运行状态和资源占用情况的描述，在操作系统中，每启动一个应用就启动了一个进程
+
+	特点：独立性，动态性，并发性
+
+2.创建进程
+
+	创建单个进程对象：Process
+
+	创建进程池：Pool
+
+3.其他
+
+	父子进程的执行顺序：默认情况下，父进程结束，子进程启动
+
+	    					join,等待子进程结束之后，父进程才结束
+
+	不同的子进程修改一个全局变量，相互之间互不影响【每个进程都有自己独立的数据段，代码段，堆栈段】
+
+	进程之间的相互通信：queue
+
+二、线程
+
+1.概念
+
+是进程的组成部分，一个进程可以有多个线程，每个线程可以处理一个子任务，一个进程至少需要有一个线程，否则该进程没有任何意义
+
+举例：
+
+	打开网易云音乐app------>启动一个进程
+
+	播放歌曲和浏览歌词------》启动了两个线程【看上去一起执行的，所以是并发的】
+
+	线程执行的工作原理：线程的执行是抢占式的，多个线程在同一个进程中并发执行，其实就是cpu在两个线程之间进行快速的切换，如果一个线程抢占到了cpu时间片，则执行，则另外的线程则会被挂起【处于等待状态】
+
+	进程之间资源不共享，但是，一个进程的线程之间资源是共享的
+
+	多线程可以提高工作效率，可以同时完成多个工作
+
+2.进程和线程之间的区别和联系
+
+a.一个程序运行之后启动一个进程
+
+b.一个进程启动之后，至少需要一个线程，否则该进程没有意义
+
+c.在一个进程中也可以启动多个线程，让多个线程处理多个任务
+
+d.进程之间资源不共享，但是，一个进程的线程之间资源是共享的
+
+e.系统创建进程需要为该进程重新分配资源，而创建线程则相对比较容易，因此使用多线程比多进程的效率会高
+
+f.进程是由系统管理的，不可控制，线程则可控制，设置名称
+
+3.创建线程
+
+多任务可以由多进程完成，也可以有多线程完成
+
+在一个进程的内部，需要同时干多件事，被称为子任务，又被称为子线程
+
+线程其实也是一个轻型的进程
+
+实现线程，使用_thread模块【提供了低级别的，原始的线程】
+
+		    使用threading模块【对_thread做了封装，提供了更加完善的功能】
+
+进程：process   线程：thread
+
+基本线程
+
+    #1.导入高级模块
+    import  threading,time
+    
+    #4.子线程的任务
+    def run(num):
+        print("子线程%s启动" % (threading.current_thread().name))
+    
+        #实现的任务
+        time.sleep(2)
+        print("num=%d" % (num))
+        time.sleep(2)
+    
+        print("子线程%s结束" % (threading.current_thread().name))
+    
+    #2.主线程：任何进程默认都有一个线程，在主线程中启动任意的子线程
+    if __name__ == "__main__":
+        #threading.current_thread():获取当前正在执行的线程的对象
+        #threading.current_thread().name：获取当前正在执行的线程的对象的名称
+        #主线程默认的名称为：MainThread
+        print("主线程%s启动" % (threading.current_thread().name))
+    
+        #3.在主线程中创建子线程
+        """
+        threading.Thread(target,name,args)
+            target:子线程需要执行的任务对应的函数
+            name；设置子线程的名称，可以省略
+                【名字没有实际含义，为了区分不同的线程，如果不给线程起名字，则系统默认分配，为Thread-1.Thread-2。。。。】
+            args；子线程任务函数的参数
+        """
+        #t = threading.Thread(target=run,name="子线程111",args=(5,))
+        t = threading.Thread(target=run,args=(5,))
+        #线程类似于进程，必须手动启动
+        t.start()
+    
+        #让主线程等待子线程结束之后才结束
+        t.join()
+    
+        print("主线程%s结束" % (threading.current_thread().name))
+
+定时线程
+
+    #定时线程：在指定的时间之后执行某个子任务
+    
+    import  threading
+    
+    
+    #子任务
+    def run():
+        print("hellohelleo")
+    
+    if __name__ == "__main__":
+        print("父线程启动")
+    
+        #创建定时线程并启动
+        """
+        threading.Timer(秒数,函数)
+        """
+        #t = threading.Thread(target=run)
+        t = threading.Timer(0,run)
+        t.start()
+    
+        t.join()
+    
+        print("父线程结束")
+
+凑够一定数量才执行
+
+    import  threading,time
+    
+    #Barrier:栅栏，屏障
+    
+    #Barrier类是设置了一个线程数量障碍，
+    #threading.Barrier(num),num表示一个线程数量障碍，当等待的线程达到了该数量则会唤醒所有等待的线程
+    bar = threading.Barrier(1)
+    
+    def run():
+        print("%s----start" % (threading.current_thread().name))
+    
+        time.sleep(1)
+    
+        #等待：当前线程进入阻塞状态【等待状态】
+        bar.wait()
+    
+        print("%s----end" % (threading.current_thread().name))
+    
+    if __name__ == "__main__":
+        for i in range(6):
+            threading.Thread(target=run).start()
+    
+    #threading.Barrier(num)结合bar.wait()使用，凑够一定的数量num才能解除阻塞状态，否则只能一直处于等待状态
+
+4.线程中的共享数据
+
+    #问题：在多进程中，同一个变量，在不同的进程中各自有一份拷贝存在于每个进程中，互不影响
+    #在多线程中，所有变量都是多个线程共享的，所以，任何一个变量都有可能被其中的一个线程修改
+    #最大的危险：多个线程同时修改同一个变量，容易将内容该乱了
+    import  threading,time
+    
+    
+    #全局变量
+    balance = 0
+    
+    def change(n):
+        #先加再减，理论结果应该仍然为0
+        global balance
+        balance = balance + n
+        balance = balance - n
+    
+    def run(n):
+        for i in range(1000000):
+            change(n)
+    
+    if __name__ == "__main__":
+        t1 = threading.Thread(target=run,args=(5,))
+        t2 = threading.Thread(target=run, args=(8,))
+    
+        t1.start()
+        t2.start()
+    
+        t1.join()
+        t2.join()
+    
+        print(balance)  #理论为0
+    
+    
+    """
+    问题：
+        定义一个全局变量balance,初始值为0，并且启动两个线程，先加后减
+        理论上为0，但是，线程的调度是由系统决定的，当t1和t2交替执行，并且访问该变量的次数增多，balance的值就不确定
+    
+    这个问题其实就是使用多线程的过程中典型的临界资源问题
+    
+    原因分析：
+        因为高级语言中的一条语句在cpu中是分步执行的，
+        举例：
+            balance = balance + n分为两步： x = balance + n     balance = x
+    
+    
+        两个线程各自都有x,
+        一、当代码正常执行
+            t1:x1 = balance + 5
+            t1：balance = x1
+            t1:x1 = balance - 5
+            t1：balance = x1    #0
+    
+            t2:x2 = balance + 8
+            t2：balance = x2
+            t2:x2 = balance - 8
+            t2：balance = x2    #0
+    
+        二、t1,t2的线程交替执行，争抢时间片
+            t1:x1 = balance + 5  #x1 = 5
+    
+            t2:x2 = balance + 8  #x2 = 8
+            t2:balace = x2   #balance = 8
+    
+            t1；balance = x1  #balance = 5
+            t1:x1 = balance - 5   #x1 = 0
+            t1:balance = x1    #balance = 0
+    
+            t2:x2 = balace - 8   #0- 8 = -8
+            t2:balance = x2   #balance = -8
+    
+    解决：
+        当一个线程访问balance,则给临界资源上一把锁，进入内部则执行，
+        在锁外面只能处于等待状态，当锁被释放之后，线程获得锁才能执行临界资源
+    """
+
+5.线程锁
+
+    #问题：在多进程中，同一个变量，在不同的进程中各自有一份拷贝存在于每个进程中，互不影响
+    #在多线程中，所有变量都是多个线程共享的，所以，任何一个变量都有可能被其中的一个线程修改
+    #最大的危险：多个线程同时修改同一个变量，容易将内容该乱了
+    import  threading,time
+    
+    
+    #全局变量
+    balance = 0
+    
+    #创建一个锁对象
+    lock_thread = threading.Lock()
+    
+    def change(n):
+        #先加再减，理论结果应该仍然为0
+        global balance
+        balance = balance + n
+        balance = balance - n
+    
+    def run(n):
+        for i in range(1000000):
+            #1.先要获取锁
+            lock_thread.acquire()
+    
+            try:
+                change(n)
+            finally:
+                # 修改完临界资源之后一定要释放锁
+                lock_thread.release()
+    
+    
+    if __name__ == "__main__":
+        t1 = threading.Thread(target=run,args=(5,))
+        t2 = threading.Thread(target=run, args=(8,))
+    
+        t1.start()
+        t2.start()
+    
+        t1.join()
+        t2.join()
+    
+        print(balance)  #理论为0
+
+    #问题：在多进程中，同一个变量，在不同的进程中各自有一份拷贝存在于每个进程中，互不影响
+    #在多线程中，所有变量都是多个线程共享的，所以，任何一个变量都有可能被其中的一个线程修改
+    #最大的危险：多个线程同时修改同一个变量，容易将内容该乱了
+    import  threading,time
+    
+    
+    #全局变量
+    balance = 0
+    
+    #创建一个锁对象
+    lock_thread = threading.Lock()
+    
+    def change(n):
+        #先加再减，理论结果应该仍然为0
+        global balance
+        balance = balance + n
+        balance = balance - n
+    
+    def run(n):
+        for i in range(1000000):
+           #with 锁对象的功能：可以自动上锁和解锁
+           with lock_thread:
+               change(n)
+    
+    if __name__ == "__main__":
+        t1 = threading.Thread(target=run,args=(5,))
+        t2 = threading.Thread(target=run, args=(8,))
+    
+        t1.start()
+        t2.start()
+    
+        t1.join()
+        t2.join()
+    
+        print(balance)  #理论为0
+    
+    #线程锁的作用：避免临界资源被多个线程同时访问造成数据混乱
+
+6.ThreadLocal
+
+在多线程下，每个线程都有自己的数据，一个线程使用自己的局部变量比使用全局变量好，因为局部变量只有当前线程持有，不会影响其他线程，而全局变量则必须加锁
+
+使用局部变量也存在问题，就是在函数调用的时候，传递参数很麻烦
+
+    import  threading
+    
+    #全局变量
+    num = 0
+    
+    #创建一个全局的ThreadLocal对象
+    #每个线程都有自己独立的存储空间，每个线程可以对ThreadLocal进行读写，但是互不影响
+    local = threading.local()
+    
+    
+    def run(x,n):
+        x = x + n
+        x = x - n
+    
+    def func(n):
+    
+        """
+        全局变量local就是一个ThreadLocal对象，每个Thread对象可以读写x属性，但是互不影响
+        local是全局变量，local.x是局部变量
+    
+        好处：不需要关心锁的问题，直接操作，ThreadLocal内部处理
+    
+        local.x， local.y，  local.hello，
+        """
+    
+        local.x  = num
+    
+        for i in range(10000):
+            run(local.x,n)
+    
+        print("%s-%d" % (threading.current_thread().name,local.x))
+    
+    if __name__ == "__main__":
+        t1 = threading.Thread(target=func, args=(5,))
+        t2 = threading.Thread(target=func, args=(8,))
+    
+        t1.start()
+        t2.start()
+    
+        t1.join()
+        t2.join()
+    
+        print("num=%d" % (num))
+    
+    
+    #ThreadLocal的作用：解决了参数在一个线程中各个函数之间的互相传递问题
+
+7.生产者消费者设计模式
+
+为什么要使用生产者消费者设计模式？
+
+	在线程环境里，生产者指的是生产数据的线程，消费者指的消费数据的线程，在多线程多开发中，如果生产者的生产速度比较快，但是消费者的消费速度慢，那么生产者会停止生产，该线程处于等待状态
+
+什么是生产者消费者设计模式？
+
+	通过一个容器【队列】来解决生产者和消费者的强耦合问题，二者之间彼此之间不能直接通信，而通过队列进行阻塞通信，生产者将数据放到队列中，消费者从队列中获取出来；当消费者消费完成之后，生产者继续生产，以此类推。。。
+
+    #生产者消费者设计模式
+    import  threading,queue,time,random
+    
+    #生产者的任务:向队列中添加数据
+    def product(queue):
+        while True:
+            num = random.randint(0,10000)
+            queue.put(num)
+            print("%s向队列中添加了一个数据%d" % (threading.current_thread().name,num))
+    
+            time.sleep(3)
+    
+        #任务完成:生产者当前线程的任务完成，唤醒等待的消费者
+        queue.task_done()
+    
+    #消费者的任务：从队列中取出数据
+    def consumer(queue):
+        while True:
+            item = queue.get()
+            if item is None:
+                break
+    
+            print("%s从队列中取出了%d" % (threading.current_thread().name,item))
+    
+            time.sleep(2)
+    
+        #任务完成
+        queue.task_done()
+    
+    if __name__ == "__main__":
+        #创建队列，充当缓冲区【仓库】
+        queue = queue.Queue()
+    
+        #创建生产者并启动
+        for i in range(4):
+            threading.Thread(target=product,name="生产者" + str(i),args=(queue,)).start()
+    
+        # 创建消费者并启动
+        for i in range(3):
+            threading.Thread(target=consumer, name="消费者" + str(i), args=(queue,)).start()
+
+三、协程
+
+协程，又被称为微线程
+
+子程序【函数】，函数的调用是通过栈实现的
+
+    #定义一个函数：定义一个子程序，实现了子任务
+    def show():
+        print("fa")
+        print("fa")
+        print("fa")
+        print("fa")
+    
+    
+    #调用：执行子程序的入口，调用顺序是明确的，
+    show()
+    
+    
+    #协程看上去也是子程序，但是执行过程中，在子程序的内部可以中断，去执行别的子程序，在适当的时候再返回来接着执行
+    
+    #函数的调用
+    def a():
+        print("a~~~start")
+        b()
+        print("a~~~end")
+    def b():
+        print("b~~~start")
+        c()
+        print("b~~~end")
+    def c():
+        print("c~~~start")
+        print("c~~~end")
+    
+    a()
+    
+    #协程
+    def A():
+        print(1)
+        print(2)
+        print(3)
+    def B():
+        print("x")
+        print("y")
+        print("z")
+    
+    """
+    1
+    x
+    y
+    2
+    3
+    z
+    """
+
+工作原理：
+
+    #工作原理
+    #Python对协程的支持是通过generator实现的
+    def run():
+        print(1)
+        yield 10
+        print(2)
+        yield 20
+        print(3)
+        yield 30
+    
+    #协程是实现多任务最简单的方式，控制函数的阶段执行，节约线程或者进程之间来回切换耗费的时间
+    r = run()
+    print(r)
+    
+    #访问生成器
+    print(next(r))
+    print(next(r))
+    print(next(r))
+
+四、排列组合
+
+grgaw
+
+五、正则表达式
+
+1.案例
+
+    import  re
+    
+    #需求：封装函数，判断一个qq号的字符串是否合法
+    """
+    1.全数字
+    2.位数：5~11
+    3.首位不能为0
+    """
+    
+    def checkqq1(qq):
+        #假设法
+        result = True
+    
+        if qq.isdigit():
+            if len(qq) >= 5 and len(qq) <= 11:
+                if qq[0] == "0":
+                    result = False
+            else:
+                result = False
+        else:
+            result = False
+    
+        return result
+    
+    
+    def checkqq2(qq):
+        # 假设法
+        result = True
+    
+        try:
+            num = int(qq)
+    
+            if len(qq) >= 5 and len(qq) <= 11:
+                if qq.startswith("0"):
+                    result = False
+            else:
+                result = False
+        except BaseException as e:
+            result = False
+    
+        return result
+    
+    if __name__ == "__main__":
+        r1 = checkqq1("67365fah")
+        print(r1)
+        r2 = checkqq2("67365fah")
+        print(r2)
+    
+        #使用正则表达式检验扣扣号
+        r3 = re.match(r"[1-9]\d{4,10}","67365fah")
+        r31 = re.match(r"[1-9][0-9]{4,10}", "67365fah")
+        print(r3)
+        print(r31)
+
+2.概念
+
+正则表达式：Regular Expression,在代码中一般简写为regex,regexp，但是，在Python中，尽量不要直接使用re，系统存在re模块
+
+作用;使用有规律的字符串匹配，搜索，替换指定的字符串
+
+3.使用
+
+    """
+    ----------匹配单个字符与数字---------
+    .                匹配除换行符以外的任意字符
+    
+    [0123456789]     []是字符集合，表示匹配方括号中所包含的任意一个字符
+    [0-9]            匹配任意数字，类似[0123456789]
+    \d               匹配数字，效果同[0-9]
+    
+    [good]           匹配good中任意一个字符
+    [a-z]            匹配任意小写字母
+    [A-Z]            匹配任意大写字母
+    
+    [0-9a-zA-Z]      匹配任意的数字和字母
+    
+    [0-9a-zA-Z_]     匹配任意的数字、字母和下划线
+    \w               匹配数字，字母和下划线,效果同[0-9a-zA-Z_]
+    
+    [^good]          匹配除了good这几个字母以外的所有字符，中括号里的^称为脱字符，表示不匹配集合中的字符
+    
+    [^0-9]           匹配所有的非数字字符
+    \D               匹配非数字字符，效果同[^0-9]
+    
+    \W               匹配非数字，字母和下划线，效果同[^0-9a-zA-Z_]
+    
+    \s               匹配任意的空白符(空格，回车，换行，制表，换页)，效果同[ \r\n\t\f]
+    \S               匹配任意的非空白符，效果同[^ \f\n\r\t]
+    """
+    
+    """
+    []:不管其中有多少个字符，都只能匹配指定字符串中的一位
+    -：区间符或者连接符，表示在ASCII码表中连续的字符
+    .：匹配除换行符以外的任意字符
+    ^:使用在[]中，则表示否定【取反】被称为脱字符
+    """
+    
+    import  re
+    
+    #re模块中的任意的函数的调用都有两种办法
+    #方式一:re.函数(正则字符串，被校验字符串)
+    r1 = re.match(r"[a-z]","h")
+    print(r1)
+    
+    #方式二：
+    #a.将正则字符串编译为一个对象
+    pattern = re.compile(r"[a-z]")
+    #b.使用对象匹配指定的字符串
+    r2 = pattern.match("h")
+    print(r2)
+    
+    #注意：match如果能匹配到，则返回一个对象，如果匹配不到，则返回None
+    #单个字符的使用
+    r1 = re.match(r".","\n")
+    print(r1)
+    
+    r1 = re.match(r"\d","4")
+    print(r1)
+    r1 = re.match(r"[0-9]","4")
+    print(r1)
+    r1 = re.match(r"[0123456789]","4")
+    print(r1)
+    
+    r1 = re.match(r"\w","_")
+    print(r1)
+    r1 = re.match(r"[0-9a-zA-Z_]","_")
+    print(r1)
+    
+    
+    r1 = re.match(r"[^0-9]","4")
+    print(r1)
+    
+    r1 = re.match(r"\s"," ")
+    print(r1)
+
+    """
+    -------------------匹配多个字符------------------------
+    
+    说明：下方的x、y、z均为假设的普通字符,n、m（非负整数），不是正则表达式的元字符
+    (xyz)    匹配小括号内的xyz(作为一个整体去匹配)
+    x?       匹配0个或者1个x
+    x*       匹配0个或者任意多个x（.* 表示匹配0个或者任意多个字符(换行符除外)）
+    x+       匹配至少一个x
+    x{n}     匹配确定的n个x（n是一个非负整数）
+    x{n,}    匹配至少n个x
+    x{n,m}   匹配至少n个最多m个x。注意：n <= m
+    x|y      |表示或，匹配的是x或y
+    """
+    """
+    ():代表一个整体，也被称为分组
+    {}：前面字符出现的次数
+    |：或，正则1|正则2，只要其中一个正则表达式满足，则就可以完成匹配
+    """
+    
+    import  re
+    
+    
+    #match():用指定的正则表达式匹配指定的字符串
+    #findall()：用指定的正则表达式在一个指定的字符串中进行搜索，将所有符合条件的子字符串全部搜索出来，返回一个列表
+    #非贪婪匹配
+    print(re.findall(r"a?","aaaaaaaaaaaaa"))   #0个或者1个
+    
+    #贪婪匹配
+    print(re.findall(r"a+","aaaaaaaaaaaaa"))    #多个【至少一个】
+    print(re.findall(r"a*","aaaaaaaaaaaaaaaaa"))   #多个或者0个
+    
+    
+    #将贪婪模式转化为非贪婪模式
+    print(re.findall(r"a(\d?)","a46713437287658374b"))
+    
+    #正则表达式只有一个限制条件，如果在贪婪匹配的后面他添加?，则可以将将贪婪模式转化为非贪婪模式
+    print(re.findall(r"a(\d+)","a46713437287658374565677b"))
+    print(re.findall(r"a(\d+?)","a46713437287658374565677b"))
+    
+    print(re.findall(r"a(\d*)","a46713437287658374565677b"))
+    print(re.findall(r"a(\d*?)","a46713437287658374565677b"))
+    
+    #但是，如果正则表达式两端都有限制条件，则？转换将不起作用
+    print(re.findall(r"a(\d+)b","a46713437287658374565677b"))
+    print(re.findall(r"a(\d*)b","a46713437287658374565677b"))
+    print(re.findall(r"a(\d+?)b","a46713437287658374565677b"))
+    print(re.findall(r"a(\d*?)b","a46713437287658374565677b"))
+    
+    
+    # print(re.findall(r"a{3}","aaaaaaaaaaaaaaaaa"))   #恰好3个
+    # print(re.findall(r"a{3,}","aaaaaaaaaaaaaaaaa"))
+    # print(re.findall(r"a{3,5}","aaaaaaaaaaaaaaaaaa"))
+    
